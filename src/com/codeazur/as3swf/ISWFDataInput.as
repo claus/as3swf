@@ -46,6 +46,7 @@
 		function readACTIONRECORD():IAction;
 		function readACTIONVALUE():SWFActionValue;
 		function readREGISTERPARAM():SWFRegisterParam;
+		function readSYMBOL():SWFSymbol;
 		
 		function get position():uint;
 		function uncompress():void;

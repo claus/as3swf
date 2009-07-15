@@ -38,6 +38,7 @@
 				/* 69 */ case TagFileAttributes.TYPE: return new TagFileAttributes();
 				/* 73 */ case TagDefineFontAlignZones.TYPE: return new TagDefineFontAlignZones();
 				/* 75 */ case TagDefineFont3.TYPE: return new TagDefineFont3();
+				/* 76 */ case TagSymbolClass.TYPE: return new TagSymbolClass();
 				/* 77 */ case TagMetadata.TYPE: return new TagMetadata();
 				/* 78 */ case TagDefineScalingGrid.TYPE: return new TagDefineScalingGrid();
 				/* 82 */ case TagDoABC.TYPE: return new TagDoABC();

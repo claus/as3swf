@@ -666,6 +666,17 @@
 			return new SWFRegisterParam(register, name);
 		}
 		
+		/////////////////////////////////////////////////////////
+		// Symbols
+		/////////////////////////////////////////////////////////
+		
+		public function readSYMBOL():SWFSymbol {
+			var tagId:uint = readUI16();
+			var name:String = readString();
+			return new SWFSymbol(tagId, name);
+		}
+		
+		
 		
 		public function uncompress():void {
 			var position:uint = data.position;

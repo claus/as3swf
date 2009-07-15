@@ -22,9 +22,12 @@
 		}
 		
 		public function toString(indent:uint = 0):String {
-			return StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagDefineShape] " +
+			var str:String = StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagDefineShape] " +
 				"ID: " + shapeId + ", " +
 				"Bounds: " + shapeBounds;
+			str += "\n" + StringUtils.repeat(indent + 2) + "Shapes:";
+			str += shapes.toString(indent + 4);
+			return str;
 		}
 	}
 }

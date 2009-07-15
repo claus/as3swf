@@ -13,9 +13,5 @@
 		
 		public function get fillStyles():Vector.<SWFFillStyle> { return _fillStyles; }
 		public function get lineStyles():Vector.<SWFLineStyle> { return _lineStyles; }
-		
-		override public function toString():String {
-			return "[SWFShapeWithStyle]";
-		}
 	}
 }

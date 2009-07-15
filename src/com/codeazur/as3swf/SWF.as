@@ -76,7 +76,7 @@
 				"Tags: " + tags.length;
 			if (tags.length > 0) {
 				str += "\n  Tags:"
-				for (var i:uint = 0; i < Math.min(100, tags.length); i++) {
+				for (var i:uint = 0; i < Math.min(100000, tags.length); i++) {
 					str += "\n" + tags[i].toString(4);
 				}
 			}

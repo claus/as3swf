@@ -36,9 +36,14 @@
 		}
 		
 		public function toString(indent:uint = 0):String {
-			return StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagDefineFont] " +
+			var str:String = StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagDefineFont] " +
 				"ID: " + fontId + ", " +
 				"Glyphs: " + _glyphShapeTable.length;
+			for (var i:uint = 0; i < _glyphShapeTable.length; i++) {
+				str += "\n" + StringUtils.repeat(indent + 2) + "[" + i + "] GlyphShapes:";
+				str += _glyphShapeTable[i].toString(indent + 4);
+			}
+			return str;
 		}
 	}
 }

@@ -10,12 +10,17 @@
 		public function TagDefineFont3() {}
 		
 		override public function toString(indent:uint = 0):String {
-			return StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagDefineFont3] " +
+			var str:String = StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagDefineFont3] " +
 				"ID: " + fontId + ", " +
 				"FontName: " + fontName + ", " +
 				"Italic: " + italic + ", " +
 				"Bold: " + bold + ", " +
 				"Glyphs: " + _glyphShapeTable.length;
+			for (var i:uint = 0; i < _glyphShapeTable.length; i++) {
+				str += "\n" + StringUtils.repeat(indent + 2) + "[" + i + "] GlyphShapes:";
+				str += _glyphShapeTable[i].toString(indent + 4);
+			}
+			return str;
 		}
 	}
 }

@@ -1,0 +1,39 @@
+﻿package com.codeazur.as3swf.tags
+{
+	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.data.SWFTextRecord;
+	import com.codeazur.utils.StringUtils;
+	
+	public class TagDefineText2 extends TagDefineText implements ITag
+	{
+		public static const TYPE:uint = 33;
+		
+		public function TagDefineText2() {}
+		
+		override public function parse(data:ISWFDataInput, length:uint):void {
+			characterId = data.readUI16();
+			textBounds = data.readRECT();
+			textMatrix = data.readMATRIX();
+			var glyphBits:uint = data.readUI8();
+			var advanceBits:uint = data.readUI8();
+			var record:SWFTextRecord;
+			while ((record = data.readTEXTRECORD(glyphBits, advanceBits, record, 2)) != null) {
+				_records.push(record);
+			}
+		}
+		
+		override public function toString(indent:uint = 0):String {
+			var str:String = StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagDefineText2] " +
+				"ID: " + characterId + ", " +
+				"Bounds: " + textBounds + ", " +
+				"Matrix: " + textMatrix;
+			if (_records.length > 0) {
+				str += "\n" + StringUtils.repeat(indent + 2) + "TextRecords:";
+				for (var i:uint = 0; i < _records.length; i++) {
+					str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + _records[i].toString();
+				}
+			}
+			return str;
+		}
+	}
+}

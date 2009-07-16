@@ -33,6 +33,7 @@
 				/* 26 */ case TagPlaceObject2.TYPE: return new TagPlaceObject2();
 				/* 28 */ case TagRemoveObject2.TYPE: return new TagRemoveObject2();
 				/* 32 */ case TagDefineShape3.TYPE: return new TagDefineShape3();
+				/* 33 */ case TagDefineText2.TYPE: return new TagDefineText2();
 				/* 34 */ case TagDefineButton2.TYPE: return new TagDefineButton2();
 				/* 36 */ case TagDefineBitsLossless2.TYPE: return new TagDefineBitsLossless2();
 				/* 39 */ case TagDefineSprite.TYPE: return new TagDefineSprite();

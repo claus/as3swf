@@ -39,6 +39,7 @@
 				/* 36 */ case TagDefineBitsLossless2.TYPE: return new TagDefineBitsLossless2();
 				/* 37 */ case TagDefineEditText.TYPE: return new TagDefineEditText();
 				/* 39 */ case TagDefineSprite.TYPE: return new TagDefineSprite();
+				/* 43 */ case TagFrameLabel.TYPE: return new TagFrameLabel();
 				/* 48 */ case TagDefineFont2.TYPE: return new TagDefineFont2();
 				/* 59 */ case TagDoInitAction.TYPE: return new TagDoInitAction();
 				/* 69 */ case TagFileAttributes.TYPE: return new TagFileAttributes();

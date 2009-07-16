@@ -14,10 +14,7 @@
 		}
 		
 		public function toString(indent:uint = 0):String {
-			return "[SWFKerningRecord] " +
-				"Code1: " + code1 + ", " +
-				"Code2: " + code2 + ", " +
-				"Adjustment: " + adjustment;
+			return "Code1: " + code1 + ", " + "Code2: " + code2 + ", " + "Adjustment: " + adjustment;
 		}
 	}
 }

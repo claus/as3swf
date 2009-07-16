@@ -103,9 +103,58 @@
 				"Italic: " + italic + ", " +
 				"Bold: " + bold + ", " +
 				"Glyphs: " + _glyphShapeTable.length;
-			for (var i:uint = 0; i < _glyphShapeTable.length; i++) {
-				str += "\n" + StringUtils.repeat(indent + 2) + "[" + i + "] GlyphShapes:";
-				str += _glyphShapeTable[i].toString(indent + 4);
+			return str + toStringCommon(indent);
+		}
+		
+		override protected function toStringCommon(indent:uint):String {
+			var i:uint;
+			var str:String = super.toStringCommon(indent);
+			if (hasLayout) {
+				str += "\n" + StringUtils.repeat(indent + 2) + "Ascent: " + ascent;
+				str += "\n" + StringUtils.repeat(indent + 2) + "Descent: " + descent;
+				str += "\n" + StringUtils.repeat(indent + 2) + "Leading: " + leading;
+			}
+			if (_codeTable.length > 0) {
+				str += "\n" + StringUtils.repeat(indent + 2) + "CodeTable:";
+				for (i = 0; i < _codeTable.length; i++) {
+					if ((i & 0x0f) == 0) {
+						str += "\n" + StringUtils.repeat(indent + 4) + _codeTable[i].toString();
+					} else {
+						str += ", " + _codeTable[i].toString();
+					}
+				}
+			}
+			if (_fontAdvanceTable.length > 0) {
+				str += "\n" + StringUtils.repeat(indent + 2) + "FontAdvanceTable:";
+				for (i = 0; i < _fontAdvanceTable.length; i++) {
+					if ((i & 0x07) == 0) {
+						str += "\n" + StringUtils.repeat(indent + 4) + _fontAdvanceTable[i].toString();
+					} else {
+						str += ", " + _fontAdvanceTable[i].toString();
+					}
+				}
+			}
+			if (_fontBoundsTable.length > 0) {
+				var hasNonNullBounds:Boolean = false;
+				for (i = 0; i < _fontBoundsTable.length; i++) {
+					var rect:SWFRectangle = _fontBoundsTable[i];
+					if (rect.xmin != 0 || rect.xmax != 0 || rect.ymin != 0 || rect.ymax != 0) {
+						hasNonNullBounds = true;
+						break;
+					}
+				}
+				if (hasNonNullBounds) {
+					str += "\n" + StringUtils.repeat(indent + 2) + "FontBoundsTable:";
+					for (i = 0; i < _fontBoundsTable.length; i++) {
+						str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + _fontBoundsTable[i].toString();
+					}
+				}
+			}
+			if (_fontKerningTable.length > 0) {
+				str += "\n" + StringUtils.repeat(indent + 2) + "KerningTable:";
+				for (i = 0; i < _fontKerningTable.length; i++) {
+					str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + _fontKerningTable[i].toString();
+				}
 			}
 			return str;
 		}

@@ -11,7 +11,7 @@
 		}
 		
 		public function toString():String {
-			return "[SWFLineStyle] Width: " + width;
+			return "[SWFLineStyle] Width: " + width + " Color: " + color.toString(16);
 		}
 	}
 }

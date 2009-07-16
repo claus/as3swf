@@ -39,6 +39,11 @@
 			var str:String = StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagDefineFont] " +
 				"ID: " + fontId + ", " +
 				"Glyphs: " + _glyphShapeTable.length;
+			return str + toStringCommon(indent);
+		}
+		
+		protected function toStringCommon(indent:uint):String {
+			var str:String = "";
 			for (var i:uint = 0; i < _glyphShapeTable.length; i++) {
 				str += "\n" + StringUtils.repeat(indent + 2) + "[" + i + "] GlyphShapes:";
 				str += _glyphShapeTable[i].toString(indent + 4);

@@ -27,7 +27,28 @@
 		}
 		
 		override public function toString():String {
-			return "[SWFLineStyle2] Width: " + width;
+			var str:String = "[SWFLineStyle2] Width: " + width + ", StartCap: ";
+			switch(startCapStyle) {
+				case CAPSTYLE_ROUND: str += "round"; break;
+				case CAPSTYLE_NO: str += "no"; break;
+				case CAPSTYLE_SQUARE: str += "square"; break;
+			}
+			str += ", EndCap: ";
+			switch(startCapStyle) {
+				case CAPSTYLE_ROUND: str += "round"; break;
+				case CAPSTYLE_NO: str += "no"; break;
+				case CAPSTYLE_SQUARE: str += "square"; break;
+			}
+			str += ", Join: ";
+			switch(startCapStyle) {
+				case JOINSTYLE_ROUND: str += "round"; break;
+				case JOINSTYLE_BEVEL: str += "bevel"; break;
+				case JOINSTYLE_MITER: str += "miter"; break;
+			}
+			if (hasFillFlag) {
+				str += ", Fill: " + fillType.toString();
+			}
+			return str;
 		}
 	}
 }

@@ -16,11 +16,7 @@
 				"Italic: " + italic + ", " +
 				"Bold: " + bold + ", " +
 				"Glyphs: " + _glyphShapeTable.length;
-			for (var i:uint = 0; i < _glyphShapeTable.length; i++) {
-				str += "\n" + StringUtils.repeat(indent + 2) + "[" + i + "] GlyphShapes:";
-				str += _glyphShapeTable[i].toString(indent + 4);
-			}
-			return str;
+			return str + toStringCommon(indent);
 		}
 	}
 }

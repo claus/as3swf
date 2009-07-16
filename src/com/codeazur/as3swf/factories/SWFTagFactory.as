@@ -28,6 +28,7 @@
 				/* 20 */ case TagDefineBitsLossless.TYPE: return new TagDefineBitsLossless();
 				/* 21 */ case TagDefineBitsJPEG2.TYPE: return new TagDefineBitsJPEG2();
 				/* 22 */ case TagDefineShape2.TYPE: return new TagDefineShape2();
+				/* 23 */ case TagDefineButtonCxform.TYPE: return new TagDefineButtonCxform();
 				/* 24 */ case TagProtect.TYPE: return new TagProtect();
 				/* 26 */ case TagPlaceObject2.TYPE: return new TagPlaceObject2();
 				/* 28 */ case TagRemoveObject2.TYPE: return new TagRemoveObject2();

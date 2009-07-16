@@ -35,6 +35,7 @@
 				/* 32 */ case TagDefineShape3.TYPE: return new TagDefineShape3();
 				/* 33 */ case TagDefineText2.TYPE: return new TagDefineText2();
 				/* 34 */ case TagDefineButton2.TYPE: return new TagDefineButton2();
+				/* 35 */ case TagDefineBitsJPEG3.TYPE: return new TagDefineBitsJPEG3();
 				/* 36 */ case TagDefineBitsLossless2.TYPE: return new TagDefineBitsLossless2();
 				/* 39 */ case TagDefineSprite.TYPE: return new TagDefineSprite();
 				/* 48 */ case TagDefineFont2.TYPE: return new TagDefineFont2();

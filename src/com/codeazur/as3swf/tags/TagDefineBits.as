@@ -21,7 +21,7 @@
 		
 		public function parse(data:ISWFDataInput, length:uint):void {
 			characterId = data.readUI16();
-			data.readBytes(_bitmapData, 0, length - 2)
+			data.readBytes(_bitmapData, 0, length - 2);
 		}
 		
 		public function toString(indent:uint = 0):String {

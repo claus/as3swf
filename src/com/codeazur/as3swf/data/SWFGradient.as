@@ -26,7 +26,7 @@
 		public function get records():Vector.<SWFGradientRecord> { return _records; }
 		
 		public function toString():String {
-			return "[SWFGradient]";
+			return "(" + _records.join(",") + ")";
 		}
 	}
 }

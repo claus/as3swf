@@ -12,7 +12,7 @@
 		
 		public function get type():uint { return TYPE_UNKNOWN; }
 		
-		public function toString():String {
+		public function toString(indent:uint = 0):String {
 			return "[SWFShapeRecord]";
 		}
 	}

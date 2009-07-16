@@ -17,7 +17,7 @@
 		
 		override public function get type():uint { return SWFShapeRecord.TYPE_STRAIGHTEDGE; }
 		
-		override public function toString():String {
+		override public function toString(indent:uint = 0):String {
 			var str:String = "[SWFShapeRecordStraightEdge] ";
 			if (generalLineFlag) {
 				str += "General: " + deltaX + "," + deltaY;

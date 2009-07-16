@@ -31,8 +31,7 @@
 				"ID: " + shapeId + ", " +
 				"ShapeBounds: " + shapeBounds + ", " +
 				"EdgeBounds: " + edgeBounds;
-			str += "\n" + StringUtils.repeat(indent + 2) + "Shapes:";
-			str += shapes.toString(indent + 4);
+			str += shapes.toString(indent + 2);
 			return str;
 		}
 	}

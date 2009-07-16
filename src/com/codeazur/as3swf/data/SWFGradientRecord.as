@@ -12,7 +12,7 @@
 		}
 		
 		public function toString():String {
-			return "[SWFGradientRecord] Ratio: " + ratio + ", Color: " + color;
+			return "[" + ratio + "," + color.toString(16) + "]";
 		}
 	}
 }

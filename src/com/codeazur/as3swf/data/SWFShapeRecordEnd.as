@@ -6,7 +6,7 @@
 		
 		override public function get type():uint { return SWFShapeRecord.TYPE_END; }
 		
-		override public function toString():String {
+		override public function toString(indent:uint = 0):String {
 			return "[SWFShapeRecordEnd]";
 		}
 	}

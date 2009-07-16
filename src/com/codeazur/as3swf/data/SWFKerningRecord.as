@@ -1,6 +1,6 @@
 ﻿package com.codeazur.as3swf.data
 {
-	public class SWFKerningRecord extends SWFShapeRecord
+	public class SWFKerningRecord
 	{
 		public var code1:uint;
 		public var code2:uint;
@@ -13,7 +13,7 @@
 			this.adjustment = adjustment;
 		}
 		
-		override public function toString():String {
+		public function toString(indent:uint = 0):String {
 			return "[SWFKerningRecord] " +
 				"Code1: " + code1 + ", " +
 				"Code2: " + code2 + ", " +

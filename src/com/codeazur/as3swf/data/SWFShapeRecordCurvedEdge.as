@@ -17,7 +17,7 @@
 		
 		override public function get type():uint { return SWFShapeRecord.TYPE_CURVEDEDGE; }
 		
-		override public function toString():String {
+		override public function toString(indent:uint = 0):String {
 			return "[SWFShapeRecordCurvedEdge] " +
 				"ControlDelta: " + controlDeltaX + "," + controlDeltaY + ", " +
 				"AnchorDelta: " + anchorDeltaX + "," + anchorDeltaY;

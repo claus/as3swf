@@ -1,5 +1,7 @@
 ﻿package com.codeazur.as3swf.data
 {
+	import com.codeazur.utils.StringUtils;
+	
 	public class SWFShapeRecordStyleChange extends SWFShapeRecord
 	{
 		public var stateNewStyles:Boolean;
@@ -36,13 +38,27 @@
 		
 		override public function get type():uint { return SWFShapeRecord.TYPE_STYLECHANGE; }
 		
-		override public function toString():String {
+		override public function toString(indent:uint = 0):String {
 			var str:String = "[SWFShapeRecordStyleChange] ";
 			if (stateMoveTo) { str += "MoveTo (dx:" + moveDeltaX + ",dy:" + moveDeltaY + ") "; }
 			if (stateFillStyle0) { str += "FillStyle0 (0x" + fillStyle0.toString(16) + ") "; }
 			if (stateFillStyle1) { str += "FillStyle1 (0x" + fillStyle1.toString(16) + ") "; }
 			if (stateLineStyle) { str += "LineStyle (0x" + lineStyle.toString(16) + ") "; }
-			if (stateNewStyles) { str += "NewStyles (fill:" + fillStyles.length + ",line:" + lineStyles.length + ") "; }
+			if (stateNewStyles) {
+				var i:uint;
+				if (_fillStyles.length > 0) {
+					str += "\n" + StringUtils.repeat(indent + 2) + "New FillStyles:";
+					for (i = 0; i < _fillStyles.length; i++) {
+						str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + _fillStyles[i].toString();
+					}
+				}
+				if (_lineStyles.length > 0) {
+					str += "\n" + StringUtils.repeat(indent + 2) + "New LineStyles:";
+					for (i = 0; i < _lineStyles.length; i++) {
+						str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + _lineStyles[i].toString();
+					}
+				}
+			}
 			return str;
 		}
 	}

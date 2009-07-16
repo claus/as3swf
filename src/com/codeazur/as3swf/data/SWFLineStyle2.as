@@ -34,13 +34,13 @@
 				case CAPSTYLE_SQUARE: str += "square"; break;
 			}
 			str += ", EndCap: ";
-			switch(startCapStyle) {
+			switch(endCapStyle) {
 				case CAPSTYLE_ROUND: str += "round"; break;
 				case CAPSTYLE_NO: str += "no"; break;
 				case CAPSTYLE_SQUARE: str += "square"; break;
 			}
 			str += ", Join: ";
-			switch(startCapStyle) {
+			switch(joinStyle) {
 				case JOINSTYLE_ROUND: str += "round"; break;
 				case JOINSTYLE_BEVEL: str += "bevel"; break;
 				case JOINSTYLE_MITER: str += "miter"; break;

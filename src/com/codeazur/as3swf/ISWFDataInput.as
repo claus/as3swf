@@ -47,6 +47,8 @@
 		function readACTIONVALUE():SWFActionValue;
 		function readREGISTERPARAM():SWFRegisterParam;
 		function readSYMBOL():SWFSymbol;
+		function readSOUNDINFO():SWFSoundInfo;
+		function readSOUNDENVELOPE():SWFSoundEnvelope;
 		
 		function get position():uint;
 		function uncompress():void;

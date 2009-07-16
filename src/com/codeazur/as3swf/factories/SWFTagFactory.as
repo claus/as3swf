@@ -21,6 +21,7 @@
 				/* 12 */ case TagDoAction.TYPE: return new TagDoAction();
 				/* 13 */ case TagDefineFontInfo.TYPE: return new TagDefineFontInfo();
 				/* 14 */ case TagDefineSound.TYPE: return new TagDefineSound();
+				/* 15 */ case TagStartSound.TYPE: return new TagStartSound();
 				/* 18 */ case TagSoundStreamHead.TYPE: return new TagSoundStreamHead();
 				/* 19 */ case TagSoundStreamBlock.TYPE: return new TagSoundStreamBlock();
 				/* 20 */ case TagDefineBitsLossless.TYPE: return new TagDefineBitsLossless();

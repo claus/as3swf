@@ -676,7 +676,43 @@
 			return new SWFSymbol(tagId, name);
 		}
 		
+		/////////////////////////////////////////////////////////
+		// Sound records
+		/////////////////////////////////////////////////////////
 		
+		public function readSOUNDINFO():SWFSoundInfo {
+			var flags:uint = readUI8();
+			var soundInfo:SWFSoundInfo = new SWFSoundInfo(flags);
+			if (soundInfo.hasInPoint) {
+				soundInfo.inPoint = readUI32();
+			}
+			if (soundInfo.hasOutPoint) {
+				soundInfo.outPoint = readUI32();
+			}
+			if (soundInfo.hasLoops) {
+				soundInfo.loopCount = readUI16();
+			}
+			if (soundInfo.hasEnvelope) {
+				var envPoints:uint = readUI8();
+				for (var i:uint = 0; i < envPoints; i++) {
+					soundInfo.envelopeRecords.push(readSOUNDENVELOPE());
+				}
+			}
+			return soundInfo;
+		}
+		
+		public function readSOUNDENVELOPE():SWFSoundEnvelope {
+			var pos44:uint = readUI32();
+			var leftLevel:uint = readUI16();
+			var rightLevel:uint = readUI16();
+			return new SWFSoundEnvelope(pos44, leftLevel, rightLevel);
+		}
+		
+		
+		
+		/////////////////////////////////////////////////////////
+		// etc
+		/////////////////////////////////////////////////////////
 		
 		public function uncompress():void {
 			var position:uint = data.position;

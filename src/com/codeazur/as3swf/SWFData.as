@@ -180,14 +180,14 @@
 			bitsPending = 0;
 			var rgb:uint = readRGB();
 			var a:uint = data.readUnsignedByte();
-			return (a << 24) | rgb;
+			return a << 24 | (rgb & 0x00ffffff);
 		}
 		
 		public function readARGB():uint {
 			bitsPending = 0;
 			var a:uint = data.readUnsignedByte();
 			var rgb:uint = readRGB();
-			return (a << 24) | rgb;
+			return (a << 24) | (rgb & 0x00ffffff);
 		}
 		
 		/////////////////////////////////////////////////////////

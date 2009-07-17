@@ -40,10 +40,12 @@
 		
 		override public function toString(indent:uint = 0):String {
 			var str:String = "[SWFShapeRecordStyleChange] ";
-			if (stateMoveTo) { str += "MoveTo (dx:" + moveDeltaX + ",dy:" + moveDeltaY + ") "; }
-			if (stateFillStyle0) { str += "FillStyle0 (0x" + fillStyle0.toString(16) + ") "; }
-			if (stateFillStyle1) { str += "FillStyle1 (0x" + fillStyle1.toString(16) + ") "; }
-			if (stateLineStyle) { str += "LineStyle (0x" + lineStyle.toString(16) + ") "; }
+			var cmds:Array = [];
+			if (stateMoveTo) { cmds.push("MoveTo: " + moveDeltaX + "," + moveDeltaY); }
+			if (stateFillStyle0) { cmds.push("FillStyle0: " + fillStyle0); }
+			if (stateFillStyle1) { cmds.push("FillStyle1: " + fillStyle1); }
+			if (stateLineStyle) { cmds.push("LineStyle: " + lineStyle); }
+			if (cmds.length > 0) { str += cmds.join(", "); }
 			if (stateNewStyles) {
 				var i:uint;
 				if (_fillStyles.length > 0) {

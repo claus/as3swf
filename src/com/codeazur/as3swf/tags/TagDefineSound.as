@@ -1,23 +1,15 @@
 ﻿package com.codeazur.as3swf.tags
 {
 	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.data.consts.SoundRate;
+	import com.codeazur.as3swf.data.consts.SoundSize;
+	import com.codeazur.as3swf.data.consts.SoundType;
 	import com.codeazur.utils.StringUtils;
 	
 	import flash.utils.ByteArray;
 	
 	public class TagDefineSound extends Tag implements ITag
 	{
-		public static const SOUNDRATE_5_5:uint = 0;
-		public static const SOUNDRATE_11:uint = 1;
-		public static const SOUNDRATE_22:uint = 2;
-		public static const SOUNDRATE_44:uint = 3;
-		public static const SOUNDSIZE_8:uint = 0;
-		public static const SOUNDSIZE_16:uint = 1;
-		public static const SOUNDTYPE_MONO:uint = 0;
-		public static const SOUNDTYPE_STEREO:uint = 1;
-		public static const SOUNDCOMPRESSION_ADPCM:uint = 1;
-		public static const SOUNDCOMPRESSION_MP3:uint = 2;
-
 		public static const TYPE:uint = 14;
 		
 		public var soundId:uint;
@@ -49,16 +41,10 @@
 			var str:String = StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagDefineSound] " +
 				"SoundID: " + soundId + ", " +
 				"Format: " + soundFormat + ", " +
-				"Rate: ";
-			switch(soundRate) {
-				case SOUNDRATE_5_5: str += "5.5kHz, "; break;
-				case SOUNDRATE_11: str += "11kHz, "; break;
-				case SOUNDRATE_22: str += "22kHz, "; break;
-				case SOUNDRATE_44: str += "44kHz, "; break;
-			}
-			str += "Size: " + ((soundSize == SOUNDSIZE_8) ? "8" : "16") + "bit, ";
-			str += "Type: " + ((soundType == SOUNDTYPE_MONO) ? "mono" : "stereo") + ", ";
-			str += "Samples: " + soundSampleCount;
+				"Rate: " + SoundRate.toString(soundRate) + ", " +
+				"Size: " + SoundSize.toString(soundSize) + ", ";
+				"Type: " + SoundType.toString(soundType) + ", ";
+				"Samples: " + soundSampleCount;
 			return str;
 		}
 	}

@@ -2,15 +2,12 @@
 {
 	import com.codeazur.as3swf.ISWFDataInput;
 	import com.codeazur.as3swf.data.SWFZoneRecord;
+	import com.codeazur.as3swf.data.consts.CSMTableHint;
 	import com.codeazur.utils.StringUtils;
 	
 	public class TagDefineFontAlignZones extends Tag implements ITag
 	{
 		public static const TYPE:uint = 73;
-		
-		public static const CSMTABLEHINT_THIN:uint = 0;
-		public static const CSMTABLEHINT_MEDIUM:uint = 1;
-		public static const CSMTABLEHINT_THICK:uint = 2;
 		
 		public var fontId:uint;
 		public var csmTableHint:uint;
@@ -35,7 +32,7 @@
 		public function toString(indent:uint = 0):String {
 			return StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagDefineFontAlignZones] " +
 				"FontID: " + fontId + ", " +
-				"CSMTableHint: " + csmTableHint + ", " +
+				"CSMTableHint: " + CSMTableHint.toString(csmTableHint) + ", " +
 				"Records: " + _zoneTable.length;
 		}
 	}

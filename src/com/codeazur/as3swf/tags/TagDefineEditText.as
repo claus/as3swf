@@ -97,7 +97,7 @@
 		public function toString(indent:uint = 0):String {
 			var str:String = StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagDefineEditText] " +
 				"ID: " + characterId + ", " +
-				"VariableName: " + variableName + ", ";
+				((variableName.length > 0) ? "VariableName: " + variableName + ", " : "") +
 				"Bounds: " + bounds;
 			return str;
 		}

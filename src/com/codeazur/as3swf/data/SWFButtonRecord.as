@@ -1,25 +1,10 @@
 ﻿package com.codeazur.as3swf.data
 {
 	import com.codeazur.as3swf.data.filters.IFilter;
+	import com.codeazur.as3swf.data.consts.BlendMode;
 	
 	public class SWFButtonRecord
 	{
-		public static const BLENDMODE_NORMAL_0:uint = 0;
-		public static const BLENDMODE_NORMAL_1:uint = 1;
-		public static const BLENDMODE_LAYER:uint = 2;
-		public static const BLENDMODE_MULTIPLY:uint = 3;
-		public static const BLENDMODE_SCREEN:uint = 4;
-		public static const BLENDMODE_LIGHTEN:uint = 5;
-		public static const BLENDMODE_DARKEN:uint = 6;
-		public static const BLENDMODE_DIFFERENCE:uint = 7;
-		public static const BLENDMODE_ADD:uint = 8;
-		public static const BLENDMODE_SUBTRACT:uint = 9;
-		public static const BLENDMODE_INVERT:uint = 10;
-		public static const BLENDMODE_ALPHA:uint = 11;
-		public static const BLENDMODE_ERASE:uint = 12;
-		public static const BLENDMODE_OVERLAY:uint = 13;
-		public static const BLENDMODE_HARDLIGHT:uint = 14;
-		
 		public var hasBlendMode:Boolean;
 		public var hasFilterList:Boolean;
 		public var stateHitTest:Boolean;

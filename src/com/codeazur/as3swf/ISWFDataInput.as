@@ -51,7 +51,7 @@
 		function readKERNINGRECORD(wideCodes:Boolean):SWFKerningRecord;
 		function readGRADIENT(level:uint = 1):SWFGradient;
 		function readGRADIENTRECORD(level:uint = 1):SWFGradientRecord;
-		function readFOCALGRADIENT(level:uint = 1):SWFGradient;
+		function readFOCALGRADIENT(level:uint = 1):SWFFocalGradient;
 		function readACTIONRECORD():IAction;
 		function readACTIONVALUE():SWFActionValue;
 		function readREGISTERPARAM():SWFRegisterParam;

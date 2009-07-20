@@ -6,7 +6,6 @@
 	{
 		public var spreadMode:uint;
 		public var interpolationMode:uint;
-		public var focalPoint:Number = 0.0;
 		
 		protected var _records:Vector.<SWFGradientRecord>;
 		

@@ -25,39 +25,39 @@
 		/////////////////////////////////////////////////////////
 		
 		public function readSI8():int {
-			bitsPending = 0;
+			resetBitsPending();
 			return data.readByte();
 		}
 		
 		public function readSI16():int {
-			bitsPending = 0;
+			resetBitsPending();
 			return data.readShort();
 		}
 		
 		public function readSI32():int {
-			bitsPending = 0;
+			resetBitsPending();
 			return data.readInt();
 		}
 		
 		public function readUI8():uint {
-			bitsPending = 0;
+			resetBitsPending();
 			return data.readUnsignedByte();
 		}
 		
 		public function readUI16():uint {
-			bitsPending = 0;
+			resetBitsPending();
 			return data.readUnsignedShort();
 		}
 		
 		public function readUI24():uint {
-			bitsPending = 0;
+			resetBitsPending();
 			var loWord:uint = data.readUnsignedShort();
 			var hiByte:uint = data.readUnsignedByte();
 			return loWord | (hiByte << 16);
 		}
 		
 		public function readUI32():uint {
-			bitsPending = 0;
+			resetBitsPending();
 			return data.readUnsignedInt();
 		}
 		
@@ -66,14 +66,14 @@
 		/////////////////////////////////////////////////////////
 		
 		public function readFIXED():Number {
-			bitsPending = 0;
+			resetBitsPending();
 			var fractional:Number = data.readUnsignedShort();
 			var integral:Number = data.readUnsignedShort();
 			return integral + fractional / 65536;
 		}
 		
 		public function readFIXED8():Number {
-			bitsPending = 0;
+			resetBitsPending();
 			var fractional:Number = data.readUnsignedByte();
 			var integral:Number = data.readUnsignedByte();
 			return integral + fractional / 256;
@@ -84,12 +84,12 @@
 		/////////////////////////////////////////////////////////
 		
 		public function readFLOAT():Number {
-			bitsPending = 0;
+			resetBitsPending();
 			return data.readFloat();
 		}
 		
 		public function readFLOAT16():Number {
-			bitsPending = 0;
+			resetBitsPending();
 			var word:uint = data.readUnsignedShort();
 			var exp:uint = (word >> 10) & 0x1f;
 			var man:uint = (word & 0x3FF);
@@ -97,7 +97,7 @@
 		}
 		
 		public function readDOUBLE():Number {
-			bitsPending = 0;
+			resetBitsPending();
 			return data.readDouble();
 		}
 		
@@ -106,7 +106,7 @@
 		/////////////////////////////////////////////////////////
 		
 		public function readEncodedU32():uint {
-			bitsPending = 0;
+			resetBitsPending();
 			var result:uint = data.readUnsignedByte();
 			if (result & 0x80) {
 				result = (result & 0x7f) | (data.readUnsignedByte() << 7);
@@ -151,7 +151,7 @@
 				ba.writeByte(c);
 			}
 			ba.position = 0;
-			bitsPending = 0;
+			resetBitsPending();
 			return ba.readUTFBytes(ba.length);
 		}
 		
@@ -160,7 +160,7 @@
 		/////////////////////////////////////////////////////////
 		
 		public function readLANGCODE():uint {
-			bitsPending = 0;
+			resetBitsPending();
 			return data.readUnsignedByte();
 		}
 		
@@ -169,7 +169,7 @@
 		/////////////////////////////////////////////////////////
 		
 		public function readRGB():uint {
-			bitsPending = 0;
+			resetBitsPending();
 			var r:uint = data.readUnsignedByte();
 			var g:uint = data.readUnsignedByte();
 			var b:uint = data.readUnsignedByte();
@@ -177,17 +177,17 @@
 		}
 		
 		public function readRGBA():uint {
-			bitsPending = 0;
-			var rgb:uint = readRGB();
+			resetBitsPending();
+			var rgb:uint = readRGB() & 0x00ffffff;
 			var a:uint = data.readUnsignedByte();
-			return a << 24 | (rgb & 0x00ffffff);
+			return a << 24 | rgb;
 		}
 		
 		public function readARGB():uint {
-			bitsPending = 0;
+			resetBitsPending();
 			var a:uint = data.readUnsignedByte();
-			var rgb:uint = readRGB();
-			return (a << 24) | (rgb & 0x00ffffff);
+			var rgb:uint = readRGB() & 0x00ffffff;
+			return (a << 24) | rgb;
 		}
 		
 		/////////////////////////////////////////////////////////
@@ -333,10 +333,8 @@
 			return new SWFGradient(this, level);
 		}
 		
-		public function readFOCALGRADIENT(level:uint = 1):SWFGradient {
-			var gradient:SWFGradient = readGRADIENT(level);
-			gradient.focalPoint = readFIXED8();
-			return gradient;
+		public function readFOCALGRADIENT(level:uint = 1):SWFFocalGradient {
+			return new SWFFocalGradient(this, level);
 		}
 		
 		public function readGRADIENTRECORD(level:uint = 1):SWFGradientRecord {

@@ -1,28 +1,46 @@
 ﻿package com.codeazur.as3swf.data
 {
+	import com.codeazur.as3swf.ISWFDataInput;
+	
 	public class SWFColorTransform
 	{
-		public var rMult:int;
-		public var gMult:int;
-		public var bMult:int;
-		public var rAdd:int;
-		public var gAdd:int;
-		public var bAdd:int;
+		public var rMult:int = 1;
+		public var gMult:int = 1;
+		public var bMult:int = 1;
+		public var rAdd:int = 0;
+		public var gAdd:int = 0;
+		public var bAdd:int = 0;
 
-		public var aMult:int;
-		public var aAdd:int;
+		public var aMult:int = 1;
+		public var aAdd:int = 0;
 		
-		public function SWFColorTransform(rMult:int, gMult:int, bMult:int, rAdd:int, gAdd:int, bAdd:int)
-		{
-			this.rMult = rMult;
-			this.gMult = gMult;
-			this.bMult = bMult;
-			this.rAdd = rAdd;
-			this.gAdd = gAdd;
-			this.bAdd = bAdd;
-			
-			this.aMult = 1;
-			this.aAdd = 0;
+		public function SWFColorTransform(data:ISWFDataInput) {
+			if (data != null) {
+				parse(data);
+			}
+		}
+		
+		public function parse(data:ISWFDataInput):void {
+			data.resetBitsPending();
+			var hasAddTerms:uint = data.readUB(1);
+			var hasMultTerms:uint = data.readUB(1);
+			var bits:uint = data.readUB(4);
+			rMult = 1;
+			gMult = 1;
+			bMult = 1;
+			if (hasMultTerms == 1) {
+				rMult = data.readSB(bits);
+				gMult = data.readSB(bits);
+				bMult = data.readSB(bits);
+			}
+			rAdd = 0;
+			gAdd = 0;
+			bAdd = 0;
+			if (hasAddTerms == 1) {
+				rAdd = data.readSB(bits);
+				gAdd = data.readSB(bits);
+				bAdd = data.readSB(bits);
+			}
 		}
 		
 		public function toString():String {

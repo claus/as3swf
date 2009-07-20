@@ -1,5 +1,6 @@
 ﻿package com.codeazur.as3swf.data
 {
+	import com.codeazur.as3swf.ISWFDataInput;
 	import com.codeazur.as3swf.actions.IAction;
 	
 	public class SWFButtonCondAction
@@ -18,9 +19,18 @@
 
 		protected var _actions:Vector.<IAction>;
 		
-		public function SWFButtonCondAction(size:uint = 0, flags:uint = 0)
-		{
-			condActionSize = size;
+		public function SWFButtonCondAction(data:ISWFDataInput = null) {
+			_actions = new Vector.<IAction>();
+			if (data != null) {
+				parse(data);
+			}
+		}
+		
+		public function get actions():Vector.<IAction> { return _actions; }
+		
+		public function parse(data:ISWFDataInput):void {
+			condActionSize = data.readUI16();
+			var flags:uint = (data.readUI8() << 8) | data.readUI8();
 			condIdleToOverDown = ((flags & 0x8000) != 0);
 			condOutDownToIdle = ((flags & 0x4000) != 0);
 			condOutDownToOverDown = ((flags & 0x2000) != 0);
@@ -31,11 +41,11 @@
 			condIdleToOverUp = ((flags & 0x0100) != 0);
 			condOverDownToIdle = ((flags & 0x0001) != 0);
 			condKeyPress = (flags & 0xff) >> 1;
-			
-			_actions = new Vector.<IAction>();
+			var action:IAction;
+			while ((action = data.readACTIONRECORD()) != null) {
+				_actions.push(action);
+			}
 		}
-		
-		public function get actions():Vector.<IAction> { return _actions; }
 		
 		public function toString():String {
 			return "[BUTTONCONDACTION]";

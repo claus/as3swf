@@ -1,18 +1,14 @@
 ﻿package com.codeazur.as3swf.data
 {
+	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.data.consts.LineCapStyle;
+	import com.codeazur.as3swf.data.consts.LineJoinStyle;
+	
 	public class SWFLineStyle2 extends SWFLineStyle
 	{
-		public static const CAPSTYLE_ROUND:uint = 0;
-		public static const CAPSTYLE_NO:uint = 1;
-		public static const CAPSTYLE_SQUARE:uint = 2;
-
-		public static const JOINSTYLE_ROUND:uint = 0;
-		public static const JOINSTYLE_BEVEL:uint = 1;
-		public static const JOINSTYLE_MITER:uint = 2;
-		
-		public var startCapStyle:uint = CAPSTYLE_ROUND;
-		public var endCapStyle:uint = CAPSTYLE_ROUND;
-		public var joinStyle:uint = JOINSTYLE_ROUND;
+		public var startCapStyle:uint = LineCapStyle.ROUND;
+		public var endCapStyle:uint = LineCapStyle.ROUND;
+		public var joinStyle:uint = LineJoinStyle.ROUND;
 		public var hasFillFlag:Boolean;
 		public var noHScaleFlag:Boolean;
 		public var noVScaleFlag:Boolean;
@@ -21,32 +17,40 @@
 		public var miterLimitFactor:Number;
 		public var fillType:SWFFillStyle;
 		
-		public function SWFLineStyle2(width:uint)
-		{
-			super(width);
+		public function SWFLineStyle2(data:ISWFDataInput = null, level:uint = 1) {
+			super(data, level);
+		}
+		
+		override public function parse(data:ISWFDataInput, level:uint = 1):void {
+			width = data.readUI16();
+			startCapStyle = data.readUB(2);
+			joinStyle = data.readUB(2);
+			hasFillFlag = (data.readUB(1) == 1);
+			noHScaleFlag = (data.readUB(1) == 1);
+			noVScaleFlag = (data.readUB(1) == 1);
+			pixelHintingFlag = (data.readUB(1) == 1);
+			var reserved:uint = data.readUB(5);
+			noClose = (data.readUB(1) == 1);
+			endCapStyle = data.readUB(2);
+			if (joinStyle) {
+				miterLimitFactor = data.readFIXED8();
+			}
+			if (hasFillFlag) {
+				fillType = data.readFILLSTYLE(level);
+			} else {
+				color = data.readRGBA();
+			}
 		}
 		
 		override public function toString():String {
-			var str:String = "[SWFLineStyle2] Width: " + width + ", StartCap: ";
-			switch(startCapStyle) {
-				case CAPSTYLE_ROUND: str += "round"; break;
-				case CAPSTYLE_NO: str += "no"; break;
-				case CAPSTYLE_SQUARE: str += "square"; break;
-			}
-			str += ", EndCap: ";
-			switch(endCapStyle) {
-				case CAPSTYLE_ROUND: str += "round"; break;
-				case CAPSTYLE_NO: str += "no"; break;
-				case CAPSTYLE_SQUARE: str += "square"; break;
-			}
-			str += ", Join: ";
-			switch(joinStyle) {
-				case JOINSTYLE_ROUND: str += "round"; break;
-				case JOINSTYLE_BEVEL: str += "bevel"; break;
-				case JOINSTYLE_MITER: str += "miter"; break;
-			}
+			var str:String = "[SWFLineStyle2] Width: " + width + ", " +
+				"StartCap: " + LineCapStyle.toString(startCapStyle) + ", " +
+				"EndCap: " + LineCapStyle.toString(endCapStyle) + ", " +
+				"Join: " + LineJoinStyle.toString(joinStyle);
 			if (hasFillFlag) {
 				str += ", Fill: " + fillType.toString();
+			} else {
+				str += ", Color: " + color.toString(16);
 			}
 			return str;
 		}

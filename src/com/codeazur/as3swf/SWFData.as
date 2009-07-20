@@ -195,13 +195,7 @@
 		/////////////////////////////////////////////////////////
 		
 		public function readRECT():SWFRectangle {
-			bitsPending = 0;
-			var bits:uint = readUB(5);
-			var xmin:int = readSB(bits);
-			var xmax:int = readSB(bits);
-			var ymin:int = readSB(bits);
-			var ymax:int = readSB(bits);
-			return new SWFRectangle(xmin, xmax, ymin, ymax);
+			return new SWFRectangle(this);
 		}
 		
 		/////////////////////////////////////////////////////////
@@ -209,25 +203,7 @@
 		/////////////////////////////////////////////////////////
 		
 		public function readMATRIX():SWFMatrix {
-			bitsPending = 0;
-			var scaleX:Number = 1.0;
-			var scaleY:Number = 1.0;
-			if (readUB(1) == 1) {
-				var scaleBits:uint = readUB(5);
-				scaleX = readFB(scaleBits);
-				scaleY = readFB(scaleBits);
-			}
-			var rotateSkew0:Number = 0.0;
-			var rotateSkew1:Number = 0.0;
-			if (readUB(1) == 1) {
-				var rotateBits:uint = readUB(5);
-				rotateSkew0 = readFB(rotateBits);
-				rotateSkew1 = readFB(rotateBits);
-			}
-			var translateBits:uint = readUB(5);
-			var translateX:int = readSB(translateBits);
-			var translateY:int = readSB(translateBits);
-			return new SWFMatrix(scaleX, scaleY, rotateSkew0, rotateSkew1, translateX, translateY);
+			return new SWFMatrix(this);
 		}
 		
 		/////////////////////////////////////////////////////////
@@ -235,55 +211,11 @@
 		/////////////////////////////////////////////////////////
 		
 		public function readCXFORM():SWFColorTransform {
-			bitsPending = 0;
-			var hasAddTerms:uint = readUB(1);
-			var hasMultTerms:uint = readUB(1);
-			var bits:uint = readUB(4);
-			var rMult:int = 1;
-			var gMult:int = 1;
-			var bMult:int = 1;
-			if (hasMultTerms == 1) {
-				rMult = readSB(bits);
-				gMult = readSB(bits);
-				bMult = readSB(bits);
-			}
-			var rAdd:int = 0;
-			var gAdd:int = 0;
-			var bAdd:int = 0;
-			if (hasAddTerms == 1) {
-				rAdd = readSB(bits);
-				gAdd = readSB(bits);
-				bAdd = readSB(bits);
-			}
-			return new SWFColorTransform(rMult, gMult, bMult, rAdd, gAdd, bAdd);
+			return new SWFColorTransform(this);
 		}
 		
 		public function readCXFORMWITHALPHA():SWFColorTransformWithAlpha {
-			bitsPending = 0;
-			var hasAddTerms:uint = readUB(1);
-			var hasMultTerms:uint = readUB(1);
-			var bits:uint = readUB(4);
-			var rMult:int = 1;
-			var gMult:int = 1;
-			var bMult:int = 1;
-			var aMult:int = 1;
-			if (hasMultTerms == 1) {
-				rMult = readSB(bits);
-				gMult = readSB(bits);
-				bMult = readSB(bits);
-				aMult = readSB(bits);
-			}
-			var rAdd:int = 0;
-			var gAdd:int = 0;
-			var bAdd:int = 0;
-			var aAdd:int = 0;
-			if (hasAddTerms == 1) {
-				rAdd = readSB(bits);
-				gAdd = readSB(bits);
-				bAdd = readSB(bits);
-				aAdd = readSB(bits);
-			}
-			return new SWFColorTransformWithAlpha(rMult, gMult, bMult, rAdd, gAdd, bAdd, aMult, aAdd);
+			return new SWFColorTransformWithAlpha(this);
 		}
 		
 		
@@ -292,177 +224,40 @@
 		/////////////////////////////////////////////////////////
 		
 		public function readSHAPE():SWFShape {
-			bitsPending = 0;
-			var numFillBits:uint = readUB(4);
-			var numLineBits:uint = readUB(4);
-			var shape:SWFShape = new SWFShape();
-			readShapeRecords(shape, numFillBits, numLineBits);
-			return shape;
+			return new SWFShape(this);
 		}
 		
 		public function readSHAPEWITHSTYLE(level:uint = 1):SWFShapeWithStyle {
-			bitsPending = 0;
-			var i:uint;
-			var shape:SWFShapeWithStyle = new SWFShapeWithStyle();
-			var fillStylesLen:uint = readStyleArrayLength(level);
-			for (i = 0; i < fillStylesLen; i++) {
-				shape.fillStyles.push(readFILLSTYLE(level));
-			}
-			var lineStylesLen:uint = readStyleArrayLength(level);
-			for (i = 0; i < lineStylesLen; i++) {
-				shape.lineStyles.push(level <= 3 ? readLINESTYLE(level) : readLINESTYLE2(level));
-			}
-			var numFillBits:uint = readUB(4);
-			var numLineBits:uint = readUB(4);
-			bitsPending = 0;
-			readShapeRecords(shape, numFillBits, numLineBits, level);
-			return shape;
+			return new SWFShapeWithStyle(this, level);
 		}
 
-		protected function readShapeRecords(shape:SWFShape, fillBits:uint, lineBits:uint, level:uint = 1):void {
-			var shapeRecord:SWFShapeRecord;
-			while (!(shapeRecord is SWFShapeRecordEnd)) {
-				// The SWF10 spec says that shape records are byte aligned.
-				// In reality they seem not to be?
-				// bitsPending = 0;
-				var edgeRecord:Boolean = (readUB(1) == 1);
-				if (edgeRecord) {
-					var straightFlag:Boolean = (readUB(1) == 1);
-					var numBits:uint = readUB(4) + 2;
-					if (straightFlag) {
-						shapeRecord = readSTRAIGHTEDGERECORD(numBits);
-					} else {
-						shapeRecord = readCURVEDEDGERECORD(numBits);
-					}
-				} else {
-					var states:uint = readUB(5);
-					if (states == 0) {
-						shapeRecord = new SWFShapeRecordEnd();
-					} else {
-						var styleChangeRecord:SWFShapeRecordStyleChange = readSTYLECHANGERECORD(states, fillBits, lineBits, level);
-						if (styleChangeRecord.stateNewStyles) {
-							// TODO: We might have to update fillStyles and lineStyles too
-							fillBits = styleChangeRecord.numFillBits;
-							lineBits = styleChangeRecord.numLineBits;
-						}
-						shapeRecord = styleChangeRecord;
-					}
-				}
-				shape.records.push(shapeRecord);
-				//trace(shapeRecord);
-			}
+		public function readSTRAIGHTEDGERECORD(numBits:uint):SWFShapeRecordStraightEdge {
+			return new SWFShapeRecordStraightEdge(this, numBits);
 		}
 		
-		protected function readSTRAIGHTEDGERECORD(numBits:uint):SWFShapeRecordStraightEdge {
-			var generalLineFlag:Boolean = (readUB(1) == 1);
-			var vertLineFlag:Boolean = !generalLineFlag ? (readSB(1) != 0) : false;
-			var deltaX:int = (generalLineFlag || !vertLineFlag) ? readSB(numBits) : 0;
-			var deltaY:int = (generalLineFlag || vertLineFlag) ? readSB(numBits) : 0;
-			return new SWFShapeRecordStraightEdge(generalLineFlag, vertLineFlag, deltaX, deltaY);
+		public function readCURVEDEDGERECORD(numBits:uint):SWFShapeRecordCurvedEdge {
+			return new SWFShapeRecordCurvedEdge(this, numBits);
 		}
 		
-		protected function readCURVEDEDGERECORD(numBits:uint):SWFShapeRecordCurvedEdge {
-			var controlDeltaX:int = readSB(numBits);
-			var controlDeltaY:int = readSB(numBits);
-			var anchorDeltaX:int = readSB(numBits);
-			var anchorDeltaY:int = readSB(numBits);
-			return new SWFShapeRecordCurvedEdge(controlDeltaX, controlDeltaY, anchorDeltaX, anchorDeltaY);
+		public function readSTYLECHANGERECORD(states:uint, fillBits:uint, lineBits:uint, level:uint = 1):SWFShapeRecordStyleChange {
+			return new SWFShapeRecordStyleChange(this, states, fillBits, lineBits, level);
 		}
 		
-		protected function readSTYLECHANGERECORD(states:uint, fillBits:uint, lineBits:uint, level:uint = 1):SWFShapeRecordStyleChange {
-			var record:SWFShapeRecordStyleChange = new SWFShapeRecordStyleChange(states);
-			if (record.stateMoveTo) {
-				var moveBits:uint = readUB(5);
-				record.moveDeltaX = readSB(moveBits);
-				record.moveDeltaY = readSB(moveBits);
-			}
-			record.fillStyle0 = record.stateFillStyle0 ? readUB(fillBits) : 0;
-			record.fillStyle1 = record.stateFillStyle1 ? readUB(fillBits) : 0;
-			record.lineStyle = record.stateLineStyle ? readUB(lineBits) : 0;
-			if (record.stateNewStyles) {
-				bitsPending = 0;
-				var i:uint;
-				var fillStylesLen:uint = readStyleArrayLength(level);
-				for (i = 0; i < fillStylesLen; i++) {
-					record.fillStyles.push(readFILLSTYLE(level));
-				}
-				var lineStylesLen:uint = readStyleArrayLength(level);
-				for (i = 0; i < lineStylesLen; i++) {
-					record.lineStyles.push(level <= 3 ? readLINESTYLE(level) : readLINESTYLE2(level));
-				}
-				record.numFillBits = readUB(4);
-				record.numLineBits = readUB(4);
-			}
-			return record;
-		}
-		
-		protected function readStyleArrayLength(level:uint = 1):uint {
-			var len:uint = readUI8();
-			if (level >= 2 && len == 0xff) {
-				len = readUI16();
-			}
-			return len;
-		}
 
-		
 		/////////////////////////////////////////////////////////
 		// Fill- and Linestyles
 		/////////////////////////////////////////////////////////
 		
 		public function readFILLSTYLE(level:uint = 1):SWFFillStyle {
-			var fillStyleType:uint = readUI8();
-			var fillStyle:SWFFillStyle = new SWFFillStyle(fillStyleType);
-			switch(fillStyleType) {
-				case 0x00:
-					fillStyle.rgb = (level <= 2) ? readRGB() : readRGBA();
-					break;
-				case 0x10:
-				case 0x12:
-				case 0x13:
-					fillStyle.gradientMatrix = readMATRIX();
-					fillStyle.gradient = (fillStyleType == 0x13) ? readFOCALGRADIENT(level) : readGRADIENT(level);
-					break;
-				case 0x40:
-				case 0x41:
-				case 0x42:
-				case 0x43:
-					fillStyle.bitmapId = readUI16();
-					fillStyle.bitmapMatrix = readMATRIX();
-					break;
-				default:
-					throw(new Error("Unknown fill style type: 0x" + fillStyleType.toString(16)));
-			}
-			return fillStyle;
+			return new SWFFillStyle(this, level);
 		}
 		
 		public function readLINESTYLE(level:uint = 1):SWFLineStyle {
-			var width:uint = readUI16();
-			var lineStyle:SWFLineStyle = new SWFLineStyle(width);
-			lineStyle.color = (level <= 2) ? readRGB() : readRGBA();
-			return lineStyle;
+			return new SWFLineStyle(this, level);
 		}
 		
 		public function readLINESTYLE2(level:uint = 1):SWFLineStyle2 {
-			var width:uint = readUI16();
-			var lineStyle:SWFLineStyle2 = new SWFLineStyle2(width);
-			lineStyle.startCapStyle = readUB(2);
-			lineStyle.joinStyle = readUB(2);
-			lineStyle.hasFillFlag = (readUB(1) == 1);
-			lineStyle.noHScaleFlag = (readUB(1) == 1);
-			lineStyle.noVScaleFlag = (readUB(1) == 1);
-			lineStyle.pixelHintingFlag = (readUB(1) == 1);
-			var reserved:uint = readUB(5);
-			lineStyle.noClose = (readUB(1) == 1);
-			lineStyle.endCapStyle = readUB(2);
-			if (lineStyle.joinStyle) {
-				lineStyle.miterLimitFactor = readFIXED8();
-			}
-			if (lineStyle.hasFillFlag) {
-				lineStyle.fillType = readFILLSTYLE(level);
-			} else {
-				lineStyle.color = readRGBA();
-			}
-			return lineStyle;
+			return new SWFLineStyle2(this, level);
 		}
 		
 		/////////////////////////////////////////////////////////
@@ -470,38 +265,16 @@
 		/////////////////////////////////////////////////////////
 		
 		public function readBUTTONRECORD(level:uint = 1):SWFButtonRecord {
-			var flags:uint = readUI8();
-			if (flags == 0) {
+			if (readUI8() == 0) {
 				return null;
+			} else {
+				data.position--;
+				return new SWFButtonRecord(this, level);
 			}
-			var record:SWFButtonRecord = new SWFButtonRecord(flags);
-			record.characterId = readUI16();
-			record.placeDepth = readUI16();
-			record.placeMatrix = readMATRIX();
-			if (level >= 2) {
-				record.colorTransform = readCXFORMWITHALPHA();
-				if (record.hasFilterList) {
-					var numberOfFilters:uint = readUI8();
-					for (var i:uint = 0; i < numberOfFilters; i++) {
-						record.filterList.push(readFILTER())
-					}
-				}
-				if (record.hasBlendMode) {
-					record.blendMode = readUI8();
-				}
-			}
-			return record;
 		}
 
-		public function readBUTTONCONDACTION(level:uint = 1):SWFButtonCondAction {
-			var condActionSize:uint = readUI16();
-			var flags:uint = (readUI8() << 8) | readUI8();
-			var condAction:SWFButtonCondAction = new SWFButtonCondAction(condActionSize, flags);
-			var action:IAction;
-			while ((action = readACTIONRECORD()) != null) {
-				condAction.actions.push(action);
-			}
-			return condAction;
+		public function readBUTTONCONDACTION():SWFButtonCondAction {
+			return new SWFButtonCondAction(this);
 		}
 		
 		/////////////////////////////////////////////////////////
@@ -520,48 +293,16 @@
 		/////////////////////////////////////////////////////////
 		
 		public function readTEXTRECORD(glyphBits:uint, advanceBits:uint, previousRecord:SWFTextRecord = null, level:uint = 1):SWFTextRecord {
-			var styles:uint = readUI8();
-			if (styles == 0) {
+			if (readUI8() == 0) {
 				return null;
+			} else {
+				data.position--;
+				return new SWFTextRecord(this, glyphBits, advanceBits, previousRecord, level);
 			}
-			var record:SWFTextRecord = new SWFTextRecord(styles);
-			if (record.hasFont) {
-				record.fontId = readUI16();
-			} else if (previousRecord != null) {
-				record.fontId = previousRecord.fontId;
-			}
-			if (record.hasColor) {
-				record.textColor = (level < 2) ? readRGB() : readRGBA();
-			} else if (previousRecord != null) {
-				record.textColor = previousRecord.textColor;
-			}
-			if (record.hasXOffset) {
-				record.xOffset = readSI16();
-			} else if (previousRecord != null) {
-				record.xOffset = previousRecord.xOffset;
-			}
-			if (record.hasYOffset) {
-				record.yOffset = readSI16();
-			} else if (previousRecord != null) {
-				record.yOffset = previousRecord.yOffset;
-			}
-			if (record.hasFont) {
-				record.textHeight = readUI16();
-			} else if (previousRecord != null) {
-				record.textHeight = previousRecord.textHeight;
-			}
-			var glyphCount:uint = readUI8();
-			for (var i:uint = 0; i < glyphCount; i++) {
-				record.glyphEntries.push(readGLYPHENTRY(glyphBits, advanceBits));
-			}
-			return record;
 		}
 
 		public function readGLYPHENTRY(glyphBits:uint, advanceBits:uint):SWFGlyphEntry {
-			// GLYPHENTRYs are not byte aligned
-			var glyphIndex:uint = readUB(glyphBits);
-			var glyphAdvance:uint = readSB(advanceBits);
-			return new SWFGlyphEntry(glyphIndex, glyphAdvance);
+			return new SWFGlyphEntry(this, glyphBits, advanceBits);
 		}
 
 		/////////////////////////////////////////////////////////
@@ -569,21 +310,11 @@
 		/////////////////////////////////////////////////////////
 		
 		public function readZONERECORD():SWFZoneRecord {
-			var numZoneData:uint = readUI8();
-			var record:SWFZoneRecord = new SWFZoneRecord();
-			for (var i:uint = 0; i < numZoneData; i++) {
-				record.data.push(readZONEDATA());
-			}
-			var mask:uint = readUI8();
-			record.maskX = (mask & 1) != 0;
-			record.maskY = (mask & 2) != 0;
-			return record;
+			return new SWFZoneRecord(this);
 		}
 
 		public function readZONEDATA():SWFZoneData {
-			var alignmentCoordinate:Number = readFLOAT16();
-			var range:Number = readFLOAT16();
-			return new SWFZoneData(alignmentCoordinate, range);
+			return new SWFZoneData(this);
 		}
 
 		/////////////////////////////////////////////////////////
@@ -591,10 +322,7 @@
 		/////////////////////////////////////////////////////////
 		
 		public function readKERNINGRECORD(wideCodes:Boolean):SWFKerningRecord {
-			var kerningCode1:uint = wideCodes ? readUI16() : readUI8();
-			var kerningCode2:uint = wideCodes ? readUI16() : readUI8();
-			var kerningAdjustment:int = readSI16();
-			return new SWFKerningRecord(kerningCode1, kerningCode2, kerningAdjustment);
+			return new SWFKerningRecord(this, wideCodes);
 		}
 
 		/////////////////////////////////////////////////////////
@@ -602,15 +330,7 @@
 		/////////////////////////////////////////////////////////
 		
 		public function readGRADIENT(level:uint = 1):SWFGradient {
-			bitsPending = 0;
-			var spreadMethod:uint = readUB(2);
-			var interpolationMethod:uint = readUB(2);
-			var gradient:SWFGradient = new SWFGradient(spreadMethod, interpolationMethod);
-			var numGradients:uint = readUB(4);
-			for (var i:uint = 0; i < numGradients; i++) {
-				gradient.records.push(readGRADIENTRECORD(level));
-			}
-			return gradient;
+			return new SWFGradient(this, level);
 		}
 		
 		public function readFOCALGRADIENT(level:uint = 1):SWFGradient {
@@ -620,9 +340,7 @@
 		}
 		
 		public function readGRADIENTRECORD(level:uint = 1):SWFGradientRecord {
-			var ratio:uint = readUI8();
-			var color:uint = (level <= 2) ? readRGB() : readRGBA();
-			return new SWFGradientRecord(ratio, color);
+			return new SWFGradientRecord(this, level);
 		}
 		
 		/////////////////////////////////////////////////////////
@@ -641,29 +359,11 @@
 		}
 		
 		public function readACTIONVALUE():SWFActionValue {
-			var actionType:uint = readUI8();
-			var actionValue:SWFActionValue = new SWFActionValue(actionType);
-			switch (actionType) {
-				case SWFActionValue.TYPE_STRING: actionValue.string = readString(); break;
-				case SWFActionValue.TYPE_FLOAT: actionValue.number = readFLOAT(); break;
-				case SWFActionValue.TYPE_NULL: break;
-				case SWFActionValue.TYPE_UNDEFINED: break;
-				case SWFActionValue.TYPE_REGISTER: actionValue.register = readUI8(); break;
-				case SWFActionValue.TYPE_BOOLEAN: actionValue.boolean = (readUI8() != 0); break;
-				case SWFActionValue.TYPE_DOUBLE: actionValue.number = readDOUBLE(); break;
-				case SWFActionValue.TYPE_INTEGER: actionValue.integer = readUI32(); break;
-				case SWFActionValue.TYPE_CONSTANT_8: actionValue.constant = readUI8(); break;
-				case SWFActionValue.TYPE_CONSTANT_16: actionValue.constant = readUI16(); break;
-				default:
-					throw(new Error("Unknown ActionValue type: " + actionType));
-			}
-			return actionValue;
+			return new SWFActionValue(this);
 		}
 		
 		public function readREGISTERPARAM():SWFRegisterParam {
-			var register:uint = readUI8();
-			var name:String = readString();
-			return new SWFRegisterParam(register, name);
+			return new SWFRegisterParam(this);
 		}
 		
 		/////////////////////////////////////////////////////////
@@ -671,9 +371,7 @@
 		/////////////////////////////////////////////////////////
 		
 		public function readSYMBOL():SWFSymbol {
-			var tagId:uint = readUI16();
-			var name:String = readString();
-			return new SWFSymbol(tagId, name);
+			return new SWFSymbol(this);
 		}
 		
 		/////////////////////////////////////////////////////////
@@ -681,31 +379,11 @@
 		/////////////////////////////////////////////////////////
 		
 		public function readSOUNDINFO():SWFSoundInfo {
-			var flags:uint = readUI8();
-			var soundInfo:SWFSoundInfo = new SWFSoundInfo(flags);
-			if (soundInfo.hasInPoint) {
-				soundInfo.inPoint = readUI32();
-			}
-			if (soundInfo.hasOutPoint) {
-				soundInfo.outPoint = readUI32();
-			}
-			if (soundInfo.hasLoops) {
-				soundInfo.loopCount = readUI16();
-			}
-			if (soundInfo.hasEnvelope) {
-				var envPoints:uint = readUI8();
-				for (var i:uint = 0; i < envPoints; i++) {
-					soundInfo.envelopeRecords.push(readSOUNDENVELOPE());
-				}
-			}
-			return soundInfo;
+			return new SWFSoundInfo(this);
 		}
 		
 		public function readSOUNDENVELOPE():SWFSoundEnvelope {
-			var pos44:uint = readUI32();
-			var leftLevel:uint = readUI16();
-			var rightLevel:uint = readUI16();
-			return new SWFSoundEnvelope(pos44, leftLevel, rightLevel);
+			return new SWFSoundEnvelope(this);
 		}
 		
 		
@@ -728,6 +406,10 @@
 		
 		public function get position():uint {
 			return data.position;
+		}
+		
+		public function resetBitsPending():void {
+			bitsPending = 0;
 		}
 
 		public function readBytes(bytes:ByteArray, offset:uint = 0, length:uint = 0):void {

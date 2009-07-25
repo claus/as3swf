@@ -53,10 +53,7 @@
 				/* 83 */ case TagDefineShape4.TYPE: return new TagDefineShape4();
 				/* 86 */ case TagDefineSceneAndFrameLabelData.TYPE: return new TagDefineSceneAndFrameLabelData();
 				/* 88 */ case TagDefineFontName.TYPE: return new TagDefineFontName();
-				default: 
-					var tag:TagUnknown = new TagUnknown();
-					tag.type = type;
-					return tag;
+				default: return new TagUnknown(type);
 			}
 		}
 	}

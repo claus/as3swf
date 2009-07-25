@@ -1,6 +1,6 @@
 ﻿package com.codeazur.as3swf.data
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.actions.IAction;
 	
 	public class SWFButtonCondAction
@@ -19,7 +19,7 @@
 
 		protected var _actions:Vector.<IAction>;
 		
-		public function SWFButtonCondAction(data:ISWFDataInput = null) {
+		public function SWFButtonCondAction(data:SWFData = null) {
 			_actions = new Vector.<IAction>();
 			if (data != null) {
 				parse(data);
@@ -28,7 +28,7 @@
 		
 		public function get actions():Vector.<IAction> { return _actions; }
 		
-		public function parse(data:ISWFDataInput):void {
+		public function parse(data:SWFData):void {
 			condActionSize = data.readUI16();
 			var flags:uint = (data.readUI8() << 8) | data.readUI8();
 			condIdleToOverDown = ((flags & 0x8000) != 0);

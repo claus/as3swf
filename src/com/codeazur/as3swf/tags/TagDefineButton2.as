@@ -1,9 +1,9 @@
 ﻿package com.codeazur.as3swf.tags
 {
+	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.actions.IAction;
 	import com.codeazur.as3swf.data.SWFButtonCondAction;
 	import com.codeazur.as3swf.data.SWFButtonRecord;
-	import com.codeazur.as3swf.ISWFDataInput;
 	import com.codeazur.utils.StringUtils;
 	
 	public class TagDefineButton2 extends Tag implements ITag
@@ -24,7 +24,8 @@
 		public function get characters():Vector.<SWFButtonRecord> { return _characters; }
 		public function get condActions():Vector.<SWFButtonCondAction> { return _condActions; }
 		
-		public function parse(data:ISWFDataInput, length:uint):void {
+		public function parse(data:SWFData, length:uint):void {
+			cache(data, length);
 			buttonId = data.readUI16();
 			trackAsMenu = ((data.readUI8() & 0x01) != 0);
 			var actionOffset:uint = data.readUI16();
@@ -43,8 +44,11 @@
 			}
 		}
 		
+		override public function get type():uint { return TYPE; }
+		override public function get name():String { return "DefineButton2"; }
+		
 		public function toString(indent:uint = 0):String {
-			var str:String = StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagDefineButton2] " +
+			var str:String = toStringMain(indent) +
 				"ID: " + buttonId + ", TrackAsMenu: " + trackAsMenu;
 			var i:uint;
 			if (_characters.length > 0) {

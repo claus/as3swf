@@ -1,7 +1,7 @@
 ﻿package com.codeazur.as3swf.actions.swf3
 {
 	import com.codeazur.as3swf.actions.*;
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	
 	public class ActionNextFrame extends Action implements IAction
 	{

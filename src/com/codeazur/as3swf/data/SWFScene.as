@@ -5,6 +5,7 @@
 		public var offset:uint;
 		public var name:String;
 		
+		// TODO: parse() method?
 		public function SWFScene(offset:uint, name:String)
 		{
 			this.offset = offset;

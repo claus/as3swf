@@ -1,7 +1,7 @@
 ﻿package com.codeazur.as3swf.actions.swf3
 {
 	import com.codeazur.as3swf.actions.*;
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	
 	public class ActionGetURL extends Action implements IAction
 	{
@@ -12,7 +12,7 @@
 			super(code, length);
 		}
 		
-		override public function parse(data:ISWFDataInput):void {
+		override public function parse(data:SWFData):void {
 			urlString = data.readString();
 			targetString = data.readString();
 		}

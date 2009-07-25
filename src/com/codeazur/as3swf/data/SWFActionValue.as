@@ -1,6 +1,6 @@
 ﻿package com.codeazur.as3swf.data
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.consts.ActionValueType;
 	
 	public class SWFActionValue
@@ -13,13 +13,13 @@
 		public var integer:uint;
 		public var constant:uint;
 
-		public function SWFActionValue(data:ISWFDataInput = null) {
+		public function SWFActionValue(data:SWFData = null) {
 			if (data != null) {
 				parse(data);
 			}
 		}
 		
-		public function parse(data:ISWFDataInput):void {
+		public function parse(data:SWFData):void {
 			type = data.readUI8();
 			switch (type) {
 				case ActionValueType.STRING: string = data.readString(); break;

@@ -1,6 +1,6 @@
 ﻿package com.codeazur.as3swf.data
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.utils.StringUtils;
 	
 	public class SWFShapeRecordStyleChange extends SWFShapeRecord
@@ -23,7 +23,7 @@
 		protected var _fillStyles:Vector.<SWFFillStyle>;
 		protected var _lineStyles:Vector.<SWFLineStyle>;
 
-		public function SWFShapeRecordStyleChange(data:ISWFDataInput = null, states:uint = 0, fillBits:uint = 0, lineBits:uint = 0, level:uint = 1) {
+		public function SWFShapeRecordStyleChange(data:SWFData = null, states:uint = 0, fillBits:uint = 0, lineBits:uint = 0, level:uint = 1) {
 			_fillStyles = new Vector.<SWFFillStyle>();
 			_lineStyles = new Vector.<SWFLineStyle>();
 			stateNewStyles = ((states & 0x10) != 0);
@@ -41,7 +41,7 @@
 		
 		override public function get type():uint { return SWFShapeRecord.TYPE_STYLECHANGE; }
 		
-		override public function parse(data:ISWFDataInput = null, level:uint = 1):void {
+		override public function parse(data:SWFData = null, level:uint = 1):void {
 			if (stateMoveTo) {
 				var moveBits:uint = data.readUB(5);
 				moveDeltaX = data.readSB(moveBits);
@@ -66,7 +66,7 @@
 			}
 		}
 		
-		protected function readStyleArrayLength(data:ISWFDataInput, level:uint = 1):uint {
+		protected function readStyleArrayLength(data:SWFData, level:uint = 1):uint {
 			var len:uint = data.readUI8();
 			if (level >= 2 && len == 0xff) {
 				len = data.readUI16();

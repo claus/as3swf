@@ -1,7 +1,7 @@
 ﻿package com.codeazur.as3swf.actions.swf5
 {
 	import com.codeazur.as3swf.actions.*;
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.utils.StringUtils;
 	
 	public class ActionWith extends Action implements IAction
@@ -13,7 +13,7 @@
 			withBody = new Vector.<IAction>();
 		}
 		
-		override public function parse(data:ISWFDataInput):void {
+		override public function parse(data:SWFData):void {
 			var codeSize:uint = data.readUI16();
 			var bodyEndPosition:uint = data.position + codeSize;
 			while (data.position < bodyEndPosition) {

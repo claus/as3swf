@@ -5,6 +5,7 @@
 		public var frameNumber:uint;
 		public var name:String;
 		
+		// TODO: parse() method?
 		public function SWFFrameLabel(frameNumber:uint, name:String)
 		{
 			this.frameNumber = frameNumber;
@@ -12,7 +13,7 @@
 		}
 		
 		public function toString():String {
-			return "FrameNumber: " + frameNumber + ", Name: " + name;
+			return "Frame: " + frameNumber + ", Name: " + name;
 		}
 	}
 }

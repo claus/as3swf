@@ -1,8 +1,6 @@
 ﻿package com.codeazur.as3swf.tags
 {
-	import com.codeazur.as3swf.ISWFDataInput;
-	import com.codeazur.as3swf.data.SWFRecordHeader;
-	import com.codeazur.utils.StringUtils;
+	import com.codeazur.as3swf.SWFData;
 	
 	import flash.utils.ByteArray;
 	
@@ -27,8 +25,10 @@
 		
 		public function get codeTable():Vector.<uint> { return _codeTable; }
 		
-		public function parse(data:ISWFDataInput, length:uint):void
+		public function parse(data:SWFData, length:uint):void
 		{
+			cache(data, length);
+
 			fontId = data.readUI16();
 
 			var fontNameLen:uint = data.readUI8();
@@ -50,8 +50,11 @@
 			}
 		}
 		
+		override public function get type():uint { return TYPE; }
+		override public function get name():String { return "DefineFontInfo"; }
+		
 		public function toString(indent:uint = 0):String {
-			return StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagDefineFontInfo] " +
+			return toStringMain(indent) +
 				"FontID: " + fontId + ", " +
 				"FontName: " + fontName + ", " +
 				"Italic: " + italic + ", " +

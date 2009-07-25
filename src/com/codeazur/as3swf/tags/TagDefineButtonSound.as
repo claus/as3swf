@@ -1,10 +1,7 @@
 ﻿package com.codeazur.as3swf.tags
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.SWFSoundInfo;
-	import com.codeazur.utils.StringUtils;
-	
-	import flash.utils.ByteArray;
 	
 	public class TagDefineButtonSound extends Tag implements ITag
 	{
@@ -22,7 +19,8 @@
 		
 		public function TagDefineButtonSound() {}
 		
-		public function parse(data:ISWFDataInput, length:uint):void {
+		public function parse(data:SWFData, length:uint):void {
+			cache(data, length);
 			buttonId = data.readUI16();
 			buttonSoundChar0 = data.readUI16();
 			if (buttonSoundChar0 != 0) {
@@ -42,8 +40,11 @@
 			}
 		}
 		
+		override public function get type():uint { return TYPE; }
+		override public function get name():String { return "DefineButtonSound"; }
+		
 		public function toString(indent:uint = 0):String {
-			var str:String = StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagDefineButtonSound] " +
+			var str:String = toStringMain(indent) +
 				"ButtonID: " + buttonId + ", " +
 				"ButtonSoundChars: " + buttonSoundChar0 + "," + buttonSoundChar1 + "," + buttonSoundChar2 + "," + buttonSoundChar3;;
 			return str;

@@ -1,14 +1,14 @@
 ﻿package com.codeazur.as3swf.data
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	
 	public class SWFColorTransformWithAlpha extends SWFColorTransform
 	{
-		public function SWFColorTransformWithAlpha(data:ISWFDataInput = null) {
+		public function SWFColorTransformWithAlpha(data:SWFData = null) {
 			super(data);
 		}
 		
-		override public function parse(data:ISWFDataInput):void {
+		override public function parse(data:SWFData):void {
 			data.resetBitsPending();
 			var hasAddTerms:uint = data.readUB(1);
 			var hasMultTerms:uint = data.readUB(1);

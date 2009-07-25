@@ -1,6 +1,6 @@
 ﻿package com.codeazur.as3swf.data
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.consts.BlendMode;
 	import com.codeazur.as3swf.data.filters.IFilter;
 	
@@ -21,7 +21,7 @@
 
 		protected var _filterList:Vector.<IFilter>;
 		
-		public function SWFButtonRecord(data:ISWFDataInput = null, level:uint = 1) {
+		public function SWFButtonRecord(data:SWFData = null, level:uint = 1) {
 			_filterList = new Vector.<IFilter>();
 			if (data != null) {
 				parse(data, level);
@@ -30,7 +30,7 @@
 		
 		public function get filterList():Vector.<IFilter> { return _filterList; }
 
-		public function parse(data:ISWFDataInput, level:uint = 1):void {
+		public function parse(data:SWFData, level:uint = 1):void {
 			var flags:uint = data.readUI8();
 			hasBlendMode = ((flags & 0x20) != 0);
 			hasFilterList = ((flags & 0x10) != 0);

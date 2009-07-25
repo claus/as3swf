@@ -1,6 +1,6 @@
 ﻿package com.codeazur.as3swf.data.filters
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	
 	public class FilterDropShadow extends Filter implements IFilter
 	{
@@ -19,7 +19,7 @@
 			super(id);
 		}
 		
-		override public function parse(data:ISWFDataInput):void {
+		override public function parse(data:SWFData):void {
 			dropShadowColor = data.readRGBA();
 			blurX = data.readFIXED();
 			blurY = data.readFIXED();

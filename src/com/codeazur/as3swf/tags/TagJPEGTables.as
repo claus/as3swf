@@ -1,7 +1,6 @@
 ﻿package com.codeazur.as3swf.tags
 {
-	import com.codeazur.as3swf.ISWFDataInput;
-	import com.codeazur.utils.StringUtils;
+	import com.codeazur.as3swf.SWFData;
 	
 	import flash.utils.ByteArray;
 	
@@ -17,12 +16,16 @@
 		
 		public function get jpegTables():ByteArray { return _jpegTables; }
 		
-		public function parse(data:ISWFDataInput, length:uint):void {
+		public function parse(data:SWFData, length:uint):void {
+			cache(data, length);
 			data.readBytes(_jpegTables, 0, length)
 		}
 		
+		override public function get type():uint { return TYPE; }
+		override public function get name():String { return "JPEGTables"; }
+		
 		public function toString(indent:uint = 0):String {
-			return StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagJPEGTables]";
+			return toStringMain(indent);
 		}
 	}
 }

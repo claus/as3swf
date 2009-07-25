@@ -1,13 +1,13 @@
 ﻿package com.codeazur.as3swf.data
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.utils.StringUtils;
 	
 	public class SWFShape
 	{
 		protected var _records:Vector.<SWFShapeRecord>;
 		
-		public function SWFShape(data:ISWFDataInput = null, level:uint = 1) {
+		public function SWFShape(data:SWFData = null, level:uint = 1) {
 			_records = new Vector.<SWFShapeRecord>();
 			if (data != null) {
 				parse(data, level);
@@ -16,14 +16,14 @@
 		
 		public function get records():Vector.<SWFShapeRecord> { return _records; }
 
-		public function parse(data:ISWFDataInput, level:uint = 1):void {
+		public function parse(data:SWFData, level:uint = 1):void {
 			data.resetBitsPending();
 			var numFillBits:uint = data.readUB(4);
 			var numLineBits:uint = data.readUB(4);
 			readShapeRecords(data, numFillBits, numLineBits, level);
 		}
 		
-		protected function readShapeRecords(data:ISWFDataInput, fillBits:uint, lineBits:uint, level:uint = 1):void {
+		protected function readShapeRecords(data:SWFData, fillBits:uint, lineBits:uint, level:uint = 1):void {
 			var shapeRecord:SWFShapeRecord;
 			while (!(shapeRecord is SWFShapeRecordEnd)) {
 				// The SWF10 spec says that shape records are byte aligned.

@@ -1,6 +1,6 @@
 ﻿package com.codeazur.as3swf.data
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	
 	public class SWFGradient
 	{
@@ -9,7 +9,7 @@
 		
 		protected var _records:Vector.<SWFGradientRecord>;
 		
-		public function SWFGradient(data:ISWFDataInput = null, level:uint = 1) {
+		public function SWFGradient(data:SWFData = null, level:uint = 1) {
 			_records = new Vector.<SWFGradientRecord>();
 			if (data != null) {
 				parse(data, level);
@@ -18,7 +18,7 @@
 		
 		public function get records():Vector.<SWFGradientRecord> { return _records; }
 		
-		public function parse(data:ISWFDataInput, level:uint):void {
+		public function parse(data:SWFData, level:uint):void {
 			data.resetBitsPending();
 			spreadMode = data.readUB(2);
 			interpolationMode = data.readUB(2);

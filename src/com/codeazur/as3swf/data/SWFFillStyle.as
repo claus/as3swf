@@ -1,6 +1,6 @@
 ﻿package com.codeazur.as3swf.data
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	
 	public class SWFFillStyle
 	{
@@ -12,13 +12,13 @@
 		public var bitmapId:uint;
 		public var bitmapMatrix:SWFMatrix;
 		
-		public function SWFFillStyle(data:ISWFDataInput = null, level:uint = 1) {
+		public function SWFFillStyle(data:SWFData = null, level:uint = 1) {
 			if (data != null) {
 				parse(data, level);
 			}
 		}
 		
-		public function parse(data:ISWFDataInput, level:uint = 1):void {
+		public function parse(data:SWFData, level:uint = 1):void {
 			type = data.readUI8();
 			switch(type) {
 				case 0x00:

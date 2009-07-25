@@ -1,6 +1,6 @@
 ﻿package com.codeazur.as3swf.actions
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	
 	public class Action
 	{
@@ -12,6 +12,6 @@
 			_length = length;
 		}
 
-		public function parse(data:ISWFDataInput):void {}
+		public function parse(data:SWFData):void {}
 	}
 }

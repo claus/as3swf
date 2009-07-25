@@ -1,8 +1,7 @@
 ﻿package com.codeazur.as3swf.tags
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.SWFRectangle;
-	import com.codeazur.utils.StringUtils;
 	
 	public class TagDefineShape4 extends TagDefineShape3 implements ITag
 	{
@@ -15,7 +14,8 @@
 
 		public function TagDefineShape4() {}
 		
-		override public function parse(data:ISWFDataInput, length:uint):void {
+		override public function parse(data:SWFData, length:uint):void {
+			cache(data, length);
 			shapeId = data.readUI16();
 			shapeBounds = data.readRECT();
 			edgeBounds = data.readRECT();
@@ -26,8 +26,11 @@
 			shapes = data.readSHAPEWITHSTYLE(4);
 		}
 		
+		override public function get type():uint { return TYPE; }
+		override public function get name():String { return "DefineShape4"; }
+		
 		override public function toString(indent:uint = 0):String {
-			var str:String = StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagDefineShape4] " +
+			var str:String = toStringMain(indent) +
 				"ID: " + shapeId + ", " +
 				"ShapeBounds: " + shapeBounds + ", " +
 				"EdgeBounds: " + edgeBounds;

@@ -1,6 +1,6 @@
 ﻿package com.codeazur.as3swf.tags
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.SWFSymbol;
 	import com.codeazur.utils.StringUtils;
 	
@@ -16,15 +16,19 @@
 		
 		public function get symbols():Vector.<SWFSymbol> { return _symbols; }
 		
-		public function parse(data:ISWFDataInput, length:uint):void {
+		public function parse(data:SWFData, length:uint):void {
+			cache(data, length);
 			var numSymbols:uint = data.readUI16();
 			for (var i:uint = 0; i < numSymbols; i++) {
 				_symbols.push(data.readSYMBOL());
 			}
 		}
 		
+		override public function get type():uint { return TYPE; }
+		override public function get name():String { return "SymbolClass"; }
+		
 		public function toString(indent:uint = 0):String {
-			var str:String = StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagSymbolClass]";
+			var str:String = toStringMain(indent);
 			if (_symbols.length > 0) {
 				str += "\n" + StringUtils.repeat(indent + 2) + "Symbols:";
 				for (var i:uint = 0; i < _symbols.length; i++) {

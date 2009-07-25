@@ -1,10 +1,9 @@
 ﻿package com.codeazur.as3swf.tags
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.consts.SoundRate;
 	import com.codeazur.as3swf.data.consts.SoundSize;
 	import com.codeazur.as3swf.data.consts.SoundType;
-	import com.codeazur.utils.StringUtils;
 	
 	import flash.utils.ByteArray;
 	
@@ -27,7 +26,8 @@
 		
 		public function get soundData():ByteArray { return _soundData; }
 		
-		public function parse(data:ISWFDataInput, length:uint):void {
+		public function parse(data:SWFData, length:uint):void {
+			cache(data, length);
 			soundId = data.readUI16();
 			soundFormat = data.readUB(4);
 			soundRate = data.readUB(2);
@@ -37,8 +37,11 @@
 			data.readBytes(_soundData, 0, length - 7);
 		}
 		
+		override public function get type():uint { return TYPE; }
+		override public function get name():String { return "DefineSound"; }
+		
 		public function toString(indent:uint = 0):String {
-			var str:String = StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagDefineSound] " +
+			var str:String = toStringMain(indent) +
 				"SoundID: " + soundId + ", " +
 				"Format: " + soundFormat + ", " +
 				"Rate: " + SoundRate.toString(soundRate) + ", " +

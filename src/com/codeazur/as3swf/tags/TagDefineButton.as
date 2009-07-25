@@ -1,8 +1,8 @@
 ﻿package com.codeazur.as3swf.tags
 {
+	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.actions.IAction;
 	import com.codeazur.as3swf.data.SWFButtonRecord;
-	import com.codeazur.as3swf.ISWFDataInput;
 	import com.codeazur.as3swf.data.SWFRectangle;
 	import com.codeazur.as3swf.data.SWFShapeWithStyle;
 	import com.codeazur.utils.StringUtils;
@@ -24,7 +24,8 @@
 		public function get characters():Vector.<SWFButtonRecord> { return _characters; }
 		public function get actions():Vector.<IAction> { return _actions; }
 		
-		public function parse(data:ISWFDataInput, length:uint):void {
+		public function parse(data:SWFData, length:uint):void {
+			cache(data, length);
 			buttonId = data.readUI16();
 			var record:SWFButtonRecord;
 			while ((record = data.readBUTTONRECORD()) != null) {
@@ -36,8 +37,11 @@
 			}
 		}
 		
+		override public function get type():uint { return TYPE; }
+		override public function get name():String { return "DefineButton"; }
+		
 		public function toString(indent:uint = 0):String {
-			var str:String = StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagDefineButton] " +
+			var str:String = toStringMain(indent) +
 				"ID: " + buttonId;
 			var i:uint;
 			if (_characters.length > 0) {

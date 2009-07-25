@@ -1,7 +1,7 @@
 ﻿package com.codeazur.as3swf.actions.swf4
 {
 	import com.codeazur.as3swf.actions.*;
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	
 	public class ActionGotoFrame2 extends Action implements IAction
 	{
@@ -13,7 +13,7 @@
 			super(code, length);
 		}
 		
-		override public function parse(data:ISWFDataInput):void {
+		override public function parse(data:SWFData):void {
 			var flags:uint = data.readUI8();
 			sceneBiasFlag = ((flags & 0x02) != 0);
 			playFlag = ((flags & 0x01) != 0);

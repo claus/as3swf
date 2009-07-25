@@ -1,23 +1,26 @@
 ﻿package com.codeazur.as3swf.tags
 {
-	import com.codeazur.as3swf.ISWFDataInput;
-	import com.codeazur.utils.StringUtils;
+	import com.codeazur.as3swf.SWFData;
 	
 	public class TagFrameLabel extends Tag implements ITag
 	{
 		public static const TYPE:uint = 43;
 		
-		public var name:String;
+		public var frameName:String;
 		
 		public function TagFrameLabel() {}
 		
-		public function parse(data:ISWFDataInput, length:uint):void {
-			name = data.readString();
+		public function parse(data:SWFData, length:uint):void {
+			cache(data, length);
+			frameName = data.readString();
 		}
 		
+		override public function get type():uint { return TYPE; }
+		override public function get name():String { return "FrameLabel"; }
+		
 		public function toString(indent:uint = 0):String {
-			return StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagFrameLabel] " +
-				"Name: " + name;
+			return toStringMain(indent) +
+				"Name: " + frameName;
 		}
 	}
 }

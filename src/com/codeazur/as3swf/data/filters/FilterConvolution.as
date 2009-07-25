@@ -1,6 +1,6 @@
 ﻿package com.codeazur.as3swf.data.filters
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	
 	public class FilterConvolution extends Filter implements IFilter
 	{
@@ -21,7 +21,7 @@
 		
 		public function get matrix():Vector.<Number> { return _matrix; }
 
-		override public function parse(data:ISWFDataInput):void {
+		override public function parse(data:SWFData):void {
 			matrixX = data.readUI8();
 			matrixY = data.readUI8();
 			divisor = data.readFLOAT();

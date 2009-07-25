@@ -1,6 +1,6 @@
 ﻿package com.codeazur.as3swf.data
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.consts.LineCapStyle;
 	import com.codeazur.as3swf.data.consts.LineJoinStyle;
 	
@@ -17,11 +17,11 @@
 		public var miterLimitFactor:Number;
 		public var fillType:SWFFillStyle;
 		
-		public function SWFLineStyle2(data:ISWFDataInput = null, level:uint = 1) {
+		public function SWFLineStyle2(data:SWFData = null, level:uint = 1) {
 			super(data, level);
 		}
 		
-		override public function parse(data:ISWFDataInput, level:uint = 1):void {
+		override public function parse(data:SWFData, level:uint = 1):void {
 			width = data.readUI16();
 			startCapStyle = data.readUB(2);
 			joinStyle = data.readUB(2);

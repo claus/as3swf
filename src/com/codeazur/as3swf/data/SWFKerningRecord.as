@@ -1,6 +1,6 @@
 ﻿package com.codeazur.as3swf.data
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	
 	public class SWFKerningRecord
 	{
@@ -8,13 +8,13 @@
 		public var code2:uint;
 		public var adjustment:int;
 
-		public function SWFKerningRecord(data:ISWFDataInput = null, wideCodes:Boolean = false) {
+		public function SWFKerningRecord(data:SWFData = null, wideCodes:Boolean = false) {
 			if (data != null) {
 				parse(data, wideCodes);
 			}
 		}
 
-		public function parse(data:ISWFDataInput, wideCodes:Boolean):void {
+		public function parse(data:SWFData, wideCodes:Boolean):void {
 			code1 = wideCodes ? data.readUI16() : data.readUI8();
 			code2 = wideCodes ? data.readUI16() : data.readUI8();
 			adjustment = data.readSI16();

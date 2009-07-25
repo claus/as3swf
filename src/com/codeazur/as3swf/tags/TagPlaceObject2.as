@@ -1,22 +1,19 @@
 ﻿package com.codeazur.as3swf.tags
 {
-	import com.codeazur.as3swf.ISWFDataInput;
-	import com.codeazur.as3swf.data.SWFColorTransform;
-	import com.codeazur.as3swf.data.SWFMatrix;
-	import com.codeazur.as3swf.data.SWFRecordHeader;
-	import com.codeazur.utils.StringUtils;
+	import com.codeazur.as3swf.SWFData;
 	
 	public class TagPlaceObject2 extends TagPlaceObject implements ITag
 	{
 		public static const TYPE:uint = 26;
 		
 		public var ratio:uint;
-		public var name:String;
+		public var objName:String;
 		public var clipDepth:uint;
 		
 		public function TagPlaceObject2() {}
 		
-		override public function parse(data:ISWFDataInput, length:uint):void {
+		override public function parse(data:SWFData, length:uint):void {
+			cache(data, length);
 			var flags:uint = data.readUI8();
 			hasClipActions = (flags & 0x80) != 0;
 			hasClipDepth = (flags & 0x40) != 0;
@@ -40,7 +37,7 @@
 				ratio = data.readUI16();
 			}
 			if (hasName) {
-				name = data.readString();
+				objName = data.readString();
 			}
 			if (hasClipDepth) {
 				clipDepth = data.readUI16();
@@ -52,14 +49,17 @@
 			}
 		}
 		
+		override public function get type():uint { return TYPE; }
+		override public function get name():String { return "PlaceObject2"; }
+		
 		override public function toString(indent:uint = 0):String {
-			var str:String = StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagPlaceObject2] " +
+			var str:String = toStringMain(indent) +
 				"Depth: " + depth;
 			if (hasCharacter) { str += ", CharacterID: " + characterId; }
 			if (hasMatrix) { str += ", Matrix: " + matrix.toString(); }
 			if (hasColorTransform) { str += ", ColorTransform: " + colorTransform; }
 			if (hasRatio) { str += ", Ratio: " + ratio; }
-			if (hasName) { str += ", Name: " + name; }
+			if (hasName) { str += ", Name: " + objName; }
 			return str;
 		}
 	}

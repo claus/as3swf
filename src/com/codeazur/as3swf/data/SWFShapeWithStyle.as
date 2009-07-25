@@ -1,6 +1,6 @@
 ﻿package com.codeazur.as3swf.data
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.utils.StringUtils;
 	
 	public class SWFShapeWithStyle extends SWFShape
@@ -8,7 +8,7 @@
 		protected var _fillStyles:Vector.<SWFFillStyle>;
 		protected var _lineStyles:Vector.<SWFLineStyle>;
 		
-		public function SWFShapeWithStyle(data:ISWFDataInput = null, level:uint = 1) {
+		public function SWFShapeWithStyle(data:SWFData = null, level:uint = 1) {
 			_fillStyles = new Vector.<SWFFillStyle>();
 			_lineStyles = new Vector.<SWFLineStyle>();
 			super(data, level);
@@ -17,7 +17,7 @@
 		public function get fillStyles():Vector.<SWFFillStyle> { return _fillStyles; }
 		public function get lineStyles():Vector.<SWFLineStyle> { return _lineStyles; }
 		
-		override public function parse(data:ISWFDataInput, level:uint = 1):void {
+		override public function parse(data:SWFData, level:uint = 1):void {
 			data.resetBitsPending();
 			var i:uint;
 			var fillStylesLen:uint = readStyleArrayLength(data, level);
@@ -34,7 +34,7 @@
 			readShapeRecords(data, numFillBits, numLineBits, level);
 		}
 		
-		protected function readStyleArrayLength(data:ISWFDataInput, level:uint = 1):uint {
+		protected function readStyleArrayLength(data:SWFData, level:uint = 1):uint {
 			var len:uint = data.readUI8();
 			if (level >= 2 && len == 0xff) {
 				len = data.readUI16();

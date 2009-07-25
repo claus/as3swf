@@ -1,6 +1,6 @@
 ﻿package com.codeazur.as3swf.data
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	
 	public class SWFColorTransform
 	{
@@ -14,13 +14,13 @@
 		public var aMult:int = 1;
 		public var aAdd:int = 0;
 		
-		public function SWFColorTransform(data:ISWFDataInput) {
+		public function SWFColorTransform(data:SWFData) {
 			if (data != null) {
 				parse(data);
 			}
 		}
 		
-		public function parse(data:ISWFDataInput):void {
+		public function parse(data:SWFData):void {
 			data.resetBitsPending();
 			var hasAddTerms:uint = data.readUB(1);
 			var hasMultTerms:uint = data.readUB(1);

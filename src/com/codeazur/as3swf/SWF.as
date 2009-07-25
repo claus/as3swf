@@ -1,21 +1,26 @@
 ﻿package com.codeazur.as3swf
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.SWFRecordHeader;
 	import com.codeazur.as3swf.data.SWFRectangle;
 	import com.codeazur.as3swf.factories.SWFTagFactory;
 	import com.codeazur.as3swf.tags.ITag;
 	import com.codeazur.as3swf.tags.Tag;
-
+	
+	import flash.utils.IDataInput;
+	import flash.utils.ByteArray;
 	import flash.utils.getTimer;
 	
 	public class SWF
 	{
 		public var version:int;
 		public var fileLength:uint;
+		public var fileLengthCompressed:uint;
 		public var frameSize:SWFRectangle;
 		public var frameRate:Number;
 		public var frameCount:uint;
+
+		public var compressed:Boolean;
 		
 		protected var _tags:Vector.<ITag>;
 
@@ -25,9 +30,16 @@
 		
 		public function get tags():Vector.<ITag> { return _tags; }
 		
-		public function parse(data:ISWFDataInput):void
-		{
-			var compressed:Boolean = false;
+		public function loadBytes(data:ByteArray):void {
+			var swfData:SWFData = new SWFData();
+			data.position = 0;
+			data.readBytes(swfData, 0, data.length);
+			swfData.position = 0;
+			parse(swfData);
+		}
+		
+		public function parse(data:SWFData):void {
+			compressed = false;
 			var signatureByte:uint = data.readUI8();
 			if (signatureByte == 0x43) {
 				compressed = true;
@@ -44,18 +56,16 @@
 			}
 			version = data.readUI8();
 			fileLength = data.readUI32();
-			
+			fileLengthCompressed = data.length;
 			if (compressed) {
 				data.uncompress();
 			}
-			
 			frameSize = data.readRECT();
 			frameRate = data.readFIXED8();
 			frameCount = data.readUI16();
-			
 			var t:uint = getTimer();
 			while (true) {
-				var header:SWFRecordHeader = Tag.parseHeader(data);
+				var header:SWFRecordHeader = Tag.readHeader(data);
 				var tag:ITag = SWFTagFactory.create(header.type);
 				tag.parse(data, header.length);
 				tags.push(tag);
@@ -66,10 +76,31 @@
 			trace((getTimer() - t) + " ms");
 		}
 		
+		public function publish(data:SWFData):void {
+			data.writeUI8(compressed ? 0x46 : 0x46);
+			data.writeUI8(0x57);
+			data.writeUI8(0x53);
+			data.writeUI8(version);
+			var fileLengthPos:uint = data.position;
+			data.writeUI32(0);
+			data.writeRECT(frameSize);
+			data.writeFIXED8(frameRate);
+			data.writeUI16(frameCount); // TODO: get the real number of frames from the tags
+			for (var i:uint = 0; i < tags.length; i++) {
+				tags[i].publish(data);
+			}
+			// TODO: compress if appropriate
+			var endPos:uint = data.position;
+			data.position = fileLengthPos;
+			data.writeUI32(data.length);
+			data.position = endPos;
+		}
+		
 		public function toString():String {
 			var str:String = "[SWF] " +
 				"Version: " + version + ", " +
 				"FileLength: " + fileLength + ", " +
+				"FileLengthCompressed: " + fileLengthCompressed + ", " +
 				"FrameSize: " + frameSize.toStringSize() + ", " +
 				"FrameRate: " + frameRate + ", " +
 				"FrameCount: " + frameCount + ", " +

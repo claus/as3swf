@@ -1,6 +1,6 @@
 ﻿package com.codeazur.as3swf.data
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	
 	public class SWFMatrix
 	{
@@ -11,13 +11,13 @@
 		public var translateX:int;
 		public var translateY:int;
 		
-		public function SWFMatrix(data:ISWFDataInput = null) {
+		public function SWFMatrix(data:SWFData = null) {
 			if (data != null) {
 				parse(data);
 			}
 		}
 		
-		public function parse(data:ISWFDataInput):void {
+		public function parse(data:SWFData):void {
 			data.resetBitsPending();
 			scaleX = 1.0;
 			scaleY = 1.0;

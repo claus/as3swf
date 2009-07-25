@@ -1,7 +1,7 @@
 ﻿package com.codeazur.as3swf.actions.swf7
 {
 	import com.codeazur.as3swf.actions.*;
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.utils.StringUtils;
 	
 	public class ActionTry extends Action implements IAction
@@ -23,7 +23,7 @@
 			finallyBody = new Vector.<IAction>();
 		}
 		
-		override public function parse(data:ISWFDataInput):void {
+		override public function parse(data:SWFData):void {
 			var flags:uint = data.readUI8();
 			catchInRegisterFlag = ((flags & 0x04) != 0);
 			finallyBlockFlag = ((flags & 0x02) != 0);

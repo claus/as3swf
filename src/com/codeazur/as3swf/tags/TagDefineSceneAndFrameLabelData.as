@@ -1,6 +1,6 @@
 ﻿package com.codeazur.as3swf.tags
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.SWFFrameLabel;
 	import com.codeazur.as3swf.data.SWFScene;
 	import com.codeazur.utils.StringUtils;
@@ -20,7 +20,8 @@
 		public function get scenes():Vector.<SWFScene> { return _scenes; }
 		public function get frameLabels():Vector.<SWFFrameLabel> { return _frameLabels; }
 		
-		public function parse(data:ISWFDataInput, length:uint):void {
+		public function parse(data:SWFData, length:uint):void {
+			cache(data, length);
 			var i:uint;
 			var sceneCount:uint = data.readEncodedU32();
 			for (i = 0; i < sceneCount; i++) {
@@ -36,8 +37,11 @@
 			}
 		}
 		
+		override public function get type():uint { return TYPE; }
+		override public function get name():String { return "DefineSceneAndFrameLabelData"; }
+		
 		public function toString(indent:uint = 0):String {
-			var str:String = StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagDefineSceneAndFrameLabelData]";
+			var str:String = toStringMain(indent);
 			var i:uint;
 			if (_scenes.length > 0) {
 				str += "\n" + StringUtils.repeat(indent + 2) + "Scenes:";

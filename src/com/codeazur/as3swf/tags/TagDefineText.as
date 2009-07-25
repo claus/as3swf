@@ -1,6 +1,6 @@
 ﻿package com.codeazur.as3swf.tags
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.SWFMatrix;
 	import com.codeazur.as3swf.data.SWFRectangle;
 	import com.codeazur.as3swf.data.SWFTextRecord;
@@ -22,7 +22,8 @@
 		
 		public function get records():Vector.<SWFTextRecord> { return _records; }
 		
-		public function parse(data:ISWFDataInput, length:uint):void {
+		public function parse(data:SWFData, length:uint):void {
+			cache(data, length);
 			characterId = data.readUI16();
 			textBounds = data.readRECT();
 			textMatrix = data.readMATRIX();
@@ -34,8 +35,11 @@
 			}
 		}
 		
+		override public function get type():uint { return TYPE; }
+		override public function get name():String { return "DefineText"; }
+		
 		public function toString(indent:uint = 0):String {
-			var str:String = StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagDefineText] " +
+			var str:String = toStringMain(indent) +
 				"ID: " + characterId + ", " +
 				"Bounds: " + textBounds + ", " +
 				"Matrix: " + textMatrix;

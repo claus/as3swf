@@ -1,6 +1,6 @@
 ﻿package com.codeazur.as3swf.data
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	
 	public class SWFSoundInfo
 	{
@@ -17,7 +17,7 @@
 		
 		protected var _envelopeRecords:Vector.<SWFSoundEnvelope>;
 		
-		public function SWFSoundInfo(data:ISWFDataInput = null) {
+		public function SWFSoundInfo(data:SWFData = null) {
 			_envelopeRecords = new Vector.<SWFSoundEnvelope>();
 			if (data != null) {
 				parse(data);
@@ -26,7 +26,7 @@
 		
 		public function get envelopeRecords():Vector.<SWFSoundEnvelope> { return _envelopeRecords; }
 		
-		public function parse(data:ISWFDataInput):void {
+		public function parse(data:SWFData):void {
 			var flags:uint = data.readUI8();
 			syncStop = ((flags & 0x20) != 0);
 			syncNoMultiple = ((flags & 0x10) != 0);

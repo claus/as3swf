@@ -1,7 +1,6 @@
 ﻿package com.codeazur.as3swf.tags
 {
-	import com.codeazur.as3swf.ISWFDataInput;
-	import com.codeazur.utils.StringUtils;
+	import com.codeazur.as3swf.SWFData;
 	
 	public class TagRemoveObject extends Tag implements ITag
 	{
@@ -12,13 +11,17 @@
 		
 		public function TagRemoveObject() {}
 		
-		public function parse(data:ISWFDataInput, length:uint):void {
+		public function parse(data:SWFData, length:uint):void {
+			cache(data, length);
 			characterId = data.readUI16();
 			depth = data.readUI16();
 		}
 		
+		override public function get type():uint { return TYPE; }
+		override public function get name():String { return "RemoveObject"; }
+		
 		public function toString(indent:uint = 0):String {
-			return StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagRemoveObject] " +
+			return toStringMain(indent) +
 				"CharacterID: " + characterId + ", " +
 				"Depth: " + depth;
 		}

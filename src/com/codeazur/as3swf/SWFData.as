@@ -4,20 +4,15 @@
 	import com.codeazur.as3swf.data.*;
 	import com.codeazur.as3swf.data.filters.*;
 	import com.codeazur.as3swf.factories.*;
+	import com.codeazur.utils.BitArray;
 
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
 	
-	public class SWFData implements ISWFDataInput
+	public class SWFData extends BitArray
 	{
-		protected var data:ByteArray;
-		
-		protected var bitsPending:uint = 0;
-		
-		public function SWFData(data:ByteArray)
-		{
-			this.data = data;
-			this.data.endian = Endian.LITTLE_ENDIAN;
+		public function SWFData() {
+			endian = Endian.LITTLE_ENDIAN;
 		}
 
 		/////////////////////////////////////////////////////////
@@ -26,39 +21,75 @@
 		
 		public function readSI8():int {
 			resetBitsPending();
-			return data.readByte();
+			return readByte();
 		}
 		
+		public function writeSI8(value:int):void {
+			resetBitsPending();
+			writeByte(value);
+		}
+
 		public function readSI16():int {
 			resetBitsPending();
-			return data.readShort();
+			return readShort();
 		}
 		
+		public function writeSI16(value:int):void {
+			resetBitsPending();
+			writeShort(value);
+		}
+
 		public function readSI32():int {
 			resetBitsPending();
-			return data.readInt();
+			return readInt();
 		}
 		
+		public function writeSI32(value:int):void {
+			resetBitsPending();
+			writeInt(value);
+		}
+
 		public function readUI8():uint {
 			resetBitsPending();
-			return data.readUnsignedByte();
+			return readUnsignedByte();
 		}
 		
+		public function writeUI8(value:uint):void {
+			resetBitsPending();
+			writeByte(value);
+		}
+
 		public function readUI16():uint {
 			resetBitsPending();
-			return data.readUnsignedShort();
+			return readUnsignedShort();
 		}
 		
+		public function writeUI16(value:uint):void {
+			resetBitsPending();
+			writeShort(value);
+		}
+
 		public function readUI24():uint {
 			resetBitsPending();
-			var loWord:uint = data.readUnsignedShort();
-			var hiByte:uint = data.readUnsignedByte();
-			return loWord | (hiByte << 16);
+			var loWord:uint = readUnsignedShort();
+			var hiByte:uint = readUnsignedByte();
+			return (hiByte << 16) | loWord;
+		}
+		
+		public function writeUI24(value:uint):void {
+			resetBitsPending();
+			writeShort(value & 0xffff);
+			writeByte(value >> 16);
 		}
 		
 		public function readUI32():uint {
 			resetBitsPending();
-			return data.readUnsignedInt();
+			return readUnsignedInt();
+		}
+		
+		public function writeUI32(value:uint):void {
+			resetBitsPending();
+			writeUnsignedInt(value);
 		}
 		
 		/////////////////////////////////////////////////////////
@@ -67,55 +98,82 @@
 		
 		public function readFIXED():Number {
 			resetBitsPending();
-			var fractional:Number = data.readUnsignedShort();
-			var integral:Number = data.readUnsignedShort();
+			var fractional:Number = readUnsignedShort();
+			var integral:Number = readShort();
 			return integral + fractional / 65536;
 		}
 		
+		public function writeFIXED(value:Number):void {
+			resetBitsPending();
+			writeShort(uint(Math.abs(value * 65536)) & 0xffff);
+			writeShort(int(Math.abs(value)));
+		}
+
 		public function readFIXED8():Number {
 			resetBitsPending();
-			var fractional:Number = data.readUnsignedByte();
-			var integral:Number = data.readUnsignedByte();
+			var fractional:Number = readUnsignedByte();
+			var integral:Number = readByte();
 			return integral + fractional / 256;
 		}
-		
+
+		public function writeFIXED8(value:Number):void {
+			resetBitsPending();
+			writeByte(uint(Math.abs(value * 256)) & 0xff);
+			writeByte(int(Math.abs(value)));
+		}
+
 		/////////////////////////////////////////////////////////
 		// Floating-point numbers
 		/////////////////////////////////////////////////////////
 		
 		public function readFLOAT():Number {
 			resetBitsPending();
-			return data.readFloat();
+			return readFloat();
 		}
 		
+		public function writeFLOAT(value:Number):void {
+			resetBitsPending();
+			writeFloat(value);
+		}
+
+		public function readDOUBLE():Number {
+			resetBitsPending();
+			return readDouble();
+		}
+
+		public function writeDOUBLE(value:Number):void {
+			resetBitsPending();
+			writeDouble(value);
+		}
+
 		public function readFLOAT16():Number {
 			resetBitsPending();
-			var word:uint = data.readUnsignedShort();
+			var word:uint = readUnsignedShort();
 			var exp:uint = (word >> 10) & 0x1f;
 			var man:uint = (word & 0x3FF);
 			return ((word & 0x8000) ? man : -man) * Math.pow(2, exp - 16);
 		}
 		
-		public function readDOUBLE():Number {
-			resetBitsPending();
-			return data.readDouble();
+		public function writeFLOAT16(value:Number):void {
+			// TODO: writeFLOAT16
+			throw new Error("writeFLOAT16() not yet implemented");
 		}
-		
+
 		/////////////////////////////////////////////////////////
 		// Encoded integer
 		/////////////////////////////////////////////////////////
 		
 		public function readEncodedU32():uint {
 			resetBitsPending();
-			var result:uint = data.readUnsignedByte();
+			var result:uint = readUnsignedByte();
 			if (result & 0x80) {
-				result = (result & 0x7f) | (data.readUnsignedByte() << 7);
+				result = (result & 0x7f) | (readUnsignedByte() << 7);
 				if (result & 0x4000) {
-					result = (result & 0x3fff) | (data.readUnsignedByte() << 14);
+					result = (result & 0x3fff) | (readUnsignedByte() << 14);
 					if (result & 0x200000) {
-						result = (result & 0x1fffff) | (data.readUnsignedByte() << 21);
+						result = (result & 0x1fffff) | (readUnsignedByte() << 21);
 						if (result & 0x10000000) {
-							result = (result & 0xfffffff) | (data.readUnsignedByte() << 28);
+							result = (result & 0xfffffff) | (readUnsignedByte() << 28);
 						}
 					}
 				}
@@ -123,6 +181,11 @@
 			return result;
 		}
 		
+		public function writeEncodedU32(value:uint):void {
+			// TODO: writeEncodedU32
+			throw new Error("writeEncodedU32() not yet implemented");
+		}
+
 		/////////////////////////////////////////////////////////
 		// Bit values
 		/////////////////////////////////////////////////////////
@@ -131,13 +194,26 @@
 			return readBits(bits);
 		}
 
+		public function writeUB(bits:uint, value:uint):void {
+			writeBits(bits, value);
+		}
+
 		public function readSB(bits:uint):int {
 			var shift:uint = 32 - bits;
 			return int(readBits(bits) << shift) >> shift;
 		}
 		
+		public function writeSB(bits:uint, value:int):void {
+			writeBits(bits, value);
+		}
+		
 		public function readFB(bits:uint):Number {
 			return Number(readSB(bits)) / 65536;
+		}
+		
+		public function writeFB(bits:uint, value:Number):void {
+			// TODO: writeFB
+			throw new Error("writeFB() not yet implemented");
 		}
 		
 		/////////////////////////////////////////////////////////
@@ -147,12 +223,17 @@
 		public function readString():String {
 			var c:uint;
 			var ba:ByteArray = new ByteArray();
-			while ((c = data.readUnsignedByte()) != 0) {
+			while ((c = readUnsignedByte()) != 0) {
 				ba.writeByte(c);
 			}
 			ba.position = 0;
 			resetBitsPending();
 			return ba.readUTFBytes(ba.length);
+		}
+		
+		public function writeString(value:String):void {
+			// TODO: writeString
+			throw new Error("writeString() not yet implemented");
 		}
 		
 		/////////////////////////////////////////////////////////
@@ -161,7 +242,12 @@
 		
 		public function readLANGCODE():uint {
 			resetBitsPending();
-			return data.readUnsignedByte();
+			return readUnsignedByte();
+		}
+		
+		public function writeLANGCODE(value:uint):void {
+			resetBitsPending();
+			writeByte(value);
 		}
 		
 		/////////////////////////////////////////////////////////
@@ -170,32 +256,51 @@
 		
 		public function readRGB():uint {
 			resetBitsPending();
-			var r:uint = data.readUnsignedByte();
-			var g:uint = data.readUnsignedByte();
-			var b:uint = data.readUnsignedByte();
+			var r:uint = readUnsignedByte();
+			var g:uint = readUnsignedByte();
+			var b:uint = readUnsignedByte();
 			return 0xff000000 | (r << 16) | (g << 8) | b;
 		}
 		
+		public function writeRGB(value:uint):void {
+			// TODO: writeRGB
+			throw new Error("writeRGB() not yet implemented");
+		}
+
 		public function readRGBA():uint {
 			resetBitsPending();
 			var rgb:uint = readRGB() & 0x00ffffff;
-			var a:uint = data.readUnsignedByte();
+			var a:uint = readUnsignedByte();
 			return a << 24 | rgb;
 		}
 		
+		public function writeRGBA(value:uint):void {
+			// TODO: writeRGBA
+			throw new Error("writeRGBA() not yet implemented");
+		}
+
 		public function readARGB():uint {
 			resetBitsPending();
-			var a:uint = data.readUnsignedByte();
+			var a:uint = readUnsignedByte();
 			var rgb:uint = readRGB() & 0x00ffffff;
 			return (a << 24) | rgb;
 		}
 		
+		public function writeARGB(value:uint):void {
+			// TODO: writeARGB
+			throw new Error("writeARGB() not yet implemented");
+		}
+
 		/////////////////////////////////////////////////////////
 		// Rectangle record
 		/////////////////////////////////////////////////////////
 		
 		public function readRECT():SWFRectangle {
 			return new SWFRectangle(this);
+		}
+		
+		public function writeRECT(value:SWFRectangle):void {
+			value.publish(this);
 		}
 		
 		/////////////////////////////////////////////////////////
@@ -206,6 +311,11 @@
 			return new SWFMatrix(this);
 		}
 		
+		public function writeMATRIX(value:SWFMatrix):void {
+			// TODO: writeMATRIX
+			throw new Error("writeMATRIX() not yet implemented");
+		}
+
 		/////////////////////////////////////////////////////////
 		// Color transform records
 		/////////////////////////////////////////////////////////
@@ -214,11 +324,20 @@
 			return new SWFColorTransform(this);
 		}
 		
+		public function writeCXFORM(value:SWFColorTransform):void {
+			// TODO: writeCXFORM
+			throw new Error("writeCXFORM() not yet implemented");
+		}
+
 		public function readCXFORMWITHALPHA():SWFColorTransformWithAlpha {
 			return new SWFColorTransformWithAlpha(this);
 		}
 		
-		
+		public function writeCXFORMWITHALPHA(value:SWFColorTransformWithAlpha):void {
+			// TODO: writeCXFORMWITHALPHA
+			throw new Error("writeCXFORMWITHALPHA() not yet implemented");
+		}
+
 		/////////////////////////////////////////////////////////
 		// Shape and shape records
 		/////////////////////////////////////////////////////////
@@ -268,7 +387,7 @@
 			if (readUI8() == 0) {
 				return null;
 			} else {
-				data.position--;
+				position--;
 				return new SWFButtonRecord(this, level);
 			}
 		}
@@ -296,7 +415,7 @@
 			if (readUI8() == 0) {
 				return null;
 			} else {
-				data.position--;
+				position--;
 				return new SWFTextRecord(this, glyphBits, advanceBits, previousRecord, level);
 			}
 		}
@@ -390,64 +509,32 @@
 		// etc
 		/////////////////////////////////////////////////////////
 		
-		public function uncompress():void {
-			var position:uint = data.position;
+		override public function uncompress(algorithm:String = null):void {
+			var pos:uint = position;
 			var ba:ByteArray = new ByteArray();
-			data.readBytes(ba);
+			readBytes(ba);
 			ba.position = 0;
 			ba.uncompress();
-			data.length = data.position = position;
-			data.writeBytes(ba);
-			data.position = position;
+			length = position = pos;
+			writeBytes(ba);
+			position = pos;
 		}
 		
-		
-		public function get position():uint {
-			return data.position;
-		}
-		
-		public function resetBitsPending():void {
-			bitsPending = 0;
-		}
-
-		public function readBytes(bytes:ByteArray, offset:uint = 0, length:uint = 0):void {
-			data.readBytes(bytes, offset, length);
-		}
 		
 		public function skipBytes(length:uint):void {
-			data.position += length;
+			position += length;
 		}
 		
 		
 		public function dump(length:uint, rewind:uint = 0):void {
-			var pos:uint = data.position;
-			data.position -= rewind;
+			var pos:uint = position;
+			position -= rewind;
 			var str:String = "bitsPending:" + bitsPending + ", ";
 			for (var i:uint = 0; i < length; i++) {
-				str += data.readUnsignedByte().toString(16) + " ";
+				str += readUnsignedByte().toString(16) + " ";
 			}
-			data.position = pos;
+			position = pos;
 			trace(str);
-		}
-		
-		
-		protected function readBits(bits:uint, bitBuffer:uint = 0):uint {
-			if (bits == 0) { return bitBuffer; }
-			var partial:uint;
-			var bitsConsumed:uint;
-			if (bitsPending > 0) {
-				var byte:uint = data[data.position - 1] & (0xff >> (8 - bitsPending));
-				bitsConsumed = Math.min(bitsPending, bits);
-				bitsPending -= bitsConsumed;
-				partial = byte >> bitsPending;
-			} else {
-				bitsConsumed = Math.min(8, bits);
-				bitsPending = 8 - bitsConsumed;
-				partial = data.readUnsignedByte() >> bitsPending;
-			}
-			bits -= bitsConsumed;
-			bitBuffer = (bitBuffer << bitsConsumed) | partial;
-			return (bits > 0) ? readBits(bits, bitBuffer) : bitBuffer;
 		}
 	}
 }

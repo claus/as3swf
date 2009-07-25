@@ -1,8 +1,7 @@
 ﻿package com.codeazur.as3swf.tags
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.consts.BitmapType;
-	import com.codeazur.utils.StringUtils;
 
 	import flash.utils.ByteArray;
 	
@@ -18,7 +17,8 @@
 		
 		public function get bitmapAlphaData():ByteArray { return _bitmapAlphaData; }
 		
-		override public function parse(data:ISWFDataInput, length:uint):void {
+		override public function parse(data:SWFData, length:uint):void {
+			cache(data, length);
 			characterId = data.readUI16();
 			var alphaDataOffset:uint = data.readUI32();
 			data.readBytes(_bitmapData, 0, alphaDataOffset);
@@ -35,8 +35,11 @@
 			}
 		}
 		
+		override public function get type():uint { return TYPE; }
+		override public function get name():String { return "DefineBitsJPEG3"; }
+		
 		override public function toString(indent:uint = 0):String {
-			var str:String = StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagDefineBitsJPEG3] " +
+			var str:String = toStringMain(indent) +
 				"ID: " + characterId + ", " +
 				"Type: " + BitmapType.toString(bitmapType) + ", " +
 				"HasAlphaData: " + (_bitmapAlphaData.length > 0);

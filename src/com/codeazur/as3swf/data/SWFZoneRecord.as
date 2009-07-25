@@ -1,35 +1,39 @@
 ﻿package com.codeazur.as3swf.data
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	
 	public class SWFZoneRecord
 	{
 		public var maskX:Boolean;
 		public var maskY:Boolean;
 
-		protected var _data:Vector.<SWFZoneData>;
+		protected var _zoneData:Vector.<SWFZoneData>;
 		
-		public function SWFZoneRecord(data:ISWFDataInput = null) {
-			_data = new Vector.<SWFZoneData>();
+		public function SWFZoneRecord(data:SWFData = null) {
+			_zoneData = new Vector.<SWFZoneData>();
 			if (data != null) {
 				parse(data);
 			}
 		}
 		
-		public function get data():Vector.<SWFZoneData> { return _data; }
+		public function get zoneData():Vector.<SWFZoneData> { return _zoneData; }
 		
-		public function parse(data:ISWFDataInput):void {
+		public function parse(data:SWFData):void {
 			var numZoneData:uint = data.readUI8();
 			for (var i:uint = 0; i < numZoneData; i++) {
-				_data.push(data.readZONEDATA());
+				_zoneData.push(data.readZONEDATA());
 			}
 			var mask:uint = data.readUI8();
 			maskX = ((mask & 0x01) != 0);
 			maskY = ((mask & 0x02) != 0);
 		}
 		
-		public function toString():String {
-			return data.toString() + "," + maskX + "," + maskY;
+		public function toString(indent:uint = 0):String {
+			var str:String = "MaskY: " + maskY + ", MaskX: " + maskX;
+			for (var i:uint = 0; i < _zoneData.length; i++) {
+				str += ", " + i + ": " + _zoneData[i].toString();
+			}
+			return str;
 		}
 	}
 }

@@ -1,6 +1,6 @@
 ﻿package com.codeazur.as3swf.data
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	
 	public class SWFTextRecord
 	{
@@ -18,7 +18,7 @@
 		
 		protected var _glyphEntries:Vector.<SWFGlyphEntry>;
 		
-		public function SWFTextRecord(data:ISWFDataInput = null, glyphBits:uint = 0, advanceBits:uint = 0, previousRecord:SWFTextRecord = null, level:uint = 1) {
+		public function SWFTextRecord(data:SWFData = null, glyphBits:uint = 0, advanceBits:uint = 0, previousRecord:SWFTextRecord = null, level:uint = 1) {
 			_glyphEntries = new Vector.<SWFGlyphEntry>();
 			if (data != null) {
 				parse(data, glyphBits, advanceBits, previousRecord, level);
@@ -27,7 +27,7 @@
 		
 		public function get glyphEntries():Vector.<SWFGlyphEntry> { return _glyphEntries; }
 		
-		public function parse(data:ISWFDataInput, glyphBits:uint, advanceBits:uint, previousRecord:SWFTextRecord = null, level:uint = 1):void {
+		public function parse(data:SWFData, glyphBits:uint, advanceBits:uint, previousRecord:SWFTextRecord = null, level:uint = 1):void {
 			var styles:uint = data.readUI8();
 			type = styles >> 7;
 			hasFont = ((styles & 0x08) != 0);

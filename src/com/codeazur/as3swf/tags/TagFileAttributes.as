@@ -1,7 +1,6 @@
 ﻿package com.codeazur.as3swf.tags
 {
-	import com.codeazur.as3swf.ISWFDataInput;
-	import com.codeazur.utils.StringUtils;
+	import com.codeazur.as3swf.SWFData;
 	
 	public class TagFileAttributes extends Tag implements ITag
 	{
@@ -15,7 +14,8 @@
 
 		public function TagFileAttributes() {}
 		
-		public function parse(data:ISWFDataInput, length:uint):void {
+		public function parse(data:SWFData, length:uint):void {
+			cache(data, length);
 			var flags:uint = data.readUI8();
 			useDirectBlit = ((flags & 0x40) != 0);
 			useGPU = ((flags & 0x20) != 0);
@@ -25,8 +25,11 @@
 			data.skipBytes(3);
 		}
 		
+		override public function get type():uint { return TYPE; }
+		override public function get name():String { return "FileAttributes"; }
+		
 		public function toString(indent:uint = 0):String {
-			return StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagFileAttributes] " +
+			return toStringMain(indent) +
 				"AS3: " + actionscript3 + ", " +
 				"HasMetadata: " + hasMetadata + ", " +
 				"UseDirectBlit: " + useDirectBlit + ", " +

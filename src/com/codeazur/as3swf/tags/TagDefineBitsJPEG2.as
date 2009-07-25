@@ -1,8 +1,7 @@
 ﻿package com.codeazur.as3swf.tags
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.consts.BitmapType;
-	import com.codeazur.utils.StringUtils;
 	
 	public class TagDefineBitsJPEG2 extends TagDefineBits implements ITag
 	{
@@ -12,7 +11,7 @@
 		
 		public function TagDefineBitsJPEG2() {}
 		
-		override public function parse(data:ISWFDataInput, length:uint):void {
+		override public function parse(data:SWFData, length:uint):void {
 			super.parse(data, length);
 			if (bitmapData[0] == 0xff && (bitmapData[1] == 0xd8 || bitmapData[1] == 0xd9)) {
 				bitmapType = BitmapType.JPEG;
@@ -23,8 +22,11 @@
 			}
 		}
 		
+		override public function get type():uint { return TYPE; }
+		override public function get name():String { return "DefineBitsJPEG2"; }
+		
 		override public function toString(indent:uint = 0):String {
-			var str:String = StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagDefineBitsJPEG2] " +
+			var str:String = toStringMain(indent) +
 				"ID: " + characterId + ", " +
 				"Type: " + BitmapType.toString(bitmapType);
 			return str;

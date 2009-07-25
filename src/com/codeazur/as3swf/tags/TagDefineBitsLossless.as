@@ -1,8 +1,7 @@
 ﻿package com.codeazur.as3swf.tags
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.consts.BitmapFormat;
-	import com.codeazur.utils.StringUtils;
 
 	import flash.utils.ByteArray;
 	
@@ -24,7 +23,8 @@
 		
 		public function get zlibBitmapData():ByteArray { return _zlibBitmapData; }
 		
-		public function parse(data:ISWFDataInput, length:uint):void {
+		public function parse(data:SWFData, length:uint):void {
+			cache(data, length);
 			characterId = data.readUI16();
 			bitmapFormat = data.readUI8();
 			bitmapWidth = data.readUI16();
@@ -35,8 +35,11 @@
 			data.readBytes(zlibBitmapData, 0, length - ((bitmapFormat == BitmapFormat.BIT_8) ? 8 : 7))
 		}
 		
+		override public function get type():uint { return TYPE; }
+		override public function get name():String { return "DefineBitsLossless"; }
+		
 		public function toString(indent:uint = 0):String {
-			return StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagDefineBitsLossless] " +
+			return toStringMain(indent) +
 				"ID: " + characterId + ", " +
 				"Format: " + BitmapFormat.toString(bitmapFormat) + ", " +
 				"Size: (" + bitmapWidth + "," + bitmapHeight + ")";

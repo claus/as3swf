@@ -1,11 +1,9 @@
 ﻿package com.codeazur.as3swf.tags
 {
-	import com.codeazur.as3swf.ISWFDataInput;
 	import com.codeazur.as3swf.data.consts.SoundRate;
 	import com.codeazur.as3swf.data.consts.SoundSize;
 	import com.codeazur.as3swf.data.consts.SoundType;
 	import com.codeazur.as3swf.data.consts.SoundCompression;
-	import com.codeazur.utils.StringUtils;
 	
 	public class TagSoundStreamHead2 extends TagSoundStreamHead implements ITag
 	{
@@ -13,8 +11,11 @@
 		
 		public function TagSoundStreamHead2() {}
 		
+		override public function get type():uint { return TYPE; }
+		override public function get name():String { return "SoundStreamHead2"; }
+		
 		override public function toString(indent:uint = 0):String {
-			var str:String = StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagSoundStreamHead2] ";
+			var str:String = toStringMain(indent);
 			str += "Playback: (";
 			str += SoundRate.toString(playbackSoundRate) + ",";
 			str += SoundSize.toString(playbackSoundSize) + ",";

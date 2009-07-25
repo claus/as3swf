@@ -1,7 +1,7 @@
 ﻿package com.codeazur.as3swf.actions.swf4
 {
 	import com.codeazur.as3swf.actions.*;
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	
 	public class ActionGetURL2 extends Action implements IAction
 	{
@@ -13,7 +13,7 @@
 			super(code, length);
 		}
 		
-		override public function parse(data:ISWFDataInput):void {
+		override public function parse(data:SWFData):void {
 			sendVarsMethod = data.readUB(2);
 			data.readUB(4);
 			loadTargetFlag = (data.readUB(1) == 1);

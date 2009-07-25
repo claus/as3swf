@@ -1,7 +1,6 @@
 ﻿package com.codeazur.as3swf.tags
 {
-	import com.codeazur.as3swf.ISWFDataInput;
-	import com.codeazur.utils.StringUtils;
+	import com.codeazur.as3swf.SWFData;
 	
 	public class TagDefineFontName extends Tag implements ITag
 	{
@@ -13,14 +12,18 @@
 		
 		public function TagDefineFontName() {}
 		
-		public function parse(data:ISWFDataInput, length:uint):void {
+		public function parse(data:SWFData, length:uint):void {
+			cache(data, length);
 			fontId = data.readUI16();
 			fontName = data.readString();
 			fontCopyright = data.readString();
 		}
 		
+		override public function get type():uint { return TYPE; }
+		override public function get name():String { return "DefineFontName"; }
+		
 		public function toString(indent:uint = 0):String {
-			return StringUtils.repeat(indent) + "[" + StringUtils.printf("%02d", TYPE) + ":TagDefineFontName] " +
+			return toStringMain(indent) +
 				"FontID: " + fontId + ", " +
 				"Name: " + fontName + ", " +
 				"Copyright: " + fontCopyright;

@@ -1,6 +1,6 @@
 ﻿package com.codeazur.as3swf.data.filters
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	
 	public class FilterGradientGlow extends Filter implements IFilter
 	{
@@ -27,7 +27,7 @@
 		public function get gradientColors():Vector.<uint> { return _gradientColors; }
 		public function get gradientRatios():Vector.<uint> { return _gradientRatios; }
 		
-		override public function parse(data:ISWFDataInput):void {
+		override public function parse(data:SWFData):void {
 			numColors = data.readUI8();
 			var i:uint;
 			for (i = 0; i < numColors; i++) {

@@ -1,6 +1,6 @@
 ﻿package com.codeazur.as3swf.data
 {
-	import com.codeazur.as3swf.ISWFDataInput;
+	import com.codeazur.as3swf.SWFData;
 	
 	public class SWFShapeRecordCurvedEdge extends SWFShapeRecord
 	{
@@ -11,12 +11,12 @@
 		
 		protected var numBits:uint;
 
-		public function SWFShapeRecordCurvedEdge(data:ISWFDataInput = null, numBits:uint = 0, level:uint = 1) {
+		public function SWFShapeRecordCurvedEdge(data:SWFData = null, numBits:uint = 0, level:uint = 1) {
 			this.numBits = numBits;
 			super(data, level);
 		}
 		
-		override public function parse(data:ISWFDataInput = null, level:uint = 1):void {
+		override public function parse(data:SWFData = null, level:uint = 1):void {
 			controlDeltaX = data.readSB(numBits);
 			controlDeltaY = data.readSB(numBits);
 			anchorDeltaX = data.readSB(numBits);

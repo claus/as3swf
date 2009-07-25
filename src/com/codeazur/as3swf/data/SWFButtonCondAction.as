@@ -1,7 +1,7 @@
 ﻿package com.codeazur.as3swf.data
 {
 	import com.codeazur.as3swf.SWFData;
-	import com.codeazur.as3swf.actions.IAction;
+	import com.codeazur.as3swf.data.actions.IAction;
 	
 	public class SWFButtonCondAction
 	{

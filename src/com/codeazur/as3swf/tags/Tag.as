@@ -1,7 +1,7 @@
 ﻿package com.codeazur.as3swf.tags
 {
-	import com.codeazur.as3swf.data.SWFRecordHeader;
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.data.SWFRecordHeader;
 	import com.codeazur.utils.StringUtils;
 	
 	import flash.utils.ByteArray;

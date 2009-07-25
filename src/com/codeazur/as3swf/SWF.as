@@ -77,7 +77,8 @@
 		}
 		
 		public function publish(data:SWFData):void {
-			data.writeUI8(compressed ? 0x46 : 0x46);
+			compressed = false;
+			data.writeUI8(compressed ? 0x43 : 0x46);
 			data.writeUI8(0x57);
 			data.writeUI8(0x53);
 			data.writeUI8(version);

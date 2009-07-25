@@ -1,11 +1,11 @@
 ﻿package com.codeazur.as3swf.factories
 {
-	import com.codeazur.as3swf.actions.*;
-	import com.codeazur.as3swf.actions.swf3.*;
-	import com.codeazur.as3swf.actions.swf4.*;
-	import com.codeazur.as3swf.actions.swf5.*;
-	import com.codeazur.as3swf.actions.swf6.*;
-	import com.codeazur.as3swf.actions.swf7.*;
+	import com.codeazur.as3swf.data.actions.*;
+	import com.codeazur.as3swf.data.actions.swf3.*;
+	import com.codeazur.as3swf.data.actions.swf4.*;
+	import com.codeazur.as3swf.data.actions.swf5.*;
+	import com.codeazur.as3swf.data.actions.swf6.*;
+	import com.codeazur.as3swf.data.actions.swf7.*;
 	
 	public class SWFActionFactory
 	{

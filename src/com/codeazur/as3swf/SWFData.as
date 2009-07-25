@@ -1,7 +1,7 @@
 ﻿package com.codeazur.as3swf
 {
-	import com.codeazur.as3swf.actions.IAction;
 	import com.codeazur.as3swf.data.*;
+	import com.codeazur.as3swf.data.actions.IAction;
 	import com.codeazur.as3swf.data.filters.*;
 	import com.codeazur.as3swf.factories.*;
 	import com.codeazur.utils.BitArray;

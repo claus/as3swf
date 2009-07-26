@@ -8,6 +8,7 @@
 	{
 		function get type():uint;
 		function get length():uint;
+		function get version():uint;
 		function get raw():ByteArray;
 		function parse(data:SWFData, length:uint):void;
 		function publish(data:SWFData):void;

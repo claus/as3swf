@@ -26,7 +26,7 @@
 			spriteId = data.readUI16();
 			frameCount = data.readUI16();
 			while (true) {
-				var header:SWFRecordHeader = Tag.readHeader(data);
+				var header:SWFRecordHeader = data.readTagHeader();
 				var tag:ITag = SWFTagFactory.create(header.type);
 				tag.parse(data, header.length);
 				_controlTags.push(tag);

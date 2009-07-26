@@ -18,6 +18,11 @@
 			name = data.readString();
 		}
 		
+		public function publish(data:SWFData):void {
+			data.writeUI16(tagId);
+			data.writeString(name);
+		}
+		
 		public function toString():String {
 			return "TagID: " + tagId + ", Name: " + name;
 		}

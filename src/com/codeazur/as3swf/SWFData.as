@@ -232,8 +232,8 @@
 		}
 		
 		public function writeString(value:String):void {
-			// TODO: writeString
-			throw new Error("writeString() not yet implemented");
+			writeUTFBytes(value);
+			writeByte(0);
 		}
 		
 		/////////////////////////////////////////////////////////
@@ -491,6 +491,10 @@
 			return new SWFSymbol(this);
 		}
 		
+		public function writeSYMBOL(value:SWFSymbol):void {
+			value.publish(this);
+		}
+		
 		/////////////////////////////////////////////////////////
 		// Sound records
 		/////////////////////////////////////////////////////////
@@ -503,7 +507,32 @@
 			return new SWFSoundEnvelope(this);
 		}
 		
+		/////////////////////////////////////////////////////////
+		// Tag header
+		/////////////////////////////////////////////////////////
 		
+		public function readTagHeader():SWFRecordHeader {
+			var tagTypeAndLength:uint = readUI16();
+			var tagLength:uint = tagTypeAndLength & 0x3f;
+			if (tagLength == 0x3f) {
+				// The SWF10 spec sez that this is a signed int.
+				// Shouldn't it be an unsigned int?
+				tagLength = readSI32();
+			}
+			return new SWFRecordHeader(tagTypeAndLength >> 6, tagLength);
+		}
+
+		public function writeTagHeader(header:SWFRecordHeader):void {
+			var tagLength:uint = header.length;
+			if (tagLength < 0x3f) {
+				writeUI16((header.type << 6) | tagLength);
+			} else {
+				writeUI16((header.type << 6) | 0x3f);
+				// The SWF10 spec sez that this is a signed int.
+				// Shouldn't it be an unsigned int?
+				writeSI32(tagLength);
+			}
+		}
 		
 		/////////////////////////////////////////////////////////
 		// etc

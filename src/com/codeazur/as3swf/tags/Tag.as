@@ -17,9 +17,11 @@
 		
 		public function get type():uint { return _type; }
 		public function get name():String { return "????"; }
+		public function get version():uint { return 0; }
 		public function get length():uint { return _raw.length; }
 		public function get raw():ByteArray { return _raw; }
 		
+		// this will probably go away as soon as all tags can publish
 		public function cache(data:SWFData, length:uint):void {
 			if (length > 0) {
 				var pos:uint = data.position;
@@ -29,27 +31,8 @@
 		}
 		
 		public function publish(data:SWFData):void {
-			writeHeader(data, new SWFRecordHeader(type, length));
+			data.writeTagHeader(new SWFRecordHeader(type, length));
 			data.writeBytes(_raw, 0, length);
-		}
-		
-		public static function readHeader(data:SWFData):SWFRecordHeader {
-			var typeAndLength:uint = data.readUI16();
-			var length:uint = typeAndLength & 0x3f;
-			if (length == 0x3f) {
-				length = data.readSI32();
-			}
-			return new SWFRecordHeader(typeAndLength >> 6, length);
-		}
-
-		public static function writeHeader(data:SWFData, header:SWFRecordHeader):void {
-			var length:uint = header.length;
-			if (header.length < 0x3f) {
-				data.writeUI16((header.type << 6) | header.length);
-			} else {
-				data.writeUI16((header.type << 6) | 0x3f);
-				data.writeSI32(header.length);
-			}
 		}
 		
 		protected function toStringMain(indent:uint = 0):String {

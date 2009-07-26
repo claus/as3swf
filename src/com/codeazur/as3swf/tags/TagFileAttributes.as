@@ -1,5 +1,6 @@
 ﻿package com.codeazur.as3swf.tags
 {
+	import com.codeazur.as3swf.data.SWFRecordHeader;
 	import com.codeazur.as3swf.SWFData;
 	
 	public class TagFileAttributes extends Tag implements ITag
@@ -15,7 +16,6 @@
 		public function TagFileAttributes() {}
 		
 		public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			var flags:uint = data.readUI8();
 			useDirectBlit = ((flags & 0x40) != 0);
 			useGPU = ((flags & 0x20) != 0);
@@ -25,8 +25,23 @@
 			data.skipBytes(3);
 		}
 		
+		override public function publish(data:SWFData):void {
+			data.writeTagHeader(new SWFRecordHeader(type, 4));
+			var flags:uint = 0;
+			if (useNetwork) { flags |= 0x01; }
+			if (actionscript3) { flags |= 0x08; }
+			if (hasMetadata) { flags |= 0x10; }
+			if (useGPU) { flags |= 0x20; }
+			if (useDirectBlit) { flags |= 0x40; }
+			data.writeUI8(flags);
+			data.writeUI8(0);
+			data.writeUI8(0);
+			data.writeUI8(0);
+		}
+		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "FileAttributes"; }
+		override public function get version():uint { return 8; }
 		
 		public function toString(indent:uint = 0):String {
 			return toStringMain(indent) +

@@ -65,7 +65,7 @@
 			frameCount = data.readUI16();
 			var t:uint = getTimer();
 			while (true) {
-				var header:SWFRecordHeader = Tag.readHeader(data);
+				var header:SWFRecordHeader = data.readTagHeader();
 				var tag:ITag = SWFTagFactory.create(header.type);
 				tag.parse(data, header.length);
 				tags.push(tag);

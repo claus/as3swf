@@ -47,7 +47,7 @@ Alpha version, under active development.
 	59	x		DoInitAction	
 	60	x		DefineVideoStream	
 	61	x		VideoFrame	
-	62			DefineFontInfo2	
+	62	x		DefineFontInfo2	
 	64			EnableDebugger2	
 	65			ScriptLimits	
 	66			SetTabIndex	

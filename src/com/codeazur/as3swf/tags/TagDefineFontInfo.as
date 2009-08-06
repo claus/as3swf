@@ -16,8 +16,11 @@
 		public var italic:Boolean;
 		public var bold:Boolean;
 		public var wideCodes:Boolean;
+		public var langCode:uint = 0;
 		
 		protected var _codeTable:Vector.<uint>;
+		
+		protected var langCodeLength:uint = 0;
 		
 		public function TagDefineFontInfo() {
 			_codeTable = new Vector.<uint>();
@@ -44,14 +47,24 @@
 			bold = ((flags & 0x02) == 1);
 			wideCodes = ((flags & 0x01) == 1);
 			
-			var numGlyphs:uint = length - fontNameLen - 4;
+			parseLangCode(data);
+			
+			var numGlyphs:uint = length - fontNameLen - langCodeLength - 4;
 			for (var i:uint = 0; i < numGlyphs; i++) {
 				_codeTable.push(wideCodes ? data.readUI16() : data.readUI8());
 			}
 		}
 		
+		protected function parseLangCode(data:SWFData):void {
+			// Does nothing here.
+			// Overridden in TagDefineFontInfo2, where it:
+			// - reads langCode
+			// - sets langCodeLength to 1
+		}
+		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "DefineFontInfo"; }
+		override public function get version():uint { return 1; }
 		
 		public function toString(indent:uint = 0):String {
 			return toStringMain(indent) +

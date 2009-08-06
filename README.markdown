@@ -50,7 +50,7 @@ Alpha version, under active development.
 	62	x		DefineFontInfo2	
 	64	x		EnableDebugger2	
 	65	x	x	ScriptLimits	
-	66			SetTabIndex	
+	66	x	x	SetTabIndex	
 	69	x	x	FileAttributes	
 	70			PlaceObject3	
 	71			ImportAssets2	

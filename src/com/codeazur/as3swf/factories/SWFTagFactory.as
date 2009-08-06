@@ -52,6 +52,7 @@
 				/* 62 */ case TagDefineFontInfo2.TYPE: return new TagDefineFontInfo2();
 				/* 64 */ case TagEnableDebugger2.TYPE: return new TagEnableDebugger2();
 				/* 65 */ case TagScriptLimits.TYPE: return new TagScriptLimits();
+				/* 66 */ case TagSetTabIndex.TYPE: return new TagSetTabIndex();
 				/* 69 */ case TagFileAttributes.TYPE: return new TagFileAttributes();
 				/* 73 */ case TagDefineFontAlignZones.TYPE: return new TagDefineFontAlignZones();
 				/* 75 */ case TagDefineFont3.TYPE: return new TagDefineFont3();

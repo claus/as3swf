@@ -11,8 +11,11 @@
 		public function TagSetBackgroundColor() {}
 		
 		public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			color = data.readRGB();
+		}
+		
+		public function publish(data:SWFData):void {
+			throw(new Error("TODO: implement publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

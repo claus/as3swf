@@ -15,7 +15,6 @@
 		public function TagDefineMorphShape2() {}
 		
 		override public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			characterId = data.readUI16();
 			startBounds = data.readRECT();
 			endBounds = data.readRECT();

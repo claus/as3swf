@@ -11,8 +11,11 @@
 		public function TagFrameLabel() {}
 		
 		public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			frameName = data.readString();
+		}
+		
+		public function publish(data:SWFData):void {
+			throw(new Error("TODO: implement publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

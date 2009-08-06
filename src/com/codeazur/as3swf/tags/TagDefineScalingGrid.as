@@ -13,9 +13,12 @@
 		public function TagDefineScalingGrid() {}
 		
 		public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			characterId = data.readUI16();
 			splitter = data.readRECT();
+		}
+		
+		public function publish(data:SWFData):void {
+			throw(new Error("TODO: implement publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

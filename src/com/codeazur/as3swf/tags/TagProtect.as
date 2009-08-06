@@ -17,10 +17,13 @@
 		public function get password():ByteArray { return _password; }
 		
 		public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			if (length > 0) {
 				data.readBytes(_password, 0, length);
 			}
+		}
+		
+		public function publish(data:SWFData):void {
+			throw(new Error("TODO: implement publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

@@ -17,11 +17,14 @@
 		public function get records():Vector.<IAction> { return _records; }
 		
 		public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			var action:IAction;
 			while ((action = data.readACTIONRECORD()) != null) {
 				_records.push(action);
 			}
+		}
+		
+		public function publish(data:SWFData):void {
+			throw(new Error("TODO: implement publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

@@ -12,7 +12,7 @@
 			// Do nothing. The End tag has no body.
 		}
 		
-		override public function publish(data:SWFData):void {
+		public function publish(data:SWFData):void {
 			data.writeTagHeader(type, 0);
 		}
 		

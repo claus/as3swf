@@ -23,7 +23,6 @@
 		public function get records():Vector.<SWFTextRecord> { return _records; }
 		
 		public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			characterId = data.readUI16();
 			textBounds = data.readRECT();
 			textMatrix = data.readMATRIX();
@@ -33,6 +32,10 @@
 			while ((record = data.readTEXTRECORD(glyphBits, advanceBits, record)) != null) {
 				_records.push(record);
 			}
+		}
+		
+		public function publish(data:SWFData):void {
+			throw(new Error("TODO: implement publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

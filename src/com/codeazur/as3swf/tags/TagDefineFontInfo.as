@@ -30,8 +30,6 @@
 		
 		public function parse(data:SWFData, length:uint):void
 		{
-			cache(data, length);
-
 			fontId = data.readUI16();
 
 			var fontNameLen:uint = data.readUI8();
@@ -60,6 +58,10 @@
 			// Overridden in TagDefineFontInfo2, where it:
 			// - reads langCode
 			// - sets langCodeLength to 1
+		}
+		
+		public function publish(data:SWFData):void {
+			throw(new Error("TODO: implement publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

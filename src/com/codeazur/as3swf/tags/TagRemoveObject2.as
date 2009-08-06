@@ -11,8 +11,11 @@
 		public function TagRemoveObject2() {}
 		
 		public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			depth = data.readUI16();
+		}
+		
+		public function publish(data:SWFData):void {
+			throw(new Error("TODO: implement publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

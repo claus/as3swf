@@ -11,7 +11,6 @@
 		public function TagDefineText2() {}
 		
 		override public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			characterId = data.readUI16();
 			textBounds = data.readRECT();
 			textMatrix = data.readMATRIX();

@@ -21,7 +21,6 @@
 		public function get frameLabels():Vector.<SWFFrameLabel> { return _frameLabels; }
 		
 		public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			var i:uint;
 			var sceneCount:uint = data.readEncodedU32();
 			for (i = 0; i < sceneCount; i++) {
@@ -35,6 +34,10 @@
 				var frameLabel:String = data.readString();
 				_frameLabels.push(new SWFFrameLabel(frameNumber, frameLabel));
 			}
+		}
+
+		public function publish(data:SWFData):void {
+			throw(new Error("TODO: implement publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

@@ -28,7 +28,6 @@
 		public function get surfaceFilterList():Vector.<IFilter> { return _surfaceFilterList; }
 		
 		override public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			var flags1:uint = data.readUI8();
 			hasClipActions = (flags1 & 0x80) != 0;
 			hasClipDepth = (flags1 & 0x40) != 0;
@@ -83,6 +82,10 @@
 				//_clipActions = null;
 				throw(new Error("CLIPACTIONS not yet supported."));
 			}
+		}
+		
+		override public function publish(data:SWFData):void {
+			throw(new Error("TODO: implement publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

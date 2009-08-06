@@ -44,8 +44,6 @@
 		
 		override public function parse(data:SWFData, length:uint):void
 		{
-			cache(data, length);
-
 			fontId = data.readUI16();
 			
 			var flags:uint = data.readUI8();

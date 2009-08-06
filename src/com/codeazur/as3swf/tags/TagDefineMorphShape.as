@@ -28,7 +28,6 @@
 		public function get morphLineStyles():Vector.<SWFMorphLineStyle> { return _morphLineStyles; }
 		
 		public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			characterId = data.readUI16();
 			startBounds = data.readRECT();
 			endBounds = data.readRECT();
@@ -52,6 +51,10 @@
 			}
 			startEdges = data.readSHAPE();
 			endEdges = data.readSHAPE();
+		}
+		
+		public function publish(data:SWFData):void {
+			throw(new Error("TODO: implement publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

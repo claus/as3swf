@@ -13,9 +13,12 @@
 		public function TagStartSound() {}
 		
 		public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			soundId = data.readUI16();
 			soundInfo = data.readSOUNDINFO();
+		}
+		
+		public function publish(data:SWFData):void {
+			throw(new Error("TODO: implement publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

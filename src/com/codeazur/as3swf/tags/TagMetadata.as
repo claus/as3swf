@@ -14,7 +14,7 @@
 			xmlString = data.readString();
 		}
 		
-		override public function publish(data:SWFData):void {
+		public function publish(data:SWFData):void {
 			var body:SWFData = new SWFData();
 			body.writeString(xmlString);
 			data.writeTagHeader(type, body.length);

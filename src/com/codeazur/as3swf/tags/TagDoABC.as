@@ -20,12 +20,15 @@
 		public function get bytes():ByteArray { return _bytes; }
 
 		public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			var pos:uint = data.position;
 			var flags:uint = data.readUI32();
 			lazyInitializeFlag = ((flags & 0x01) != 0);
 			abcName = data.readString();
 			data.readBytes(bytes, 0, length - (data.position - pos));
+		}
+		
+		public function publish(data:SWFData):void {
+			throw(new Error("TODO: implement publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

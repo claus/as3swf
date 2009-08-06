@@ -23,7 +23,6 @@
 		public function get fontData():ByteArray { return _fontData; }
 		
 		public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			var pos:uint = data.position;
 			fontId = data.readUI16();
 			var flags:uint = data.readUI8();
@@ -34,6 +33,10 @@
 			if (hasFontData && length > data.position - pos) {
 				data.readBytes(_fontData, 0, length - (data.position - pos));
 			}
+		}
+		
+		public function publish(data:SWFData):void {
+			throw(new Error("TODO: implement publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

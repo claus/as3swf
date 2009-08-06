@@ -34,7 +34,7 @@
 			data.readBytes(zlibBitmapData, 0, length - ((bitmapFormat == BitmapFormat.BIT_8) ? 8 : 7));
 		}
 		
-		override public function publish(data:SWFData):void {
+		public function publish(data:SWFData):void {
 			var body:SWFData = new SWFData();
 			body.writeUI16(characterId);
 			body.writeUI8(bitmapFormat);

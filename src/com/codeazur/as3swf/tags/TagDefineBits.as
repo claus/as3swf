@@ -23,7 +23,7 @@
 			data.readBytes(_bitmapData, 0, length - 2);
 		}
 		
-		override public function publish(data:SWFData):void {
+		public function publish(data:SWFData):void {
 			data.writeTagHeader(type, _bitmapData.length + 2);
 			data.writeUI16(characterId);
 			data.writeBytes(_bitmapData, 0, _bitmapData.length);

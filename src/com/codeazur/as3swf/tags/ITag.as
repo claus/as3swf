@@ -7,11 +7,14 @@
 	public interface ITag
 	{
 		function get type():uint;
-		function get length():uint;
+		function get name():String;
 		function get version():uint;
-		function get raw():ByteArray;
+		
 		function parse(data:SWFData, length:uint):void;
 		function publish(data:SWFData):void;
 		function toString(indent:uint = 0):String;
+
+		function get raw():ByteArray;
+		function set raw(value:ByteArray):void;
 	}
 }

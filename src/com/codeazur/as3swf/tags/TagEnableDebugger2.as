@@ -9,11 +9,14 @@
 		public function TagEnableDebugger2() {}
 		
 		override public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			data.readUI16(); // reserved, always 0
 			if (length > 2) {
 				data.readBytes(_password, 0, length - 2);
 			}
+		}
+		
+		override public function publish(data:SWFData):void {
+			throw(new Error("TODO: implement publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

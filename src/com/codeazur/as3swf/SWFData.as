@@ -583,10 +583,20 @@
 			writeBytes(ba);
 		}
 		
+		public function readRawTag():ByteArray {
+			var pos:uint = position;
+			var header:SWFRecordHeader = readTagHeader();
+			var tagHeaderSize:uint = position - pos;
+			var raw:ByteArray = new ByteArray();
+			position = pos;
+			readBytes(raw, 0, tagHeaderSize + header.length);
+			position = pos;
+			return raw;
+		}
+		
 		public function skipBytes(length:uint):void {
 			position += length;
 		}
-		
 		
 		public function dump(length:uint, offset:int = 0):void {
 			var pos:uint = position;

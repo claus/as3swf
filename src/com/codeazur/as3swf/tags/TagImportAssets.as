@@ -26,7 +26,7 @@
 			}
 		}
 
-		override public function publish(data:SWFData):void {
+		public function publish(data:SWFData):void {
 			var body:SWFData = new SWFData();
 			body.writeString(url);
 			var numSymbols:uint = _symbols.length;

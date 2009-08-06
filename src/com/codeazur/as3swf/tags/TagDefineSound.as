@@ -27,7 +27,6 @@
 		public function get soundData():ByteArray { return _soundData; }
 		
 		public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			soundId = data.readUI16();
 			soundFormat = data.readUB(4);
 			soundRate = data.readUB(2);
@@ -35,6 +34,10 @@
 			soundType = data.readUB(1);
 			soundSampleCount = data.readUI32();
 			data.readBytes(_soundData, 0, length - 7);
+		}
+		
+		public function publish(data:SWFData):void {
+			throw(new Error("TODO: implement publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

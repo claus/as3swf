@@ -24,7 +24,7 @@
 			data.skipBytes(3);
 		}
 		
-		override public function publish(data:SWFData):void {
+		public function publish(data:SWFData):void {
 			data.writeTagHeader(type, 4);
 			var flags:uint = 0;
 			if (useNetwork) { flags |= 0x01; }

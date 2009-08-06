@@ -20,7 +20,6 @@
 		public function TagDefineButtonSound() {}
 		
 		public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			buttonId = data.readUI16();
 			buttonSoundChar0 = data.readUI16();
 			if (buttonSoundChar0 != 0) {
@@ -38,6 +37,10 @@
 			if (buttonSoundChar3 != 0) {
 				buttonSoundInfo3 = data.readSOUNDINFO();
 			}
+		}
+		
+		public function publish(data:SWFData):void {
+			throw(new Error("TODO: implement publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

@@ -66,8 +66,10 @@
 			tags.length = 0;
 			var t:uint = getTimer();
 			while (true) {
+				var raw:ByteArray = data.readRawTag();
 				var header:SWFRecordHeader = data.readTagHeader();
 				var tag:ITag = SWFTagFactory.create(header.type);
+				tag.raw = raw;
 				tag.parse(data, header.length);
 				tags.push(tag);
 				if (header.type == 0) {
@@ -78,7 +80,6 @@
 		}
 		
 		public function publish(data:SWFData):void {
-			//compressed = false;
 			data.writeUI8(compressed ? 0x43 : 0x46);
 			data.writeUI8(0x57);
 			data.writeUI8(0x53);
@@ -89,7 +90,14 @@
 			data.writeFIXED8(frameRate);
 			data.writeUI16(frameCount); // TODO: get the real number of frames from the tags
 			for (var i:uint = 0; i < tags.length; i++) {
-				tags[i].publish(data);
+				try {
+					tags[i].publish(data);
+				}
+				catch (e:Error) {
+					if (tags[i].raw != null) {
+						data.writeBytes(tags[i].raw);
+					}
+				}
 			}
 			fileLength = fileLengthCompressed = data.length;
 			if (compressed) {

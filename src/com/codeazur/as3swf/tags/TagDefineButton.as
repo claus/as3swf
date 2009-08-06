@@ -25,7 +25,6 @@
 		public function get actions():Vector.<IAction> { return _actions; }
 		
 		public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			buttonId = data.readUI16();
 			var record:SWFButtonRecord;
 			while ((record = data.readBUTTONRECORD()) != null) {
@@ -35,6 +34,10 @@
 			while ((action = data.readACTIONRECORD()) != null) {
 				_actions.push(action);
 			}
+		}
+		
+		public function publish(data:SWFData):void {
+			throw(new Error("TODO: implement publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

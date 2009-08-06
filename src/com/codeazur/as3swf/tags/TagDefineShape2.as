@@ -9,7 +9,6 @@
 		public function TagDefineShape2() {}
 		
 		override public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			shapeId = data.readUI16();
 			shapeBounds = data.readRECT();
 			shapes = data.readSHAPEWITHSTYLE(2);

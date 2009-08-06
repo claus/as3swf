@@ -19,7 +19,6 @@
 		public function TagDefineVideoStream() {}
 		
 		public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			characterId = data.readUI16();
 			numFrames = data.readUI16();
 			width = data.readUI16();
@@ -28,6 +27,10 @@
 			deblocking = data.readUB(3);
 			smoothing = (data.readUB(1) == 1);
 			codecId = data.readUI8();
+		}
+		
+		public function publish(data:SWFData):void {
+			throw(new Error("TODO: implement publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

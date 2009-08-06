@@ -23,7 +23,6 @@
 		public function TagSoundStreamHead() {}
 		
 		public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			data.readUB(4);
 			playbackSoundRate = data.readUB(2);
 			playbackSoundSize = data.readUB(1);
@@ -36,6 +35,10 @@
 			if (streamSoundCompression == SoundCompression.MP3) {
 				latencySeek = data.readSI16();
 			}
+		}
+		
+		public function publish(data:SWFData):void {
+			throw(new Error("TODO: implement publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

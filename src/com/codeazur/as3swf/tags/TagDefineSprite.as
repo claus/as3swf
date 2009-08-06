@@ -5,6 +5,7 @@
 	import com.codeazur.as3swf.data.SWFRectangle;
 	import com.codeazur.as3swf.factories.SWFTagFactory;
 	import com.codeazur.utils.StringUtils;
+	import flash.utils.ByteArray;
 	
 	public class TagDefineSprite extends Tag implements ITag
 	{
@@ -26,8 +27,10 @@
 			frameCount = data.readUI16();
 			_controlTags.length = 0;
 			while (true) {
+				var raw:ByteArray = data.readRawTag();
 				var header:SWFRecordHeader = data.readTagHeader();
 				var tag:ITag = SWFTagFactory.create(header.type);
+				tag.raw = raw;
 				tag.parse(data, header.length);
 				_controlTags.push(tag);
 				if (header.type == 0) {
@@ -36,7 +39,7 @@
 			}
 		}
 		
-		override public function publish(data:SWFData):void {
+		public function publish(data:SWFData):void {
 			var body:SWFData = new SWFData();
 			body.writeUI16(spriteId);
 			body.writeUI16(frameCount); // TODO: get the real number of frames from controlTags

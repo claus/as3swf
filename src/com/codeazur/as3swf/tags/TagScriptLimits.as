@@ -12,12 +12,11 @@
 		public function TagScriptLimits() {}
 		
 		public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			maxRecursionDepth = data.readUI16();
 			scriptTimeoutSeconds = data.readUI16();
 		}
 		
-		override public function publish(data:SWFData):void {
+		public function publish(data:SWFData):void {
 			data.writeTagHeader(type, 4);
 			data.writeUI16(maxRecursionDepth);
 			data.writeUI16(scriptTimeoutSeconds);

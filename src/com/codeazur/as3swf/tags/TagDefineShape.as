@@ -15,10 +15,13 @@
 		public function TagDefineShape() {}
 		
 		public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			shapeId = data.readUI16();
 			shapeBounds = data.readRECT();
 			shapes = data.readSHAPEWITHSTYLE();
+		}
+		
+		public function publish(data:SWFData):void {
+			throw(new Error("TODO: implement publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

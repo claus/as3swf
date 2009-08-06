@@ -13,7 +13,6 @@
 		public function TagPlaceObject2() {}
 		
 		override public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			var flags:uint = data.readUI8();
 			hasClipActions = (flags & 0x80) != 0;
 			hasClipDepth = (flags & 0x40) != 0;
@@ -47,6 +46,10 @@
 				//_clipActions = null;
 				throw(new Error("CLIPACTIONS not yet supported."));
 			}
+		}
+		
+		override public function publish(data:SWFData):void {
+			throw(new Error("TODO: implement publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

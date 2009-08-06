@@ -57,6 +57,7 @@
 				/* 70 */ case TagPlaceObject3.TYPE: return new TagPlaceObject3();
 				/* 71 */ case TagImportAssets2.TYPE: return new TagImportAssets2();
 				/* 73 */ case TagDefineFontAlignZones.TYPE: return new TagDefineFontAlignZones();
+				/* 74 */ case TagCSMTextSettings.TYPE: return new TagCSMTextSettings();
 				/* 75 */ case TagDefineFont3.TYPE: return new TagDefineFont3();
 				/* 76 */ case TagSymbolClass.TYPE: return new TagSymbolClass();
 				/* 77 */ case TagMetadata.TYPE: return new TagMetadata();

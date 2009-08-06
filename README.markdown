@@ -55,7 +55,7 @@ Alpha version, under active development.
 	70	x		PlaceObject3	
 	71	x	x	ImportAssets2	
 	73	x		DefineFontAlignZones	
-	74			CSMTextSettings	
+	74	x	x	CSMTextSettings	
 	75	x		DefineFont3	
 	76	x	x	SymbolClass	
 	77	x	x	Metadata	

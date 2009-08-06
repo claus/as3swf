@@ -1,10 +1,8 @@
-# as3swf
-
 as3swf is a low level Actionscript 3 library to parse, create, modify and publish SWF files.
 
 Alpha version, under active development.
 
-## Supported SWF tags:
+**Supported SWF tags:**
 
 	ID	Read	Write	Name
 	0	x	x	End	

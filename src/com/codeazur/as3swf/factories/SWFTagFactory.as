@@ -48,6 +48,7 @@
 				/* 58 */ case TagEnableDebugger.TYPE: return new TagEnableDebugger();
 				/* 59 */ case TagDoInitAction.TYPE: return new TagDoInitAction();
 				/* 60 */ case TagDefineVideoStream.TYPE: return new TagDefineVideoStream();
+				/* 61 */ case TagVideoFrame.TYPE: return new TagVideoFrame();
 				/* 69 */ case TagFileAttributes.TYPE: return new TagFileAttributes();
 				/* 73 */ case TagDefineFontAlignZones.TYPE: return new TagDefineFontAlignZones();
 				/* 75 */ case TagDefineFont3.TYPE: return new TagDefineFont3();

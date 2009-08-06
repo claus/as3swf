@@ -4,7 +4,7 @@ Alpha version, under active development.
 
 **Supported SWF tags:**
 
-	ID	Read	Write	Name
+	ID	R	W	Name
 	0	x	x	End	
 	1	x	x	ShowFrame	
 	2	x		DefineShape	
@@ -45,7 +45,7 @@ Alpha version, under active development.
 	57	x	x	ImportAssets	
 	58	x		EnableDebugger	
 	59	x		DoInitAction	
-	60			DefineVideoStream	
+	60	x		DefineVideoStream	
 	61			VideoFrame	
 	62			DefineFontInfo2	
 	64			EnableDebugger2	

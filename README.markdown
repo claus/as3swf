@@ -67,5 +67,5 @@ Alpha version, under active development.
 	87	x	x	DefineBinaryData	
 	88	x		DefineFontName	
 	89	x		StartSound2	
-	90			DefineBitsJPEG4	
+	90	x	x	DefineBitsJPEG4	
 	91			DefineFont4	

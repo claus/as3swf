@@ -69,6 +69,7 @@
 				/* 88 */ case TagDefineFontName.TYPE: return new TagDefineFontName();
 				/* 89 */ case TagStartSound2.TYPE: return new TagStartSound2();
 				/* 90 */ case TagDefineBitsJPEG4.TYPE: return new TagDefineBitsJPEG4();
+				/* 91 */ case TagDefineFont4.TYPE: return new TagDefineFont4();
 				default: return new TagUnknown(type);
 			}
 		}

@@ -68,4 +68,4 @@ Alpha version, under active development.
 	88	x		DefineFontName	
 	89	x		StartSound2	
 	90	x	x	DefineBitsJPEG4	
-	91			DefineFont4	
+	91	x		DefineFont4	

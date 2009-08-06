@@ -52,8 +52,8 @@ Alpha version, under active development.
 	65	x	x	ScriptLimits	
 	66	x	x	SetTabIndex	
 	69	x	x	FileAttributes	
-	70			PlaceObject3	
-	71			ImportAssets2	
+	70	x		PlaceObject3	
+	71	x	x	ImportAssets2	
 	73	x		DefineFontAlignZones	
 	74			CSMTextSettings	
 	75	x		DefineFont3	

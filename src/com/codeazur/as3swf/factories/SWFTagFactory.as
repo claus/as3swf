@@ -54,6 +54,8 @@
 				/* 65 */ case TagScriptLimits.TYPE: return new TagScriptLimits();
 				/* 66 */ case TagSetTabIndex.TYPE: return new TagSetTabIndex();
 				/* 69 */ case TagFileAttributes.TYPE: return new TagFileAttributes();
+				/* 70 */ case TagPlaceObject3.TYPE: return new TagPlaceObject3();
+				/* 71 */ case TagImportAssets2.TYPE: return new TagImportAssets2();
 				/* 73 */ case TagDefineFontAlignZones.TYPE: return new TagDefineFontAlignZones();
 				/* 75 */ case TagDefineFont3.TYPE: return new TagDefineFont3();
 				/* 76 */ case TagSymbolClass.TYPE: return new TagSymbolClass();

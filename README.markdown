@@ -49,7 +49,7 @@ Alpha version, under active development.
 	61	x		VideoFrame	
 	62	x		DefineFontInfo2	
 	64	x		EnableDebugger2	
-	65			ScriptLimits	
+	65	x	x	ScriptLimits	
 	66			SetTabIndex	
 	69	x	x	FileAttributes	
 	70			PlaceObject3	

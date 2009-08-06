@@ -63,7 +63,9 @@
 				/* 78 */ case TagDefineScalingGrid.TYPE: return new TagDefineScalingGrid();
 				/* 82 */ case TagDoABC.TYPE: return new TagDoABC();
 				/* 83 */ case TagDefineShape4.TYPE: return new TagDefineShape4();
+				/* 84 */ case TagDefineMorphShape2.TYPE: return new TagDefineMorphShape2();
 				/* 86 */ case TagDefineSceneAndFrameLabelData.TYPE: return new TagDefineSceneAndFrameLabelData();
+				/* 87 */ case TagDefineBinaryData.TYPE: return new TagDefineBinaryData();
 				/* 88 */ case TagDefineFontName.TYPE: return new TagDefineFontName();
 				default: return new TagUnknown(type);
 			}

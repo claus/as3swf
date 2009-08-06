@@ -62,9 +62,9 @@ Alpha version, under active development.
 	78	x		DefineScalingGrid	
 	82	x		DoABC	
 	83	x		DefineShape4	
-	84			DefineMorphShape2	
+	84	x		DefineMorphShape2	
 	86	x		DefineSceneAndFrameLabelData	
-	87			DefineBinaryData	
+	87	x	x	DefineBinaryData	
 	88	x		DefineFontName	
 	89			StartSound2	
 	90			DefineBitsJPEG4	

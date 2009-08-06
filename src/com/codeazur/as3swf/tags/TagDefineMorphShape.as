@@ -62,7 +62,7 @@
 			var str:String = toStringMain(indent) +
 				"ID: " + characterId + ", " +
 				"StartBounds: " + startBounds.toString() + ", " +
-				"EndBounds: " + startBounds.toString();
+				"EndBounds: " + endBounds.toString();
 			str += startEdges.toString(indent + 2);
 			str += endEdges.toString(indent + 2);
 			return str;

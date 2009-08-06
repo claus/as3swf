@@ -44,7 +44,14 @@
 			body.writeUI16(spriteId);
 			body.writeUI16(frameCount); // TODO: get the real number of frames from controlTags
 			for (var i:uint = 0; i < _controlTags.length; i++) {
-				_controlTags[i].publish(body);
+				try {
+					_controlTags[i].publish(body);
+				}
+				catch (e:Error) {
+					if (_controlTags[i].raw != null) {
+						body.writeBytes(_controlTags[i].raw);
+					}
+				}
 			}
 			data.writeTagHeader(type, body.length);
 			data.writeBytes(body, 0, body.length);

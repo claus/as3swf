@@ -55,6 +55,9 @@
 		}
 		
 		public function resetBitsPending():void {
+			//if (bitsPending > 0) {
+			//	trace("### pending:" + bitsPending + " pos:" + (position - 1));
+			//}
 			bitsPending = 0;
 		}
 		

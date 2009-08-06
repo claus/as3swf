@@ -18,7 +18,6 @@
 		public function get bitmapAlphaData():ByteArray { return _bitmapAlphaData; }
 		
 		override public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			characterId = data.readUI16();
 			var alphaDataOffset:uint = data.readUI32();
 			data.readBytes(_bitmapData, 0, alphaDataOffset);
@@ -35,8 +34,19 @@
 			}
 		}
 		
+		override public function publish(data:SWFData):void {
+			data.writeTagHeader(type, _bitmapData.length + _bitmapAlphaData.length + 6);
+			data.writeUI16(characterId);
+			data.writeUI32(_bitmapData.length);
+			data.writeBytes(_bitmapData, 0, _bitmapData.length);
+			if (_bitmapAlphaData.length > 0) {
+				data.writeBytes(_bitmapAlphaData, 0, _bitmapAlphaData.length);
+			}
+		}
+		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "DefineBitsJPEG3"; }
+		override public function get version():uint { return (bitmapType == BitmapType.JPEG) ? 3 : 8; }
 		
 		override public function toString(indent:uint = 0):String {
 			var str:String = toStringMain(indent) +

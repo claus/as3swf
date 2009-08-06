@@ -11,12 +11,19 @@
 		public function TagMetadata() {}
 		
 		public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			xmlString = data.readString();
+		}
+		
+		override public function publish(data:SWFData):void {
+			var body:SWFData = new SWFData();
+			body.writeString(xmlString);
+			data.writeTagHeader(type, body.length);
+			data.writeBytes(body, 0, body.length);
 		}
 		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "Metadata"; }
+		override public function get version():uint { return 1; }
 		
 		public function toString(indent:uint = 0):String {
 			return toStringMain(indent);

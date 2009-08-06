@@ -19,13 +19,19 @@
 		public function get bitmapData():ByteArray { return _bitmapData; }
 		
 		public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			characterId = data.readUI16();
 			data.readBytes(_bitmapData, 0, length - 2);
 		}
 		
+		override public function publish(data:SWFData):void {
+			data.writeTagHeader(type, _bitmapData.length + 2);
+			data.writeUI16(characterId);
+			data.writeBytes(_bitmapData, 0, _bitmapData.length);
+		}
+		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "DefineBits"; }
+		override public function get version():uint { return 1; }
 		
 		public function toString(indent:uint = 0):String {
 			return toStringMain(indent) +

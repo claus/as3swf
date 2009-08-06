@@ -41,7 +41,11 @@
 				/* 39 */ case TagDefineSprite.TYPE: return new TagDefineSprite();
 				/* 43 */ case TagFrameLabel.TYPE: return new TagFrameLabel();
 				/* 45 */ case TagSoundStreamHead2.TYPE: return new TagSoundStreamHead2();
+				/* 46 */ case TagDefineMorphShape.TYPE: return new TagDefineMorphShape();
 				/* 48 */ case TagDefineFont2.TYPE: return new TagDefineFont2();
+				/* 56 */ case TagExportAssets.TYPE: return new TagExportAssets();
+				/* 57 */ case TagImportAssets.TYPE: return new TagImportAssets();
+				/* 58 */ case TagEnableDebugger.TYPE: return new TagEnableDebugger();
 				/* 59 */ case TagDoInitAction.TYPE: return new TagDoInitAction();
 				/* 69 */ case TagFileAttributes.TYPE: return new TagFileAttributes();
 				/* 73 */ case TagDefineFontAlignZones.TYPE: return new TagDefineFontAlignZones();

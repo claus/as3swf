@@ -1,7 +1,7 @@
 ﻿package com.codeazur.as3swf.data.actions.swf5
 {
-	import com.codeazur.as3swf.data.actions.*;
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.data.actions.*;
 	import com.codeazur.utils.StringUtils;
 	
 	public class ActionWith extends Action implements IAction

@@ -8,6 +8,7 @@
 		
 		public function parse(data:SWFData, length:uint):void {
 			cache(data, length);
+			data.skipBytes(length);
 		}
 		
 		public function toString(indent:uint = 0):String {

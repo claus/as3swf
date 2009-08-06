@@ -461,6 +461,30 @@
 		}
 		
 		/////////////////////////////////////////////////////////
+		// Morphs
+		/////////////////////////////////////////////////////////
+		
+		public function readMORPHFILLSTYLE(level:uint = 1):SWFMorphFillStyle {
+			return new SWFMorphFillStyle(this, level);
+		}
+		
+		public function readMORPHLINESTYLE(level:uint = 1):SWFMorphLineStyle {
+			return new SWFMorphLineStyle(this, level);
+		}
+		
+		public function readMORPHLINESTYLE2(level:uint = 1):SWFMorphLineStyle2 {
+			return new SWFMorphLineStyle2(this, level);
+		}
+		
+		public function readMORPHGRADIENT(level:uint = 1):SWFMorphGradient {
+			return new SWFMorphGradient(this, level);
+		}
+		
+		public function readMORPHGRADIENTRECORD(level:uint = 1):SWFMorphGradientRecord {
+			return new SWFMorphGradientRecord(this, level);
+		}
+		
+		/////////////////////////////////////////////////////////
 		// Action records
 		/////////////////////////////////////////////////////////
 		
@@ -519,18 +543,18 @@
 				// Shouldn't it be an unsigned int?
 				tagLength = readSI32();
 			}
+			//trace("tag:" + (tagTypeAndLength >> 6) + " length:" + tagLength);
 			return new SWFRecordHeader(tagTypeAndLength >> 6, tagLength);
 		}
 
-		public function writeTagHeader(header:SWFRecordHeader):void {
-			var tagLength:uint = header.length;
-			if (tagLength < 0x3f) {
-				writeUI16((header.type << 6) | tagLength);
+		public function writeTagHeader(type:uint, length:uint):void {
+			if (length < 0x3f) {
+				writeUI16((type << 6) | length);
 			} else {
-				writeUI16((header.type << 6) | 0x3f);
+				writeUI16((type << 6) | 0x3f);
 				// The SWF10 spec sez that this is a signed int.
 				// Shouldn't it be an unsigned int?
-				writeSI32(tagLength);
+				writeSI32(length);
 			}
 		}
 		
@@ -538,7 +562,7 @@
 		// etc
 		/////////////////////////////////////////////////////////
 		
-		override public function uncompress(algorithm:String = null):void {
+		public function swfUncompress():void {
 			var pos:uint = position;
 			var ba:ByteArray = new ByteArray();
 			readBytes(ba);
@@ -549,15 +573,24 @@
 			position = pos;
 		}
 		
+		public function swfCompress():void {
+			var pos:uint = position;
+			var ba:ByteArray = new ByteArray();
+			readBytes(ba);
+			ba.position = 0;
+			ba.compress();
+			length = position = pos;
+			writeBytes(ba);
+		}
 		
 		public function skipBytes(length:uint):void {
 			position += length;
 		}
 		
 		
-		public function dump(length:uint, rewind:uint = 0):void {
+		public function dump(length:uint, offset:int = 0):void {
 			var pos:uint = position;
-			position -= rewind;
+			position += offset;
 			var str:String = "bitsPending:" + bitsPending + ", ";
 			for (var i:uint = 0; i < length; i++) {
 				str += readUnsignedByte().toString(16) + " ";

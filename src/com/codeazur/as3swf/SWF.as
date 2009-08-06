@@ -58,11 +58,12 @@
 			fileLength = data.readUI32();
 			fileLengthCompressed = data.length;
 			if (compressed) {
-				data.uncompress();
+				data.swfUncompress();
 			}
 			frameSize = data.readRECT();
 			frameRate = data.readFIXED8();
 			frameCount = data.readUI16();
+			tags.length = 0;
 			var t:uint = getTimer();
 			while (true) {
 				var header:SWFRecordHeader = data.readTagHeader();
@@ -77,7 +78,7 @@
 		}
 		
 		public function publish(data:SWFData):void {
-			compressed = false;
+			//compressed = false;
 			data.writeUI8(compressed ? 0x43 : 0x46);
 			data.writeUI8(0x57);
 			data.writeUI8(0x53);
@@ -90,10 +91,15 @@
 			for (var i:uint = 0; i < tags.length; i++) {
 				tags[i].publish(data);
 			}
-			// TODO: compress if appropriate
+			fileLength = fileLengthCompressed = data.length;
+			if (compressed) {
+				data.position = 8;
+				data.swfCompress();
+				fileLengthCompressed = data.length;
+			}
 			var endPos:uint = data.position;
 			data.position = fileLengthPos;
-			data.writeUI32(data.length);
+			data.writeUI32(fileLength);
 			data.position = endPos;
 		}
 		

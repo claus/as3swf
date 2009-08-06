@@ -1,6 +1,5 @@
 ﻿package com.codeazur.as3swf.tags
 {
-	import com.codeazur.as3swf.data.SWFRecordHeader;
 	import com.codeazur.as3swf.SWFData;
 	
 	public class TagFileAttributes extends Tag implements ITag
@@ -26,7 +25,7 @@
 		}
 		
 		override public function publish(data:SWFData):void {
-			data.writeTagHeader(new SWFRecordHeader(type, 4));
+			data.writeTagHeader(type, 4);
 			var flags:uint = 0;
 			if (useNetwork) { flags |= 0x01; }
 			if (actionscript3) { flags |= 0x08; }

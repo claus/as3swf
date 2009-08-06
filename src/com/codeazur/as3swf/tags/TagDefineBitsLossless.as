@@ -24,7 +24,6 @@
 		public function get zlibBitmapData():ByteArray { return _zlibBitmapData; }
 		
 		public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			characterId = data.readUI16();
 			bitmapFormat = data.readUI8();
 			bitmapWidth = data.readUI16();
@@ -32,11 +31,26 @@
 			if (bitmapFormat == BitmapFormat.BIT_8) {
 				bitmapColorTableSize = data.readUI8();
 			}
-			data.readBytes(zlibBitmapData, 0, length - ((bitmapFormat == BitmapFormat.BIT_8) ? 8 : 7))
+			data.readBytes(zlibBitmapData, 0, length - ((bitmapFormat == BitmapFormat.BIT_8) ? 8 : 7));
+		}
+		
+		override public function publish(data:SWFData):void {
+			var body:SWFData = new SWFData();
+			body.writeUI16(characterId);
+			body.writeUI8(bitmapFormat);
+			body.writeUI16(bitmapWidth);
+			body.writeUI16(bitmapHeight);
+			if (bitmapFormat == BitmapFormat.BIT_8) {
+				body.writeUI8(bitmapColorTableSize);
+			}
+			body.writeBytes(_zlibBitmapData);
+			data.writeTagHeader(type, body.length);
+			data.writeBytes(body, 0, body.length);
 		}
 		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "DefineBitsLossless"; }
+		override public function get version():uint { return 2; }
 		
 		public function toString(indent:uint = 0):String {
 			return toStringMain(indent) +

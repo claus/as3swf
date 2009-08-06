@@ -22,9 +22,9 @@
 		public function get controlTags():Vector.<ITag> { return _controlTags; }
 		
 		public function parse(data:SWFData, length:uint):void {
-			cache(data, length);
 			spriteId = data.readUI16();
 			frameCount = data.readUI16();
+			_controlTags.length = 0;
 			while (true) {
 				var header:SWFRecordHeader = data.readTagHeader();
 				var tag:ITag = SWFTagFactory.create(header.type);
@@ -36,8 +36,20 @@
 			}
 		}
 		
+		override public function publish(data:SWFData):void {
+			var body:SWFData = new SWFData();
+			body.writeUI16(spriteId);
+			body.writeUI16(frameCount); // TODO: get the real number of frames from controlTags
+			for (var i:uint = 0; i < _controlTags.length; i++) {
+				_controlTags[i].publish(body);
+			}
+			data.writeTagHeader(type, body.length);
+			data.writeBytes(body, 0, body.length);
+		}
+		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "DefineSprite"; }
+		override public function get version():uint { return 3; }
 		
 		public function toString(indent:uint = 0):String {
 			var str:String = toStringMain(indent) +

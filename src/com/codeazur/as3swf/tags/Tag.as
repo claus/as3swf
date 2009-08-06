@@ -31,7 +31,7 @@
 		}
 		
 		public function publish(data:SWFData):void {
-			data.writeTagHeader(new SWFRecordHeader(type, length));
+			data.writeTagHeader(type, length);
 			data.writeBytes(_raw, 0, length);
 		}
 		

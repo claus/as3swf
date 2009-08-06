@@ -66,6 +66,6 @@ Alpha version, under active development.
 	86	x		DefineSceneAndFrameLabelData	
 	87	x	x	DefineBinaryData	
 	88	x		DefineFontName	
-	89			StartSound2	
+	89	x		StartSound2	
 	90			DefineBitsJPEG4	
 	91			DefineFont4	

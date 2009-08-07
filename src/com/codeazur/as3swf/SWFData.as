@@ -559,7 +559,7 @@
 		}
 		
 		/////////////////////////////////////////////////////////
-		// etc
+		// SWF Compression
 		/////////////////////////////////////////////////////////
 		
 		public function swfUncompress():void {
@@ -583,13 +583,15 @@
 			writeBytes(ba);
 		}
 		
+		/////////////////////////////////////////////////////////
+		// etc
+		/////////////////////////////////////////////////////////
+		
 		public function readRawTag():ByteArray {
 			var pos:uint = position;
 			var header:SWFRecordHeader = readTagHeader();
-			var tagHeaderSize:uint = position - pos;
 			var raw:ByteArray = new ByteArray();
-			position = pos;
-			readBytes(raw, 0, tagHeaderSize + header.length);
+			readBytes(raw, 0, header.length);
 			position = pos;
 			return raw;
 		}

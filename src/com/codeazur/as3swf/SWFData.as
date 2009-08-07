@@ -594,10 +594,13 @@
 		/////////////////////////////////////////////////////////
 		
 		public function readRawTag():ByteArray {
+			var raw:ByteArray;
 			var pos:uint = position;
 			var header:SWFRecordHeader = readTagHeader();
-			var raw:ByteArray = new ByteArray();
-			readBytes(raw, 0, header.length);
+			if (header.length > 0) {
+				raw = new ByteArray();
+				readBytes(raw, 0, header.length);
+			}
 			position = pos;
 			return raw;
 		}

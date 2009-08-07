@@ -6,10 +6,12 @@
 	import com.codeazur.as3swf.factories.SWFTagFactory;
 	import com.codeazur.as3swf.tags.ITag;
 	import com.codeazur.as3swf.tags.Tag;
-	
+
 	import flash.utils.IDataInput;
 	import flash.utils.ByteArray;
 	import flash.utils.getTimer;
+	
+	import flash.system.System;
 	
 	public class SWF
 	{

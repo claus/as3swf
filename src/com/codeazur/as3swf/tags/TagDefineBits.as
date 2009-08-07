@@ -20,7 +20,9 @@
 		
 		public function parse(data:SWFData, length:uint):void {
 			characterId = data.readUI16();
-			data.readBytes(_bitmapData, 0, length - 2);
+			if (length > 2) {
+				data.readBytes(_bitmapData, 0, length - 2);
+			}
 		}
 		
 		public function publish(data:SWFData):void {

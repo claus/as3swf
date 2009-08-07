@@ -49,8 +49,12 @@
 					_controlTags[i].publish(body);
 				}
 				catch (e:Error) {
-					if (_controlTags[i].raw != null) {
-						body.writeBytes(_controlTags[i].raw);
+					var tag:ITag = _controlTags[i];
+					if (tag.raw != null) {
+						body.writeTagHeader(tag.type, tag.raw.length);
+						body.writeBytes(tag.raw);
+					} else {
+						throw(e);
 					}
 				}
 			}

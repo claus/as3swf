@@ -94,8 +94,12 @@
 					tags[i].publish(data);
 				}
 				catch (e:Error) {
-					if (tags[i].raw != null) {
-						data.writeBytes(tags[i].raw);
+					var tag:ITag = tags[i];
+					if (tag.raw != null) {
+						data.writeTagHeader(tag.type, tag.raw.length);
+						data.writeBytes(tag.raw);
+					} else {
+						throw(e);
 					}
 				}
 			}

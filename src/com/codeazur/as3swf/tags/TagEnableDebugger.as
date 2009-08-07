@@ -23,7 +23,10 @@
 		}
 		
 		public function publish(data:SWFData):void {
-			throw(new Error("TODO: implement publish()"));
+			data.writeTagHeader(type, _password.length);
+			if (_password.length > 0) {
+				data.writeBytes(_password, 0, _password.length);
+			}
 		}
 		
 		override public function get type():uint { return TYPE; }

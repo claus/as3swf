@@ -232,7 +232,9 @@
 		}
 		
 		public function writeString(value:String):void {
-			writeUTFBytes(value);
+			if (value && value.length > 0) {
+				writeUTFBytes(value);
+			}
 			writeByte(0);
 		}
 		

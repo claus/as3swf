@@ -28,11 +28,17 @@
 		}
 		
 		public function publish(data:SWFData):void {
-			throw(new Error("TODO: implement publish()"));
+			var body:SWFData = new SWFData();
+			body.writeUI32(lazyInitializeFlag ? 1 : 0);
+			body.writeString(abcName);
+			body.writeBytes(_bytes, 0, _bytes.length);
+			data.writeTagHeader(type, body.length);
+			data.writeBytes(body, 0, body.length);
 		}
 		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "DoABC"; }
+		override public function get version():uint { return 9; }
 		
 		public function toString(indent:uint = 0):String {
 			return toStringMain(indent) +

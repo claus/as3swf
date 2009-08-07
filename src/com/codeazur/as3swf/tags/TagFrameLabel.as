@@ -15,11 +15,15 @@
 		}
 		
 		public function publish(data:SWFData):void {
-			throw(new Error("TODO: implement publish()"));
+			var body:SWFData = new SWFData();
+			body.writeString(frameName);
+			data.writeTagHeader(type, body.length);
+			data.writeBytes(body, 0, body.length);
 		}
 		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "FrameLabel"; }
+		override public function get version():uint { return 3; }
 		
 		public function toString(indent:uint = 0):String {
 			return toStringMain(indent) +

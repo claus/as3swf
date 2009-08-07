@@ -15,11 +15,13 @@
 		}
 		
 		public function publish(data:SWFData):void {
-			throw(new Error("TODO: implement publish()"));
+			data.writeTagHeader(type, 2);
+			data.writeUI16(depth);
 		}
 		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "RemoveObject2"; }
+		override public function get version():uint { return 3; }
 		
 		public function toString(indent:uint = 0):String {
 			return toStringMain(indent) +

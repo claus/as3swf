@@ -263,8 +263,10 @@
 		}
 		
 		public function writeRGB(value:uint):void {
-			// TODO: writeRGB
-			throw new Error("writeRGB() not yet implemented");
+			resetBitsPending();
+			writeByte((value >> 16) & 0xff);
+			writeByte((value >> 8) & 0xff);
+			writeByte(value  & 0xff);
 		}
 
 		public function readRGBA():uint {
@@ -275,8 +277,9 @@
 		}
 		
 		public function writeRGBA(value:uint):void {
-			// TODO: writeRGBA
-			throw new Error("writeRGBA() not yet implemented");
+			resetBitsPending();
+			writeRGB(value);
+			writeByte((value >> 24) & 0xff);
 		}
 
 		public function readARGB():uint {
@@ -287,8 +290,9 @@
 		}
 		
 		public function writeARGB(value:uint):void {
-			// TODO: writeARGB
-			throw new Error("writeARGB() not yet implemented");
+			resetBitsPending();
+			writeByte((value >> 24) & 0xff);
+			writeRGB(value);
 		}
 
 		/////////////////////////////////////////////////////////

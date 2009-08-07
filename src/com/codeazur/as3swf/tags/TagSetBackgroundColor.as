@@ -15,11 +15,13 @@
 		}
 		
 		public function publish(data:SWFData):void {
-			throw(new Error("TODO: implement publish()"));
+			data.writeTagHeader(type, 3);
+			data.writeRGB(color);
 		}
 		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "SetBackgroundColor"; }
+		override public function get version():uint { return 1; }
 		
 		public function toString(indent:uint = 0):String {
 			return toStringMain(indent) +

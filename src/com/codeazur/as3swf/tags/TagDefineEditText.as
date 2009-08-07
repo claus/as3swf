@@ -55,14 +55,14 @@
 			hasMaxLength = ((flags1 & 0x02) != 0);
 			hasFont = ((flags1 & 0x01) != 0);
 			var flags2:uint = data.readUI8();
-			hasFontClass = ((flags1 & 0x80) != 0);
-			autoSize = ((flags1 & 0x40) != 0);
-			hasLayout = ((flags1 & 0x20) != 0);
-			noSelect = ((flags1 & 0x10) != 0);
-			border = ((flags1 & 0x08) != 0);
-			wasStatic = ((flags1 & 0x04) != 0);
-			html = ((flags1 & 0x02) != 0);
-			useOutlines = ((flags1 & 0x01) != 0);
+			hasFontClass = ((flags2 & 0x80) != 0);
+			autoSize = ((flags2 & 0x40) != 0);
+			hasLayout = ((flags2 & 0x20) != 0);
+			noSelect = ((flags2 & 0x10) != 0);
+			border = ((flags2 & 0x08) != 0);
+			wasStatic = ((flags2 & 0x04) != 0);
+			html = ((flags2 & 0x02) != 0);
+			useOutlines = ((flags2 & 0x01) != 0);
 			if (hasFont) {
 				fontId = data.readUI16();
 			}

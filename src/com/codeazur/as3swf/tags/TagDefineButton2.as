@@ -63,7 +63,7 @@
 			if (_condActions.length > 0) {
 				str += "\n" + StringUtils.repeat(indent + 2) + "CondActions:";
 				for (i = 0; i < _condActions.length; i++) {
-					str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + _condActions[i].toString();
+					str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + _condActions[i].toString(indent + 4);
 				}
 			}
 			return str;

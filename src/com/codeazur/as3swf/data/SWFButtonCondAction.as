@@ -2,6 +2,7 @@
 {
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.actions.IAction;
+	import com.codeazur.utils.StringUtils;
 	
 	public class SWFButtonCondAction
 	{
@@ -47,8 +48,22 @@
 			}
 		}
 		
-		public function toString():String {
-			return "[BUTTONCONDACTION]";
+		public function toString(indent:uint = 0):String {
+			var a:Array = [];
+			if (condIdleToOverDown) { a.push("idleToOverDown"); }
+			if (condOutDownToIdle) { a.push("outDownToIdle"); }
+			if (condOutDownToOverDown) { a.push("outDownToOverDown"); }
+			if (condOverDownToOutDown) { a.push("overDownToOutDown"); }
+			if (condOverDownToOverUp) { a.push("overDownToOverUp"); }
+			if (condOverUpToOverDown) { a.push("overUpToOverDown"); }
+			if (condOverUpToIdle) { a.push("overUpToIdle"); }
+			if (condIdleToOverUp) { a.push("idleToOverUp"); }
+			if (condOverDownToIdle) { a.push("overDownToIdle"); }
+			var str:String = "Cond: (" + a.join(",") + "), KeyPress: " + condKeyPress;
+			for (var i:uint = 0; i < _actions.length; i++) {
+				str += "\n" + StringUtils.repeat(indent + 2) + "[" + i + "] " + _actions[i].toString(indent + 2);
+			}
+			return str;
 		}
 	}
 }

@@ -16,11 +16,11 @@
 		
 		public function get soundData():ByteArray { return _soundData; }
 		
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			data.readBytes(_soundData, 0, length);
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			throw(new Error("TODO: implement publish()"));
 		}
 		

@@ -10,11 +10,11 @@
 		
 		public function TagSetBackgroundColor() {}
 		
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			color = data.readRGB();
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			data.writeTagHeader(type, 3);
 			data.writeRGB(color);
 		}

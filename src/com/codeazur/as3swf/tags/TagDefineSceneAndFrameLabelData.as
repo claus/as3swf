@@ -20,7 +20,7 @@
 		public function get scenes():Vector.<SWFScene> { return _scenes; }
 		public function get frameLabels():Vector.<SWFFrameLabel> { return _frameLabels; }
 		
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			var i:uint;
 			var sceneCount:uint = data.readEncodedU32();
 			for (i = 0; i < sceneCount; i++) {
@@ -36,7 +36,7 @@
 			}
 		}
 
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			throw(new Error("TODO: implement publish()"));
 		}
 		

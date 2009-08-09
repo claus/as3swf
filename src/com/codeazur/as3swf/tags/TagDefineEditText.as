@@ -42,7 +42,7 @@
 
 		public function TagDefineEditText() {}
 		
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			characterId = data.readUI16();
 			bounds = data.readRECT();
 			var flags1:uint = data.readUI8();
@@ -91,7 +91,7 @@
 			}
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			throw(new Error("TODO: implement publish()"));
 		}
 		

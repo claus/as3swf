@@ -11,12 +11,12 @@
 		
 		public function TagSetTabIndex() {}
 		
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			depth = data.readUI16();
 			tabIndex = data.readUI16();
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			data.writeTagHeader(type, 4);
 			data.writeUI16(depth);
 			data.writeUI16(tabIndex);

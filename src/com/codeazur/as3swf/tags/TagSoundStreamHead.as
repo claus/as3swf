@@ -22,7 +22,7 @@
 		
 		public function TagSoundStreamHead() {}
 		
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			data.readUB(4);
 			playbackSoundRate = data.readUB(2);
 			playbackSoundSize = data.readUB(1);
@@ -37,7 +37,7 @@
 			}
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			throw(new Error("TODO: implement publish()"));
 		}
 		

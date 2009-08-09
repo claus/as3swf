@@ -22,7 +22,7 @@
 		
 		public function get records():Vector.<SWFTextRecord> { return _records; }
 		
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			characterId = data.readUI16();
 			textBounds = data.readRECT();
 			textMatrix = data.readMATRIX();
@@ -34,7 +34,7 @@
 			}
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			throw(new Error("TODO: implement publish()"));
 		}
 		

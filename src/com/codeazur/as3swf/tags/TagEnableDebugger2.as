@@ -8,14 +8,14 @@
 		
 		public function TagEnableDebugger2() {}
 		
-		override public function parse(data:SWFData, length:uint):void {
+		override public function parse(data:SWFData, length:uint, version:uint):void {
 			data.readUI16(); // reserved, always 0
 			if (length > 2) {
 				data.readBytes(_password, 0, length - 2);
 			}
 		}
 		
-		override public function publish(data:SWFData):void {
+		override public function publish(data:SWFData, version:uint):void {
 			data.writeTagHeader(type, _password.length + 2);
 			data.writeUI16(0); // reserved, always 0
 			if (_password.length > 0) {

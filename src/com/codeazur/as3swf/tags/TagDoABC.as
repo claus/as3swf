@@ -19,7 +19,7 @@
 		
 		public function get bytes():ByteArray { return _bytes; }
 
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			var pos:uint = data.position;
 			var flags:uint = data.readUI32();
 			lazyInitializeFlag = ((flags & 0x01) != 0);
@@ -27,7 +27,7 @@
 			data.readBytes(bytes, 0, length - (data.position - pos));
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			var body:SWFData = new SWFData();
 			body.writeUI32(lazyInitializeFlag ? 1 : 0);
 			body.writeString(abcName);

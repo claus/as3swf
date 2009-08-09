@@ -28,7 +28,7 @@
 		
 		public function get codeTable():Vector.<uint> { return _codeTable; }
 		
-		public function parse(data:SWFData, length:uint):void
+		public function parse(data:SWFData, length:uint, version:uint):void
 		{
 			fontId = data.readUI16();
 
@@ -60,7 +60,7 @@
 			// - sets langCodeLength to 1
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			throw(new Error("TODO: implement publish()"));
 		}
 		

@@ -18,7 +18,7 @@
 		
 		public function TagDefineVideoStream() {}
 		
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			characterId = data.readUI16();
 			numFrames = data.readUI16();
 			width = data.readUI16();
@@ -29,7 +29,7 @@
 			codecId = data.readUI8();
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			throw(new Error("TODO: implement publish()"));
 		}
 		

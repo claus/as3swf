@@ -12,12 +12,12 @@
 		
 		public function TagDefineButtonCxform() {}
 		
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			buttonId = data.readUI16();
 			buttonColorTransform = data.readCXFORM();
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			throw(new Error("TODO: implement publish()"));
 		}
 		

@@ -8,7 +8,7 @@
 
 		public function TagImportAssets2() {}
 		
-		override public function parse(data:SWFData, length:uint):void {
+		override public function parse(data:SWFData, length:uint, version:uint):void {
 			url = data.readString();
 			data.readUI8(); // reserved, always 1
 			data.readUI8(); // reserved, always 0
@@ -18,7 +18,7 @@
 			}
 		}
 
-		override public function publish(data:SWFData):void {
+		override public function publish(data:SWFData, version:uint):void {
 			var body:SWFData = new SWFData();
 			body.writeString(url);
 			body.writeUI8(1);

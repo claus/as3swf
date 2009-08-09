@@ -42,7 +42,7 @@
 		public function get fontBoundsTable():Vector.<SWFRectangle> { return _fontBoundsTable; }
 		public function get fontKerningTable():Vector.<SWFKerningRecord> { return _fontKerningTable; }
 		
-		override public function parse(data:SWFData, length:uint):void
+		override public function parse(data:SWFData, length:uint, version:uint):void
 		{
 			fontId = data.readUI16();
 			

@@ -17,7 +17,7 @@
 		
 		public function get bitmapAlphaData():ByteArray { return _bitmapAlphaData; }
 		
-		override public function parse(data:SWFData, length:uint):void {
+		override public function parse(data:SWFData, length:uint, version:uint):void {
 			characterId = data.readUI16();
 			var alphaDataOffset:uint = data.readUI32();
 			data.readBytes(_bitmapData, 0, alphaDataOffset);
@@ -34,7 +34,7 @@
 			}
 		}
 		
-		override public function publish(data:SWFData):void {
+		override public function publish(data:SWFData, version:uint):void {
 			data.writeTagHeader(type, _bitmapData.length + _bitmapAlphaData.length + 6);
 			data.writeUI16(characterId);
 			data.writeUI32(_bitmapData.length);

@@ -10,8 +10,8 @@
 		function get name():String;
 		function get version():uint;
 		
-		function parse(data:SWFData, length:uint):void;
-		function publish(data:SWFData):void;
+		function parse(data:SWFData, length:uint, version:uint):void;
+		function publish(data:SWFData, version:uint):void;
 		function toString(indent:uint = 0):String;
 
 		function get raw():ByteArray;

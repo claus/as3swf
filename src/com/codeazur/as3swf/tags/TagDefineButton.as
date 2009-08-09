@@ -24,7 +24,7 @@
 		public function get characters():Vector.<SWFButtonRecord> { return _characters; }
 		public function get actions():Vector.<IAction> { return _actions; }
 		
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			buttonId = data.readUI16();
 			var record:SWFButtonRecord;
 			while ((record = data.readBUTTONRECORD()) != null) {
@@ -36,7 +36,7 @@
 			}
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			throw(new Error("TODO: implement publish()"));
 		}
 		

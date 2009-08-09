@@ -14,13 +14,13 @@
 		
 		public function TagDefineShape() {}
 		
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			shapeId = data.readUI16();
 			shapeBounds = data.readRECT();
 			shapes = data.readSHAPEWITHSTYLE();
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			throw(new Error("TODO: implement publish()"));
 		}
 		

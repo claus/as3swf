@@ -18,7 +18,7 @@
 		
 		public function get binaryData():ByteArray { return _binaryData; }
 		
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			tagId = data.readUI16();
 			data.readUI32(); // reserved, always 0
 			if (length > 6) {
@@ -26,7 +26,7 @@
 			}
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			var body:SWFData = new SWFData();
 			body.writeUI16(tagId);
 			body.writeUI32(0); // reserved, always 0

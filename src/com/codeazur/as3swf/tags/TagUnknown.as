@@ -8,11 +8,11 @@
 			_type = type;
 		}
 		
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			data.skipBytes(length);
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			if (raw != null) {
 				data.writeBytes(raw, 0, raw.length);
 			} else {

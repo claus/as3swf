@@ -14,7 +14,7 @@
 
 		public function TagFileAttributes() {}
 		
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			var flags:uint = data.readUI8();
 			useDirectBlit = ((flags & 0x40) != 0);
 			useGPU = ((flags & 0x20) != 0);
@@ -24,7 +24,7 @@
 			data.skipBytes(3);
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			data.writeTagHeader(type, 4);
 			var flags:uint = 0;
 			if (useNetwork) { flags |= 0x01; }

@@ -16,13 +16,13 @@
 		
 		public function get password():ByteArray { return _password; }
 		
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			if (length > 0) {
 				data.readBytes(_password, 0, length);
 			}
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			data.writeTagHeader(type, _password.length);
 			if (_password.length > 0) {
 				data.writeBytes(_password, 0, _password.length);

@@ -14,7 +14,7 @@
 
 		public function TagDefineShape4() {}
 		
-		override public function parse(data:SWFData, length:uint):void {
+		override public function parse(data:SWFData, length:uint, version:uint):void {
 			shapeId = data.readUI16();
 			shapeBounds = data.readRECT();
 			edgeBounds = data.readRECT();

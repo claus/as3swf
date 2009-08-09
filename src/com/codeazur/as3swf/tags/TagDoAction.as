@@ -16,14 +16,14 @@
 		
 		public function get records():Vector.<IAction> { return _records; }
 		
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			var action:IAction;
 			while ((action = data.readACTIONRECORD()) != null) {
 				_records.push(action);
 			}
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			throw(new Error("TODO: implement publish()"));
 		}
 		

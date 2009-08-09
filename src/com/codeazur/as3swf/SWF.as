@@ -72,7 +72,7 @@
 				var header:SWFRecordHeader = data.readTagHeader();
 				var tag:ITag = SWFTagFactory.create(header.type);
 				tag.raw = raw;
-				tag.parse(data, header.length);
+				tag.parse(data, header.length, version);
 				tags.push(tag);
 				if (header.type == 0) {
 					break;
@@ -93,7 +93,7 @@
 			data.writeUI16(frameCount); // TODO: get the real number of frames from the tags
 			for (var i:uint = 0; i < tags.length; i++) {
 				try {
-					tags[i].publish(data);
+					tags[i].publish(data, version);
 				}
 				catch (e:Error) {
 					var tag:ITag = tags[i];

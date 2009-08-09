@@ -23,7 +23,7 @@
 		
 		public function get zlibBitmapData():ByteArray { return _zlibBitmapData; }
 		
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			characterId = data.readUI16();
 			bitmapFormat = data.readUI8();
 			bitmapWidth = data.readUI16();
@@ -34,7 +34,7 @@
 			data.readBytes(zlibBitmapData, 0, length - ((bitmapFormat == BitmapFormat.BIT_8) ? 8 : 7));
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			var body:SWFData = new SWFData();
 			body.writeUI16(characterId);
 			body.writeUI8(bitmapFormat);

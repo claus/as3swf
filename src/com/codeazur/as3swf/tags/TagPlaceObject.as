@@ -24,7 +24,7 @@
 		
 		public function TagPlaceObject() {}
 		
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			var pos:uint = data.position;
 			characterId = data.readUI16();
 			depth = data.readUI16();
@@ -37,7 +37,7 @@
 			}
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			throw(new Error("TODO: implement publish()"));
 		}
 		

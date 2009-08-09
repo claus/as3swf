@@ -23,7 +23,7 @@
 		
 		public function get controlTags():Vector.<ITag> { return _controlTags; }
 		
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			spriteId = data.readUI16();
 			frameCount = data.readUI16();
 			_controlTags.length = 0;
@@ -32,7 +32,7 @@
 				var header:SWFRecordHeader = data.readTagHeader();
 				var tag:ITag = SWFTagFactory.create(header.type);
 				tag.raw = raw;
-				tag.parse(data, header.length);
+				tag.parse(data, header.length, version);
 				_controlTags.push(tag);
 				if (header.type == 0) {
 					break;
@@ -40,13 +40,13 @@
 			}
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			var body:SWFData = new SWFData();
 			body.writeUI16(spriteId);
 			body.writeUI16(frameCount); // TODO: get the real number of frames from controlTags
 			for (var i:uint = 0; i < _controlTags.length; i++) {
 				try {
-					_controlTags[i].publish(body);
+					_controlTags[i].publish(body, version);
 				}
 				catch (e:Error) {
 					var tag:ITag = _controlTags[i];

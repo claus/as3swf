@@ -12,12 +12,12 @@
 		
 		public function TagStartSound() {}
 		
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			soundId = data.readUI16();
 			soundInfo = data.readSOUNDINFO();
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			throw(new Error("TODO: implement publish()"));
 		}
 		

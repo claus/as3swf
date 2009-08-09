@@ -22,7 +22,7 @@
 		
 		public function get fontData():ByteArray { return _fontData; }
 		
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			var pos:uint = data.position;
 			fontId = data.readUI16();
 			var flags:uint = data.readUI8();
@@ -35,7 +35,7 @@
 			}
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			throw(new Error("TODO: implement publish()"));
 		}
 		

@@ -10,11 +10,11 @@
 		
 		public function TagMetadata() {}
 		
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			xmlString = data.readString();
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			var body:SWFData = new SWFData();
 			body.writeString(xmlString);
 			data.writeTagHeader(type, body.length);

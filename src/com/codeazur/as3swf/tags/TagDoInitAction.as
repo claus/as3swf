@@ -12,7 +12,7 @@
 		
 		public function TagDoInitAction() {}
 		
-		override public function parse(data:SWFData, length:uint):void {
+		override public function parse(data:SWFData, length:uint, version:uint):void {
 			spriteId = data.readUI16();
 			var action:IAction;
 			while ((action = data.readACTIONRECORD()) != null) {
@@ -20,7 +20,7 @@
 			}
 		}
 
-		override public function publish(data:SWFData):void {
+		override public function publish(data:SWFData, version:uint):void {
 			throw(new Error("TODO: implement publish()"));
 		}
 		

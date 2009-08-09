@@ -18,7 +18,7 @@
 		
 		public function get glyphShapeTable():Vector.<SWFShape> { return _glyphShapeTable; }
 		
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			fontId = data.readUI16();
 			// Because the GlyphShapeTable immediately follows the OffsetTable,
 			// the number of entries in each table (the number of glyphs in the font) can be inferred by
@@ -31,7 +31,7 @@
 			}
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			throw(new Error("TODO: implement publish()"));
 		}
 		

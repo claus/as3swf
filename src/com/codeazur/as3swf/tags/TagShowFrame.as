@@ -8,11 +8,11 @@
 		
 		public function TagShowFrame() {}
 		
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			// Do nothing. The End tag has no body.
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			data.writeTagHeader(type, 0);
 		}
 		

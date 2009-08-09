@@ -18,14 +18,14 @@
 		
 		public function get bitmapData():ByteArray { return _bitmapData; }
 		
-		public function parse(data:SWFData, length:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint):void {
 			characterId = data.readUI16();
 			if (length > 2) {
 				data.readBytes(_bitmapData, 0, length - 2);
 			}
 		}
 		
-		public function publish(data:SWFData):void {
+		public function publish(data:SWFData, version:uint):void {
 			data.writeTagHeader(type, _bitmapData.length + 2);
 			data.writeUI16(characterId);
 			data.writeBytes(_bitmapData, 0, _bitmapData.length);

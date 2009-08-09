@@ -1,6 +1,8 @@
 ﻿package com.codeazur.as3swf.tags
 {
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.data.SWFClipActions;
+	import com.codeazur.utils.StringUtils;
 	
 	public class TagPlaceObject2 extends TagPlaceObject implements ITag
 	{
@@ -9,6 +11,7 @@
 		public var ratio:uint;
 		public var objName:String;
 		public var clipDepth:uint;
+		public var clipActions:SWFClipActions;
 		
 		public function TagPlaceObject2() {}
 		
@@ -42,9 +45,7 @@
 				clipDepth = data.readUI16();
 			}
 			if (hasClipActions) {
-				// TODO: implement readCLIPACTIONS()
-				//_clipActions = null;
-				throw(new Error("CLIPACTIONS not yet supported."));
+				clipActions = data.readCLIPACTIONS(version);
 			}
 		}
 		
@@ -63,6 +64,9 @@
 			if (hasColorTransform) { str += ", ColorTransform: " + colorTransform; }
 			if (hasRatio) { str += ", Ratio: " + ratio; }
 			if (hasName) { str += ", Name: " + objName; }
+			if (hasClipActions) {
+				str += "\n" + StringUtils.repeat(indent + 2) + clipActions.toString(indent + 2);
+			}
 			return str;
 		}
 	}

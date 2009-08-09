@@ -24,7 +24,7 @@
 		public function toString(indent:uint = 0):String {
 			var str:String = "[ActionWith]";
 			for (var i:uint = 0; i < withBody.length; i++) {
-				str += "\n" + StringUtils.repeat(indent + 2) + "[" + i + "] " + withBody[i].toString(indent + 2);
+				str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + withBody[i].toString(indent + 4);
 			}
 			return str;
 		}

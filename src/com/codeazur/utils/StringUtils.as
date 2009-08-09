@@ -33,6 +33,15 @@
 			return "";
 		}
 
+		public static function simpleEscape(input:String):String {
+			input = input.split("\n").join("\\n");
+			input = input.split("\r").join("\\r");
+			input = input.split("\t").join("\\t");
+			input = input.split("\f").join("\\f");
+			input = input.split("\b").join("\\b");
+			return input;
+		}
+		
 		public static function strictEscape(input:String, trim:Boolean = true):String {
 			if (input != null && input.length > 0) {
 				if (trim) {

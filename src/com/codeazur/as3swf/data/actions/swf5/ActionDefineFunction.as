@@ -31,10 +31,10 @@
 		
 		public function toString(indent:uint = 0):String {
 			var str:String = "[ActionDefineFunction] " + 
-				"Name: " + functionName + ", " +
-				"Params: (" + functionParams.join(", ") + ")";
+				((functionName == null || functionName.length == 0) ? "<anonymous>" : functionName) +
+				"(" + functionParams.join(", ") + ")";
 			for (var i:uint = 0; i < functionBody.length; i++) {
-				str += "\n" + StringUtils.repeat(indent + 2) + "[" + i + "] " + functionBody[i].toString(indent + 2);
+				str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + functionBody[i].toString(indent + 4);
 			}
 			return str;
 		}

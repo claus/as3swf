@@ -538,6 +538,30 @@
 		}
 		
 		/////////////////////////////////////////////////////////
+		// ClipEvents
+		/////////////////////////////////////////////////////////
+		
+		public function readCLIPACTIONS(version:uint):SWFClipActions {
+			return new SWFClipActions(this, version);
+		}
+		
+		public function readCLIPACTIONRECORD(version:uint):SWFClipActionRecord {
+			var pos:uint = position;
+			var flags:uint = (version >= 6) ? readUI32() : readUI16();
+			if (flags == 0) {
+				return null;
+			} else {
+				position = pos;
+				return new SWFClipActionRecord(this, version);
+			}
+		}
+		
+		public function readCLIPEVENTFLAGS(version:uint):SWFClipEventFlags {
+			return new SWFClipEventFlags(this, version);
+		}
+		
+		
+		/////////////////////////////////////////////////////////
 		// Tag header
 		/////////////////////////////////////////////////////////
 		

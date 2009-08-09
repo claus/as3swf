@@ -1,7 +1,8 @@
 ﻿package com.codeazur.as3swf.data.actions.swf5
 {
-	import com.codeazur.as3swf.data.actions.*;
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.data.actions.*;
+	import com.codeazur.utils.StringUtils;
 	
 	public class ActionConstantPool extends Action implements IAction
 	{
@@ -20,7 +21,11 @@
 		}
 		
 		public function toString(indent:uint = 0):String {
-			return "[ActionConstantPool] " + constants.join(",");
+			var str:String = "[ActionConstantPool] Values: " + constants.length;
+			for (var i:uint = 0; i < constants.length; i++) {
+				str += "\n" + StringUtils.repeat(indent + 4) + i + ": " + StringUtils.simpleEscape(constants[i]);
+			}
+			return str;
 		}
 	}
 }

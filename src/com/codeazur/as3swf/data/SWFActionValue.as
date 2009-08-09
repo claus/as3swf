@@ -2,6 +2,7 @@
 {
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.consts.ActionValueType;
+	import com.codeazur.utils.StringUtils;
 	
 	public class SWFActionValue
 	{
@@ -38,7 +39,25 @@
 		}
 		
 		public function toString():String {
-			return ActionValueType.toString(type);
+			var str:String = "";
+			switch (type) {
+				case ActionValueType.STRING: str = StringUtils.simpleEscape(string) + " (string)"; break;
+				case ActionValueType.FLOAT: str = number + " (number)"; break;
+				case ActionValueType.NULL: str = "null";  break;
+				case ActionValueType.UNDEFINED: str = "undefined";  break;
+				case ActionValueType.REGISTER: str = register + " (register)"; break;
+				case ActionValueType.BOOLEAN: str = boolean + " (boolean)"; break;
+				case ActionValueType.DOUBLE: str = number + " (double)"; break;
+				case ActionValueType.INTEGER: str = integer + " (integer)"; break;
+				case ActionValueType.CONSTANT_8:
+				case ActionValueType.CONSTANT_16:
+					str = constant + " (constant)";
+					break;
+				default:
+					str = "unknown";
+					break;
+			}
+			return str;
 		}
 	}
 }

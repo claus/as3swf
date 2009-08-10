@@ -20,6 +20,15 @@
 			}
 		}
 		
+		override public function publish(data:SWFData):void {
+			var body:SWFData = new SWFData();
+			body.writeUI16(constants.length);
+			for (var i:uint = 0; i < constants.length; i++) {
+				body.writeString(constants[i]);
+			}
+			write(data, body);
+		}
+		
 		public function toString(indent:uint = 0):String {
 			var str:String = "[ActionConstantPool] Values: " + constants.length;
 			for (var i:uint = 0; i < constants.length; i++) {

@@ -16,23 +16,31 @@
 			spriteId = data.readUI16();
 			var action:IAction;
 			while ((action = data.readACTIONRECORD()) != null) {
-				_records.push(action);
+				_actions.push(action);
 			}
 		}
 
 		override public function publish(data:SWFData, version:uint):void {
-			throw(new Error("TODO: implement publish()"));
+			var body:SWFData = new SWFData();
+			body.writeUI16(spriteId);
+			for (var i:uint = 0; i < _actions.length; i++) {
+				body.writeACTIONRECORD(_actions[i]);
+			}
+			body.writeUI8(0);
+			data.writeTagHeader(type, body.length);
+			data.writeBytes(body, 0, body.length);
 		}
 		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "DoInitAction"; }
+		override public function get version():uint { return 6; }
 		
 		override public function toString(indent:uint = 0):String {
 			var str:String = toStringMain(indent) +
 				"SpriteID: " +spriteId + ", ";
-				"Records: " + _records.length;
-			for (var i:uint = 0; i < _records.length; i++) {
-				str += "\n" + StringUtils.repeat(indent + 2) + "[" + i + "] " + _records[i].toString(indent + 2);
+				"Records: " + _actions.length;
+			for (var i:uint = 0; i < _actions.length; i++) {
+				str += "\n" + StringUtils.repeat(indent + 2) + "[" + i + "] " + _actions[i].toString(indent + 2);
 			}
 			return str;
 		}

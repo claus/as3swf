@@ -21,6 +21,17 @@
 			}
 		}
 		
+		override public function publish(data:SWFData):void {
+			var body:SWFData = new SWFData();
+			var bodyActions:SWFData = new SWFData();
+			for (var i:uint = 0; i < withBody.length; i++) {
+				bodyActions.writeACTIONRECORD(withBody[i]);
+			}
+			body.writeUI16(bodyActions.length);
+			body.writeBytes(bodyActions);
+			write(data, body);
+		}
+		
 		public function toString(indent:uint = 0):String {
 			var str:String = "[ActionWith]";
 			for (var i:uint = 0; i < withBody.length; i++) {

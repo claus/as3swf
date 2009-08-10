@@ -17,6 +17,13 @@
 			skipCount = data.readUI8();
 		}
 		
+		override public function publish(data:SWFData):void {
+			var body:SWFData = new SWFData();
+			body.writeUI16(frame);
+			body.writeUI8(skipCount);
+			write(data, body);
+		}
+		
 		public function toString(indent:uint = 0):String {
 			return "[ActionWaitForFrame] Frame: " + frame + ", SkipCount: " + skipCount;
 		}

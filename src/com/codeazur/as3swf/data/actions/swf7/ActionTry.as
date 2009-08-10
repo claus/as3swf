@@ -50,6 +50,40 @@
 			}
 		}
 		
+		override public function publish(data:SWFData):void {
+			var i:uint;
+			var body:SWFData = new SWFData();
+			var flags:uint = 0;
+			if (catchInRegisterFlag) { flags |= 0x04; }
+			if (finallyBlockFlag) { flags |= 0x02; }
+			if (catchBlockFlag) { flags |= 0x01; }
+			body.writeUI8(flags);
+			var bodyTryActions:SWFData = new SWFData();
+			for (i = 0; i < tryBody.length; i++) {
+				bodyTryActions.writeACTIONRECORD(tryBody[i]);
+			}
+			var bodyCatchActions:SWFData = new SWFData();
+			for (i = 0; i < catchBody.length; i++) {
+				bodyCatchActions.writeACTIONRECORD(catchBody[i]);
+			}
+			var bodyFinallyActions:SWFData = new SWFData();
+			for (i = 0; i < finallyBody.length; i++) {
+				bodyFinallyActions.writeACTIONRECORD(finallyBody[i]);
+			}
+			body.writeUI16(bodyTryActions.length);
+			body.writeUI16(bodyCatchActions.length);
+			body.writeUI16(bodyFinallyActions.length);
+			if (catchInRegisterFlag) {
+				body.writeUI8(catchRegister);
+			} else {
+				body.writeString(catchName);
+			}
+			body.writeBytes(bodyTryActions);
+			body.writeBytes(bodyCatchActions);
+			body.writeBytes(bodyFinallyActions);
+			write(data, body);
+		}
+		
 		public function toString(indent:uint = 0):String {
 			var str:String = "[ActionTry] ";
 			str += (catchInRegisterFlag) ? "Register: " + catchRegister : "Name: " + catchName;

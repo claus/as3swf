@@ -15,6 +15,12 @@
 			targetName = data.readString();
 		}
 		
+		override public function publish(data:SWFData):void {
+			var body:SWFData = new SWFData();
+			body.writeString(targetName);
+			write(data, body);
+		}
+		
 		public function toString(indent:uint = 0):String {
 			return "[ActionSetTarget] TargetName: " + targetName;
 		}

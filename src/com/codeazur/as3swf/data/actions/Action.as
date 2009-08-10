@@ -12,6 +12,28 @@
 			_length = length;
 		}
 
-		public function parse(data:SWFData):void {}
+		public function get code():uint { return _code; }
+		public function get length():uint { return _length; }
+		
+		public function parse(data:SWFData):void {
+			// Do nothing. Many Actions don't have a payload. 
+			// For the ones that have one we override this method.
+		}
+		
+		public function publish(data:SWFData):void {
+			write(data);
+		}
+		
+		protected function write(data:SWFData, body:SWFData = null):void {
+			data.writeUI8(code);
+			if (code >= 0x80) {
+				if (body != null && body.length > 0) {
+					data.writeUI16(body.length);
+					data.writeBytes(body);
+				} else {
+					throw(new Error("Action body null or empty."));
+				}
+			}
+		}
 	}
 }

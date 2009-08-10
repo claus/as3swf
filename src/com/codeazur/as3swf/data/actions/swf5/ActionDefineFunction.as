@@ -29,6 +29,23 @@
 			}
 		}
 		
+		override public function publish(data:SWFData):void {
+			var i:uint;
+			var body:SWFData = new SWFData();
+			body.writeString(functionName);
+			body.writeUI16(functionParams.length);
+			for (i = 0; i < functionParams.length; i++) {
+				body.writeString(functionParams[i]);
+			}
+			var bodyActions:SWFData = new SWFData();
+			for (i = 0; i < functionBody.length; i++) {
+				bodyActions.writeACTIONRECORD(functionBody[i]);
+			}
+			body.writeUI16(bodyActions.length);
+			body.writeBytes(bodyActions);
+			write(data, body);
+		}
+		
 		public function toString(indent:uint = 0):String {
 			var str:String = "[ActionDefineFunction] " + 
 				((functionName == null || functionName.length == 0) ? "<anonymous>" : functionName) +

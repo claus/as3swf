@@ -18,6 +18,11 @@
 			name = data.readString();
 		}
 		
+		public function publish(data:SWFData):void {
+			data.writeUI8(register);
+			data.writeString(name);
+		}
+		
 		public function toString():String {
 			return register + ":" + name;
 		}

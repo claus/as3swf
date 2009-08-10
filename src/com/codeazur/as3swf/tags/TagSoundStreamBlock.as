@@ -28,7 +28,7 @@
 		override public function get name():String { return "SoundStreamBlock"; }
 		
 		public function toString(indent:uint = 0):String {
-			return toStringMain(indent);
+			return toStringMain(indent) + "Length: " + _soundData.length;
 		}
 	}
 }

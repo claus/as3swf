@@ -8,32 +8,39 @@
 	{
 		public static const TYPE:uint = 12;
 		
-		protected var _records:Vector.<IAction>;
+		protected var _actions:Vector.<IAction>;
 		
 		public function TagDoAction() {
-			_records = new Vector.<IAction>();
+			_actions = new Vector.<IAction>();
 		}
 		
-		public function get records():Vector.<IAction> { return _records; }
+		public function get actions():Vector.<IAction> { return _actions; }
 		
 		public function parse(data:SWFData, length:uint, version:uint):void {
 			var action:IAction;
 			while ((action = data.readACTIONRECORD()) != null) {
-				_records.push(action);
+				_actions.push(action);
 			}
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
-			throw(new Error("TODO: implement publish()"));
+			var body:SWFData = new SWFData();
+			for (var i:uint = 0; i < _actions.length; i++) {
+				body.writeACTIONRECORD(_actions[i]);
+			}
+			body.writeUI8(0);
+			data.writeTagHeader(type, body.length);
+			data.writeBytes(body, 0, body.length);
 		}
 		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "DoAction"; }
+		override public function get version():uint { return 3; }
 		
 		public function toString(indent:uint = 0):String {
 			var str:String = toStringMain(indent);
-			for (var i:uint = 0; i < _records.length; i++) {
-				str += "\n" + StringUtils.repeat(indent + 2) + "[" + i + "] " + _records[i].toString(indent + 2);
+			for (var i:uint = 0; i < _actions.length; i++) {
+				str += "\n" + StringUtils.repeat(indent + 2) + "[" + i + "] " + _actions[i].toString(indent + 2);
 			}
 			return str;
 		}

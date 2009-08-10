@@ -15,10 +15,18 @@
 		}
 		
 		override public function parse(data:SWFData):void {
-			var endPosition:uint = data.position + _length;
+			var endPosition:uint = data.position + length;
 			while (data.position != endPosition) {
 				values.push(data.readACTIONVALUE());
 			}
+		}
+		
+		override public function publish(data:SWFData):void {
+			var body:SWFData = new SWFData();
+			for (var i:uint = 0; i < values.length; i++) {
+				body.writeACTIONVALUE(values[i]);
+			}
+			write(data, body);
 		}
 		
 		public function toString(indent:uint = 0):String {

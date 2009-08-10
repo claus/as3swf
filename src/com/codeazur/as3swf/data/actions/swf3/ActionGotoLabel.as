@@ -15,6 +15,12 @@
 			label = data.readString();
 		}
 		
+		override public function publish(data:SWFData):void {
+			var body:SWFData = new SWFData();
+			body.writeString(label);
+			write(data, body);
+		}
+		
 		public function toString(indent:uint = 0):String {
 			return "[ActionGotoLabel] Label: " + label;
 		}

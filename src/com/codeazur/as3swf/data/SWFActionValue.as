@@ -38,6 +38,24 @@
 			}
 		}
 		
+		public function publish(data:SWFData):void {
+			data.writeUI8(type);
+			switch (type) {
+				case ActionValueType.STRING: data.writeString(string); break;
+				case ActionValueType.FLOAT: data.writeFLOAT(number); break;
+				case ActionValueType.NULL: break;
+				case ActionValueType.UNDEFINED: break;
+				case ActionValueType.REGISTER: data.writeUI8(register); break;
+				case ActionValueType.BOOLEAN: data.writeUI8(boolean ? 1 : 0); break;
+				case ActionValueType.DOUBLE: data.writeDOUBLE(number); break;
+				case ActionValueType.INTEGER: data.writeUI32(integer); break;
+				case ActionValueType.CONSTANT_8: data.writeUI8(constant); break;
+				case ActionValueType.CONSTANT_16: data.writeUI16(constant); break;
+				default:
+					throw(new Error("Unknown ActionValueType: " + type));
+			}
+		}
+		
 		public function toString():String {
 			var str:String = "";
 			switch (type) {

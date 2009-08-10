@@ -15,9 +15,18 @@
 		
 		override public function parse(data:SWFData):void {
 			sendVarsMethod = data.readUB(2);
-			data.readUB(4);
+			data.readUB(4); // reserved, always 0
 			loadTargetFlag = (data.readUB(1) == 1);
 			loadVariablesFlag = (data.readUB(1) == 1);
+		}
+		
+		override public function publish(data:SWFData):void {
+			var body:SWFData = new SWFData();
+			body.writeUB(2, sendVarsMethod);
+			body.writeUB(4, 0); // reserved, always 0
+			body.writeUB(1, loadTargetFlag ? 1 : 0);
+			body.writeUB(1, loadVariablesFlag ? 1 : 0);
+			write(data, body);
 		}
 		
 		public function toString(indent:uint = 0):String {

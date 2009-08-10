@@ -15,6 +15,12 @@
 			registerNumber = data.readUI8();
 		}
 		
+		override public function publish(data:SWFData):void {
+			var body:SWFData = new SWFData();
+			body.writeUI8(registerNumber);
+			write(data, body);
+		}
+		
 		public function toString(indent:uint = 0):String {
 			return "[ActionStoreRegister] RegisterNumber: " + registerNumber;
 		}

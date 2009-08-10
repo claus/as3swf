@@ -15,6 +15,12 @@
 			frame = data.readUI16();
 		}
 		
+		override public function publish(data:SWFData):void {
+			var body:SWFData = new SWFData();
+			body.writeUI16(frame);
+			write(data, body);
+		}
+		
 		public function toString(indent:uint = 0):String {
 			return "[ActionGotoFrame] Frame: " + frame;
 		}

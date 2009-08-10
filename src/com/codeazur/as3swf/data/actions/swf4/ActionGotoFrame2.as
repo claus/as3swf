@@ -22,6 +22,18 @@
 			}
 		}
 		
+		override public function publish(data:SWFData):void {
+			var body:SWFData = new SWFData();
+			var flags:uint = 0;
+			if (sceneBiasFlag) { flags |= 0x02; }
+			if (playFlag) { flags |= 0x01; }
+			body.writeUI8(flags);
+			if (sceneBiasFlag) { 
+				body.writeUI16(sceneBias);
+			}
+			write(data, body);
+		}
+		
 		public function toString(indent:uint = 0):String {
 			var str:String = "[ActionGotoFrame2] " +
 				"PlayFlag: " + playFlag + ", ";

@@ -505,12 +505,24 @@
 			return action;
 		}
 		
+		public function writeACTIONRECORD(action:IAction):void {
+			action.publish(this);
+		}
+		
 		public function readACTIONVALUE():SWFActionValue {
 			return new SWFActionValue(this);
 		}
 		
+		public function writeACTIONVALUE(value:SWFActionValue):void {
+			value.publish(this);
+		}
+		
 		public function readREGISTERPARAM():SWFRegisterParam {
 			return new SWFRegisterParam(this);
+		}
+		
+		public function writeREGISTERPARAM(value:SWFRegisterParam):void {
+			value.publish(this);
 		}
 		
 		/////////////////////////////////////////////////////////

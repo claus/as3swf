@@ -4,7 +4,11 @@
 	
 	public interface IAction
 	{
+		function get code():uint;
+		function get length():uint;
+		
 		function parse(data:SWFData):void;
+		function publish(data:SWFData):void;
 		function toString(indent:uint = 0):String;
 	}
 }

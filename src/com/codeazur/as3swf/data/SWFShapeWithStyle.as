@@ -48,13 +48,13 @@
 			if (_fillStyles.length > 0) {
 				str += "\n" + StringUtils.repeat(indent) + "FillStyles:";
 				for (i = 0; i < _fillStyles.length; i++) {
-					str += "\n" + StringUtils.repeat(indent + 2) + "[" + i + "] " + _fillStyles[i].toString();
+					str += "\n" + StringUtils.repeat(indent + 2) + "[" + (i + 1) + "] " + _fillStyles[i].toString();
 				}
 			}
 			if (_lineStyles.length > 0) {
 				str += "\n" + StringUtils.repeat(indent) + "LineStyles:";
 				for (i = 0; i < _lineStyles.length; i++) {
-					str += "\n" + StringUtils.repeat(indent + 2) + "[" + i + "] " + _lineStyles[i].toString();
+					str += "\n" + StringUtils.repeat(indent + 2) + "[" + (i + 1) + "] " + _lineStyles[i].toString();
 				}
 			}
 			return str + super.toString(indent);

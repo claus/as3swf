@@ -3,6 +3,7 @@
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.consts.BlendMode;
 	import com.codeazur.as3swf.data.filters.IFilter;
+	import com.codeazur.utils.StringUtils;
 	
 	public class TagPlaceObject3 extends TagPlaceObject2 implements ITag
 	{
@@ -38,11 +39,11 @@
 			hasCharacter = (flags1 & 0x02) != 0;
 			hasMove = (flags1 & 0x01) != 0;
 			var flags2:uint = data.readUI8();
-			hasImage = (flags1 & 0x10) != 0;
-			hasClassName = (flags1 & 0x08) != 0;
-			hasCacheAsBitmap = (flags1 & 0x04) != 0;
-			hasBlendMode = (flags1 & 0x02) != 0;
-			hasFilterList = (flags1 & 0x01) != 0;
+			hasImage = (flags2 & 0x10) != 0;
+			hasClassName = (flags2 & 0x08) != 0;
+			hasCacheAsBitmap = (flags2 & 0x04) != 0;
+			hasBlendMode = (flags2 & 0x02) != 0;
+			hasFilterList = (flags2 & 0x01) != 0;
 			depth = data.readUI16();
 			if (hasClassName || (hasImage && hasCharacter)) {
 				className = data.readString();
@@ -78,9 +79,7 @@
 				bitmapCache = data.readUI8();
 			}
 			if (hasClipActions) {
-				// TODO: implement readCLIPACTIONS()
-				//_clipActions = null;
-				throw(new Error("CLIPACTIONS not yet supported."));
+				clipActions = data.readCLIPACTIONS(version);
 			}
 		}
 		
@@ -102,6 +101,9 @@
 			if (hasName) { str += ", Name: " + objName; }
 			if (hasBlendMode) { str += ", BlendMode: " + BlendMode.toString(blendMode); }
 			if (hasCacheAsBitmap) { str += ", CacheAsBitmap: " + bitmapCache; }
+			if (hasClipActions) {
+				str += "\n" + StringUtils.repeat(indent + 2) + clipActions.toString(indent + 2);
+			}
 			return str;
 		}
 	}

@@ -14,7 +14,7 @@
 		
 		public function publish(data:SWFData, version:uint):void {
 			if (raw != null) {
-				data.writeBytes(raw, 0, raw.length);
+				data.writeBytes(raw);
 			} else {
 				throw(new Error("No raw tag data available."));
 			}

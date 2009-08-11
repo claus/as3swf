@@ -30,9 +30,11 @@
 			var body:SWFData = new SWFData();
 			body.writeUI16(tagId);
 			body.writeUI32(0); // reserved, always 0
-			body.writeBytes(_binaryData, 0, _binaryData.length);
+			if (_binaryData.length > 0) {
+				body.writeBytes(_binaryData);
+			}
 			data.writeTagHeader(type, body.length);
-			data.writeBytes(body, 0, body.length);
+			data.writeBytes(body);
 		}
 		
 		override public function get type():uint { return TYPE; }

@@ -38,9 +38,11 @@
 			data.writeTagHeader(type, _bitmapData.length + _bitmapAlphaData.length + 6);
 			data.writeUI16(characterId);
 			data.writeUI32(_bitmapData.length);
-			data.writeBytes(_bitmapData, 0, _bitmapData.length);
+			if (_bitmapData.length > 0) {
+				data.writeBytes(_bitmapData);
+			}
 			if (_bitmapAlphaData.length > 0) {
-				data.writeBytes(_bitmapAlphaData, 0, _bitmapAlphaData.length);
+				data.writeBytes(_bitmapAlphaData);
 			}
 		}
 		

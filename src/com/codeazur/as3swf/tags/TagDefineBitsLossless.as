@@ -43,9 +43,11 @@
 			if (bitmapFormat == BitmapFormat.BIT_8) {
 				body.writeUI8(bitmapColorTableSize);
 			}
-			body.writeBytes(_zlibBitmapData);
+			if (_zlibBitmapData.length > 0) {
+				body.writeBytes(_zlibBitmapData);
+			}
 			data.writeTagHeader(type, body.length);
-			data.writeBytes(body, 0, body.length);
+			data.writeBytes(body);
 		}
 		
 		override public function get type():uint { return TYPE; }

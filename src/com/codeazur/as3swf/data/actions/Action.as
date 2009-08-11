@@ -28,11 +28,15 @@
 			data.writeUI8(code);
 			if (code >= 0x80) {
 				if (body != null && body.length > 0) {
-					data.writeUI16(body.length);
+					_length = body.length;
+					data.writeUI16(_length);
 					data.writeBytes(body);
 				} else {
+					_length = 0;
 					throw(new Error("Action body null or empty."));
 				}
+			} else {
+				_length = 0;
 			}
 		}
 	}

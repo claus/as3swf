@@ -21,7 +21,10 @@
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
-			throw(new Error("TODO: implement publish()"));
+			data.writeTagHeader(type, _soundData.length);
+			if (_soundData.length > 0) {
+				data.writeBytes(_soundData);
+			}
 		}
 		
 		override public function get type():uint { return TYPE; }

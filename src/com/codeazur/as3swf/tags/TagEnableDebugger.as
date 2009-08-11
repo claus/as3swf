@@ -25,7 +25,7 @@
 		public function publish(data:SWFData, version:uint):void {
 			data.writeTagHeader(type, _password.length);
 			if (_password.length > 0) {
-				data.writeBytes(_password, 0, _password.length);
+				data.writeBytes(_password);
 			}
 		}
 		

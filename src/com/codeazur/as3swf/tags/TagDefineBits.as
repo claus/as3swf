@@ -28,7 +28,9 @@
 		public function publish(data:SWFData, version:uint):void {
 			data.writeTagHeader(type, _bitmapData.length + 2);
 			data.writeUI16(characterId);
-			data.writeBytes(_bitmapData, 0, _bitmapData.length);
+			if (_bitmapData.length > 0) {
+				data.writeBytes(_bitmapData);
+			}
 		}
 		
 		override public function get type():uint { return TYPE; }

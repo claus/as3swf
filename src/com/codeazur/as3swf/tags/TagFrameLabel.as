@@ -18,7 +18,7 @@
 			var body:SWFData = new SWFData();
 			body.writeString(frameName);
 			data.writeTagHeader(type, body.length);
-			data.writeBytes(body, 0, body.length);
+			data.writeBytes(body);
 		}
 		
 		override public function get type():uint { return TYPE; }

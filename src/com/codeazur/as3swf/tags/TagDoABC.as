@@ -31,9 +31,11 @@
 			var body:SWFData = new SWFData();
 			body.writeUI32(lazyInitializeFlag ? 1 : 0);
 			body.writeString(abcName);
-			body.writeBytes(_bytes, 0, _bytes.length);
+			if (_bytes.length > 0) {
+				body.writeBytes(_bytes);
+			}
 			data.writeTagHeader(type, body.length);
-			data.writeBytes(body, 0, body.length);
+			data.writeBytes(body);
 		}
 		
 		override public function get type():uint { return TYPE; }

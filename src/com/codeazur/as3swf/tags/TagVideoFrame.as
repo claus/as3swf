@@ -26,7 +26,12 @@
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
-			throw(new Error("TODO: implement publish()"));
+			data.writeTagHeader(type, _videoData.length + 4);
+			data.writeUI16(streamId);
+			data.writeUI16(frameNum);
+			if (_videoData.length > 0) {
+				data.writeBytes(_videoData);
+			}
 		}
 		
 		override public function get type():uint { return TYPE; }

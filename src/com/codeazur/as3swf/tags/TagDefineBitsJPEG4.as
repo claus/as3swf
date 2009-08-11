@@ -36,9 +36,11 @@
 			data.writeUI16(characterId);
 			data.writeUI32(_bitmapData.length);
 			data.writeFIXED8(deblockParam);
-			data.writeBytes(_bitmapData, 0, _bitmapData.length);
+			if (_bitmapData.length > 0) {
+				data.writeBytes(_bitmapData);
+			}
 			if (_bitmapAlphaData.length > 0) {
-				data.writeBytes(_bitmapAlphaData, 0, _bitmapAlphaData.length);
+				data.writeBytes(_bitmapAlphaData);
 			}
 		}
 		

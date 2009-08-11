@@ -28,7 +28,7 @@
 			}
 			body.writeUI8(0);
 			data.writeTagHeader(type, body.length);
-			data.writeBytes(body, 0, body.length);
+			data.writeBytes(body);
 		}
 		
 		override public function get type():uint { return TYPE; }

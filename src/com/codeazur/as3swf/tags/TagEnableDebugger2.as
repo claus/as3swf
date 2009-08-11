@@ -19,7 +19,7 @@
 			data.writeTagHeader(type, _password.length + 2);
 			data.writeUI16(0); // reserved, always 0
 			if (_password.length > 0) {
-				data.writeBytes(_password, 0, _password.length);
+				data.writeBytes(_password);
 			}
 		}
 		

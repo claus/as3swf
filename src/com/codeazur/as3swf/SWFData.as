@@ -11,6 +11,8 @@
 	
 	public class SWFData extends BitArray
 	{
+		public static const FLOAT_16_EXPONENT_BASE:Number = 16;
+		
 		public function SWFData() {
 			endian = Endian.LITTLE_ENDIAN;
 		}
@@ -98,28 +100,22 @@
 		
 		public function readFIXED():Number {
 			resetBitsPending();
-			var fractional:Number = readUnsignedShort();
-			var integral:Number = readShort();
-			return integral + fractional / 65536;
+			return readInt() / 65536;
 		}
 		
 		public function writeFIXED(value:Number):void {
 			resetBitsPending();
-			writeShort(uint(Math.abs(value * 65536)) & 0xffff);
-			writeShort(int(Math.abs(value)));
+			writeInt(int(value * 65536));
 		}
 
 		public function readFIXED8():Number {
 			resetBitsPending();
-			var fractional:Number = readUnsignedByte();
-			var integral:Number = readByte();
-			return integral + fractional / 256;
+			return readShort() / 256;
 		}
 
 		public function writeFIXED8(value:Number):void {
 			resetBitsPending();
-			writeByte(uint(Math.abs(value * 256)) & 0xff);
-			writeByte(int(Math.abs(value)));
+			writeShort(int(value * 256));
 		}
 
 		/////////////////////////////////////////////////////////
@@ -149,9 +145,26 @@
 		public function readFLOAT16():Number {
 			resetBitsPending();
 			var word:uint = readUnsignedShort();
-			var exp:uint = (word >> 10) & 0x1f;
-			var man:uint = (word & 0x3FF);
-			return ((word & 0x8000) ? man : -man) * Math.pow(2, exp - 16);
+			var sign:int = ((word & 0x8000) != 0) ? -1 : 1;
+			var exponent:uint = (word >> 10) & 0x1f;
+			var significand:uint = word & 0x3ff;
+			if (exponent == 0) {
+				if (significand == 0) {
+					return 0;
+				} else {
+					// subnormal number
+					return sign * Math.pow(2, 1 - FLOAT_16_EXPONENT_BASE) * (significand / 1024);
+				}
+			}
+			if (exponent == 31) { 
+				if (significand == 0) {
+					return (sign < 0) ? Number.NEGATIVE_INFINITY : Number.POSITIVE_INFINITY;
+				} else {
+					return Number.NaN;
+				}
+			}
+			// normal number
+			return sign * Math.pow(2, exponent - FLOAT_16_EXPONENT_BASE) * (1 + significand / 1024);
 		}
 		
 		public function writeFLOAT16(value:Number):void {

@@ -11,7 +11,7 @@
 	
 	public class SWFData extends BitArray
 	{
-		public static const FLOAT_16_EXPONENT_BASE:Number = 16;
+		public static const FLOAT16_EXPONENT_BASE:Number = 16;
 		
 		public function SWFData() {
 			endian = Endian.LITTLE_ENDIAN;
@@ -153,7 +153,7 @@
 					return 0;
 				} else {
 					// subnormal number
-					return sign * Math.pow(2, 1 - FLOAT_16_EXPONENT_BASE) * (significand / 1024);
+					return sign * Math.pow(2, 1 - FLOAT16_EXPONENT_BASE) * (significand / 1024);
 				}
 			}
 			if (exponent == 31) { 
@@ -164,7 +164,7 @@
 				}
 			}
 			// normal number
-			return sign * Math.pow(2, exponent - FLOAT_16_EXPONENT_BASE) * (1 + significand / 1024);
+			return sign * Math.pow(2, exponent - FLOAT16_EXPONENT_BASE) * (1 + significand / 1024);
 		}
 		
 		public function writeFLOAT16(value:Number):void {

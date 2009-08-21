@@ -39,6 +39,7 @@
 				/* 36 */ case TagDefineBitsLossless2.TYPE: return new TagDefineBitsLossless2();
 				/* 37 */ case TagDefineEditText.TYPE: return new TagDefineEditText();
 				/* 39 */ case TagDefineSprite.TYPE: return new TagDefineSprite();
+				/* 41 */ case TagProductInfo.TYPE: return new TagProductInfo();
 				/* 43 */ case TagFrameLabel.TYPE: return new TagFrameLabel();
 				/* 45 */ case TagSoundStreamHead2.TYPE: return new TagSoundStreamHead2();
 				/* 46 */ case TagDefineMorphShape.TYPE: return new TagDefineMorphShape();
@@ -50,6 +51,7 @@
 				/* 60 */ case TagDefineVideoStream.TYPE: return new TagDefineVideoStream();
 				/* 61 */ case TagVideoFrame.TYPE: return new TagVideoFrame();
 				/* 62 */ case TagDefineFontInfo2.TYPE: return new TagDefineFontInfo2();
+				/* 63 */ case TagDebugID.TYPE: return new TagDebugID();
 				/* 64 */ case TagEnableDebugger2.TYPE: return new TagEnableDebugger2();
 				/* 65 */ case TagScriptLimits.TYPE: return new TagScriptLimits();
 				/* 66 */ case TagSetTabIndex.TYPE: return new TagSetTabIndex();

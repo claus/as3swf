@@ -1,7 +1,6 @@
 ﻿package com.codeazur.utils
 {
 	import flash.events.*;
-	import flash.utils.Dictionary;
 	
 	public class StringUtils
 	{
@@ -67,7 +66,7 @@
 			return "";
 		}
 		
-		public static function repeat(n:uint, str:String = " ") {
+		public static function repeat(n:uint, str:String = " "):String {
 			return new Array(n + 1).join(str);
 		}
 		
@@ -82,7 +81,7 @@
 			var result:String = "";
 			var indexValue:int = 0;
 			var isIndexed:int = -1;
-			var typeLookup = "diufFeEgGxXoscpn";
+			var typeLookup:String = "diufFeEgGxXoscpn";
 			for(i = 0; i < format.length; i++) {
 				var c:String = format.charAt(i);
 				if(c == "%") {
@@ -100,7 +99,7 @@
 							var precision:int = -1;
 							var type:String = "";
 							var value:*;
-							var j;
+							var j:int;
 
 							///////////////////////////
 							// parse parameter
@@ -333,7 +332,7 @@
 								var numFill:int = width - valueStr.length;
 								if(hasSign) { numFill--; }
 								if(numFill > 0) {
-									var fillChar = (flagZeroPad && !flagLeftAlign) ? "0" : " ";
+									var fillChar:String = (flagZeroPad && !flagLeftAlign) ? "0" : " ";
 									if(flagLeftAlign) {
 										for(j = 0; j < numFill; j++) {
 											valueStr += fillChar;
@@ -390,7 +389,7 @@
 		
 		private static function getIndex(format:String):int {
 			var result:int = 0;
-			var isIndexed = false;
+			var isIndexed:Boolean = false;
 			var c:String = "";
 			var iTmp:int = i;
 			while((c = format.charAt(i)) >= "0" && c <= "9") {

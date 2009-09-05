@@ -26,8 +26,11 @@
 		
 		protected var _tags:Vector.<ITag>;
 
-		public function SWF() {
+		public function SWF(data:ByteArray = null) {
 			_tags = new Vector.<ITag>();
+			if (data != null) {
+				loadBytes(data);
+			}
 		}
 		
 		public function get tags():Vector.<ITag> { return _tags; }

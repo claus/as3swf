@@ -173,22 +173,34 @@
 				if (lineStyleIdx != e.lineStyleIdx) {
 					lineStyleIdx = e.lineStyleIdx;
 					if (lineStyleIdx == 0) {
+						// LineStyle index 0: no stroke
 						handler.lineStyle();
 					} else {
-						var lineStyle:SWFLineStyle = tmpLineStyles[lineStyleIdx - 1];
-						handler.lineStyle(lineStyle.width / 20, ColorUtils.rgb(lineStyle.color), ColorUtils.alpha(lineStyle.color));
+						if (tmpLineStyles != null) {
+							var lineStyle:SWFLineStyle = tmpLineStyles[lineStyleIdx - 1];
+							handler.lineStyle(lineStyle.width / 20, ColorUtils.rgb(lineStyle.color), ColorUtils.alpha(lineStyle.color));
+						} else {
+							handler.lineStyle(1);
+						}
 					}
 				}
 				if (fillStyleIdx != e.fillStyleIdx) {
 					fillStyleIdx = e.fillStyleIdx;
 					if (fillStyleIdx == 0) {
+						// Fillstyle index 0: no fill
 						if (hasOpenFill) {
 							handler.endFill();
 							hasOpenFill = false;
 						}
 					} else {
-						var fillStyle:SWFFillStyle = tmpFillStyles[fillStyleIdx - 1];
-						handler.beginFill(ColorUtils.rgb(fillStyle.rgb), ColorUtils.alpha(fillStyle.rgb));
+						if (tmpFillStyles != null) {
+							var fillStyle:SWFFillStyle = tmpFillStyles[fillStyleIdx - 1];
+							handler.beginFill(ColorUtils.rgb(fillStyle.rgb), ColorUtils.alpha(fillStyle.rgb));
+						} else {
+							// Font shapes define no fillstyles per se, but do reference fillstyle index 1,
+							// which represents the font color. We just report solid black here.
+							handler.beginFill(0);
+						}
 						hasOpenFill = true;
 					}
 				}

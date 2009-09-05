@@ -3,6 +3,9 @@
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.SWFRectangle;
 	import com.codeazur.as3swf.data.SWFShapeWithStyle;
+	import com.codeazur.as3swf.data.etc.IShapeExportDocumentHandler;
+	
+	import flash.geom.Point;
 	
 	public class TagDefineShape extends Tag implements ITag
 	{
@@ -22,6 +25,10 @@
 		
 		public function publish(data:SWFData, version:uint):void {
 			throw(new Error("TODO: implement publish()"));
+		}
+		
+		public function export(handler:IShapeExportDocumentHandler = null):void {
+			shapes.export(handler);
 		}
 		
 		override public function get type():uint { return TYPE; }

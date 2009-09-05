@@ -22,6 +22,8 @@
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
+			data.writeTagHeader(type, _uuid.length);
+			data.writeBytes(_uuid);
 		}
 		
 		override public function get type():uint { return TYPE; }
@@ -30,8 +32,14 @@
 		
 		public function toString(indent:uint = 0):String {
 			var str:String = toStringMain(indent) + "UUID: ";
-			for (var i:uint = 0; i < _uuid.length; i++) {
-				str += StringUtils.printf("%02x ", _uuid[i]);
+			if (_uuid.length == 16) {
+				str += StringUtils.printf("%02x%02x%02x%02x-", _uuid[0], _uuid[1], _uuid[2], _uuid[3]);
+				str += StringUtils.printf("%02x%02x-", _uuid[4], _uuid[5]);
+				str += StringUtils.printf("%02x%02x-", _uuid[6], _uuid[7]);
+				str += StringUtils.printf("%02x%02x-", _uuid[8], _uuid[9]);
+				str += StringUtils.printf("%02x%02x%02x%02x%02x%02x", _uuid[10], _uuid[11], _uuid[12], _uuid[13], _uuid[14], _uuid[15]);
+			} else {
+				str += "(invalid length: " + _uuid.length + ")";
 			}
 			return str;
 		}

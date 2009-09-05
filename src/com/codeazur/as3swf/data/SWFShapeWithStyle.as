@@ -1,6 +1,7 @@
 ﻿package com.codeazur.as3swf.data
 {
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.data.etc.IShapeExportDocumentHandler;
 	import com.codeazur.utils.StringUtils;
 	
 	public class SWFShapeWithStyle extends SWFShape
@@ -34,14 +35,14 @@
 			readShapeRecords(data, numFillBits, numLineBits, level);
 		}
 		
-		protected function readStyleArrayLength(data:SWFData, level:uint = 1):uint {
-			var len:uint = data.readUI8();
-			if (level >= 2 && len == 0xff) {
-				len = data.readUI16();
-			}
-			return len;
+		override public function export(handler:IShapeExportDocumentHandler = null):void {
+			tmpFillStyles = _fillStyles.concat();
+			tmpLineStyles = _lineStyles.concat();
+			super.export(handler);
+			tmpFillStyles = null;
+			tmpLineStyles = null;
 		}
-		
+
 		override public function toString(indent:uint = 0):String {
 			var i:uint;
 			var str:String = "";
@@ -58,6 +59,14 @@
 				}
 			}
 			return str + super.toString(indent);
+		}
+		
+		protected function readStyleArrayLength(data:SWFData, level:uint = 1):uint {
+			var len:uint = data.readUI8();
+			if (level >= 2 && len == 0xff) {
+				len = data.readUI16();
+			}
+			return len;
 		}
 	}
 }

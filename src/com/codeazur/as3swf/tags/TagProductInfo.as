@@ -29,6 +29,7 @@
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
+			throw(new Error("TODO: implement publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

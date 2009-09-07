@@ -62,7 +62,6 @@
 					} else {
 						var styleChangeRecord:SWFShapeRecordStyleChange = data.readSTYLECHANGERECORD(states, fillBits, lineBits, level);
 						if (styleChangeRecord.stateNewStyles) {
-							// TODO: We might have to update fillStyles and lineStyles too
 							fillBits = styleChangeRecord.numFillBits;
 							lineBits = styleChangeRecord.numLineBits;
 						}
@@ -76,32 +75,33 @@
 		public function export(handler:IShapeExportDocumentHandler = null):void {
 			var xPos:Number = 0;
 			var yPos:Number = 0;
+			var from:Point;
+			var to:Point;
+			var control:Point;
 			var fillStyleIdxOffset:int = 0;
 			var lineStyleIdxOffset:int = 0;
 			var currentFillStyleIdx0:uint = 0;
 			var currentFillStyleIdx1:uint = 0;
 			var currentLineStyleIdx:uint = 0;
 			var path:Vector.<IEdge> = new Vector.<IEdge>();
-			var subpath:Vector.<IEdge> = new Vector.<IEdge>();
+			var subPath:Vector.<IEdge> = new Vector.<IEdge>();
 			if (handler == null) {
 				handler = new DefaultShapeExportDocumentHandler();
 			}
 			for (var i:uint = 0; i < _records.length; i++) {
-				var from:Point;
-				var to:Point;
 				var shapeRecord:SWFShapeRecord = _records[i];
 				switch(shapeRecord.type) {
 					case SWFShapeRecord.TYPE_STYLECHANGE:
 						var styleChangeRecord:SWFShapeRecordStyleChange = shapeRecord as SWFShapeRecordStyleChange;
 						if (styleChangeRecord.stateFillStyle0 || styleChangeRecord.stateFillStyle1) {
-							processSubPath(path, subpath, currentFillStyleIdx0, currentFillStyleIdx1);
-							subpath = new Vector.<IEdge>();
+							processSubPath(path, subPath, currentFillStyleIdx0, currentFillStyleIdx1);
+							subPath = new Vector.<IEdge>();
 						}
 						if (styleChangeRecord.stateNewStyles) {
+							fillStyleIdxOffset = tmpFillStyles.length;
+							lineStyleIdxOffset = tmpLineStyles.length;
 							appendFillStyles(tmpFillStyles, styleChangeRecord.fillStyles);
 							appendLineStyles(tmpLineStyles, styleChangeRecord.lineStyles);
-							fillStyleIdxOffset += styleChangeRecord.fillStyles.length;
-							fillStyleIdxOffset += styleChangeRecord.lineStyles.length;
 						}
 						if (styleChangeRecord.stateLineStyle) {
 							currentLineStyleIdx = styleChangeRecord.lineStyle;
@@ -140,7 +140,7 @@
 							}
 						}
 						to = new Point(xPos, yPos);
-						subpath.push(new StraightEdge(from, to, currentLineStyleIdx, currentFillStyleIdx1));
+						subPath.push(new StraightEdge(from, to, currentLineStyleIdx, currentFillStyleIdx1));
 						break;
 					case SWFShapeRecord.TYPE_CURVEDEDGE:
 						var curvedEdgeRecord:SWFShapeRecordCurvedEdge = shapeRecord as SWFShapeRecordCurvedEdge;
@@ -149,41 +149,29 @@
 						var yPosControl = yPos + curvedEdgeRecord.controlDeltaY / 20;
 						xPos = xPosControl + curvedEdgeRecord.anchorDeltaX / 20;
 						yPos = yPosControl + curvedEdgeRecord.anchorDeltaY / 20;
-						var control:Point = new Point(xPosControl, yPosControl);
+						control = new Point(xPosControl, yPosControl);
 						to = new Point(xPos, yPos);
-						subpath.push(new CurvedEdge(from, control, to, currentLineStyleIdx, currentFillStyleIdx1));
+						subPath.push(new CurvedEdge(from, control, to, currentLineStyleIdx, currentFillStyleIdx1));
 						break;
 					case SWFShapeRecord.TYPE_END:
-						processSubPath(path, subpath, currentFillStyleIdx0, currentFillStyleIdx1);
-						processPath(path, handler);
+						// We're done. Process the last subpath, if any
+						processSubPath(path, subPath, currentFillStyleIdx0, currentFillStyleIdx1);
+						// Export fills first
+						exportFillPath(path, handler);
+						// Export strokes last
+						exportLinePath(path, handler);
 						break;
 				}
 			}
 		}
 		
-		protected function processPath(path:Vector.<IEdge>, handler:IShapeExportDocumentHandler):void {
-			var xPos:Number = Number.MAX_VALUE;
-			var yPos:Number = Number.MAX_VALUE;
+		protected function exportFillPath(fillPath:Vector.<IEdge>, handler:IShapeExportDocumentHandler):void {
+			var path:Vector.<IEdge> = sortFillPath(fillPath);
 			var fillStyleIdx:uint = uint.MAX_VALUE;
-			var lineStyleIdx:uint = uint.MAX_VALUE;
+			var pos:Point = new Point(Number.MAX_VALUE, Number.MAX_VALUE);
 			var hasOpenFill:Boolean = false;
-			path = sortPath(path);
 			for (var i:uint = 0; i < path.length; i++) {
 				var e:IEdge = path[i];
-				if (lineStyleIdx != e.lineStyleIdx) {
-					lineStyleIdx = e.lineStyleIdx;
-					if (lineStyleIdx == 0) {
-						// LineStyle index 0: no stroke
-						handler.lineStyle();
-					} else {
-						if (tmpLineStyles != null) {
-							var lineStyle:SWFLineStyle = tmpLineStyles[lineStyleIdx - 1];
-							handler.lineStyle(lineStyle.width / 20, ColorUtils.rgb(lineStyle.color), ColorUtils.alpha(lineStyle.color));
-						} else {
-							handler.lineStyle(1);
-						}
-					}
-				}
 				if (fillStyleIdx != e.fillStyleIdx) {
 					fillStyleIdx = e.fillStyleIdx;
 					if (fillStyleIdx == 0) {
@@ -193,52 +181,91 @@
 							hasOpenFill = false;
 						}
 					} else {
-						if (tmpFillStyles != null) {
+						try {
 							var fillStyle:SWFFillStyle = tmpFillStyles[fillStyleIdx - 1];
 							handler.beginFill(ColorUtils.rgb(fillStyle.rgb), ColorUtils.alpha(fillStyle.rgb));
-						} else {
+						} catch (e:Error) {
 							// Font shapes define no fillstyles per se, but do reference fillstyle index 1,
-							// which represents the font color. We just report solid black here.
+							// which represents the font color. We just report solid black in this case.
 							handler.beginFill(0);
 						}
 						hasOpenFill = true;
 					}
 				}
-				if (xPos != e.from.x || yPos != e.from.y) {
-					handler.moveTo(e.from.x, e.from.y);
+				if (hasOpenFill) {
+					if (pos.x != e.from.x || pos.y != e.from.y) {
+						handler.moveTo(e.from.x, e.from.y);
+					}
+					if (e is CurvedEdge) {
+						var c:CurvedEdge = CurvedEdge(e);
+						handler.curveTo(c.control.x, c.control.y, c.to.x, c.to.y);
+					} else {
+						handler.lineTo(e.to.x, e.to.y);
+					}
 				}
-				if (e is CurvedEdge) {
-					var c:CurvedEdge = CurvedEdge(e);
-					handler.curveTo(c.control.x, c.control.y, c.to.x, c.to.y);
-				} else {
-					handler.lineTo(e.to.x, e.to.y);
-				}
-				xPos = e.to.x;
-				yPos = e.to.y;
+				pos = e.to;
 			}
 			if (hasOpenFill) {
 				handler.endFill();
 			}
 		}
 		
-		protected function sortPath(path:Vector.<IEdge>):Vector.<IEdge> {
+		protected function exportLinePath(linePath:Vector.<IEdge>, handler:IShapeExportDocumentHandler):void {
+			var path:Vector.<IEdge> = new Vector.<IEdge>();
+			var pos:Point = new Point(Number.MAX_VALUE, Number.MAX_VALUE);
+			var lineStyle:SWFLineStyle;
+			for (var lineStyleIdx:uint = 1; lineStyleIdx <= tmpLineStyles.length; lineStyleIdx++) {
+				var newLineStyle:Boolean = true;
+				try {
+					lineStyle = tmpLineStyles[lineStyleIdx - 1];
+				} catch (e:Error) {
+					lineStyle = null;
+				}
+				for (var i:uint = 0; i < linePath.length; i++) {
+					var e:IEdge = linePath[i];
+					if (!e.isDuplicate) {
+						if (e.lineStyleIdx == lineStyleIdx) {
+							if (newLineStyle) {
+								if (lineStyle != null) {
+									handler.lineStyle(lineStyle.width / 20, ColorUtils.rgb(lineStyle.color), ColorUtils.alpha(lineStyle.color));
+								} else {
+									// We should never get here
+									handler.lineStyle(0);
+								}
+								newLineStyle = false;
+							}
+							if (!e.from.equals(pos)) {
+								handler.moveTo(e.from.x, e.from.y);
+							}
+							if (e is CurvedEdge) {
+								var c:CurvedEdge = CurvedEdge(e);
+								handler.curveTo(c.control.x, c.control.y, c.to.x, c.to.y);
+							} else {
+								handler.lineTo(e.to.x, e.to.y);
+							}
+							pos = e.to;
+						}
+					}
+				}
+			}
+		}
+		
+		protected function sortFillPath(path:Vector.<IEdge>):Vector.<IEdge> {
 			var oldPath:Vector.<IEdge> = path.concat();
 			var newPath:Vector.<IEdge> = new Vector.<IEdge>();
-			var xPosStart:Number = Number.MAX_VALUE;
-			var yPosStart:Number = Number.MAX_VALUE;
 			var fillStyleIdx:uint;
+			var posStart:Point;
 			var i:uint;
 			while (oldPath.length > 0) {
 				i = 0;
-				xPosStart = oldPath[0].from.x;
-				yPosStart = oldPath[0].from.y;
+				posStart = oldPath[0].from;
 				fillStyleIdx = oldPath[0].fillStyleIdx;
 				do {
 					var e:IEdge = oldPath[i];
 					if (fillStyleIdx == e.fillStyleIdx) {
 						newPath.push(e);
 						oldPath.splice(i, 1);
-						if (xPosStart == e.to.x && yPosStart == e.to.y) {
+						if (posStart.x == e.to.x && posStart.y == e.to.y) {
 							// The end point of the current edge matches the start point of the subshape
 							// That means that the subshape is closed and complete.
 							// Bail out of the inner loop, continue with next subshape.
@@ -253,16 +280,19 @@
 			return newPath;
 		}
 
-		protected function processSubPath(path:Vector.<IEdge>, subpath:Vector.<IEdge>, fillStyleIdx0:uint, fillStyleIdx1:uint):void {
+		protected function processSubPath(path:Vector.<IEdge>, subPath:Vector.<IEdge>, fillStyleIdx0:uint, fillStyleIdx1:uint):void {
 			var j:int;
+			var hasDuplicates:Boolean = (fillStyleIdx0 != 0 && fillStyleIdx1 != 0);
 			if (fillStyleIdx1 != 0 || (fillStyleIdx0 == 0 && fillStyleIdx1 == 0)) {
-				for (j = 0; j < subpath.length; j++) {
-					path.push(subpath[j]);
+				for (j = 0; j < subPath.length; j++) {
+					path.push(subPath[j]);
 				}
 			}
 			if (fillStyleIdx0 != 0) {
-				for (j = subpath.length - 1; j >= 0; j--) {
-					path.push(subpath[j].reverseWithNewFillStyle(fillStyleIdx0));
+				for (j = subPath.length - 1; j >= 0; j--) {
+					var e:IEdge = subPath[j].reverseWithNewFillStyle(fillStyleIdx0);
+					e.isDuplicate = hasDuplicates;
+					path.push(e);
 				}
 			}
 		}

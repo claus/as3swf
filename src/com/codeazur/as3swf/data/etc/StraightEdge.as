@@ -9,6 +9,8 @@
 		protected var _lineStyleIdx:uint = 0;
 		protected var _fillStyleIdx:uint = 0;
 		
+		protected var _isDuplicate:Boolean = false;
+		
 		public function StraightEdge(aFrom:Point, aTo:Point, aLineStyleIdx:uint = 0, aFillStyleIdx:uint = 0)
 		{
 			_from = aFrom;
@@ -22,8 +24,15 @@
 		public function get lineStyleIdx():uint { return _lineStyleIdx; }
 		public function get fillStyleIdx():uint { return _fillStyleIdx; }
 		
+		public function get isDuplicate():Boolean { return _isDuplicate; }
+		public function set isDuplicate(value:Boolean):void { _isDuplicate = value; }
+		
 		public function reverseWithNewFillStyle(newFillStyleIdx:uint):IEdge {
 			return new StraightEdge(to, from, lineStyleIdx, newFillStyleIdx);
+		}
+		
+		public function toString():String {
+			return "stroke:" + lineStyleIdx + ", fill:" + fillStyleIdx + ", start:" + from.toString() + ", end:" + to.toString() + (isDuplicate ? " (DUPE)" : "");
 		}
 	}
 }

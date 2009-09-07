@@ -9,6 +9,9 @@
 		function get lineStyleIdx():uint;
 		function get fillStyleIdx():uint;
 		
+		function get isDuplicate():Boolean;
+		function set isDuplicate(value:Boolean):void;
+		
 		function reverseWithNewFillStyle(newFillStyleIdx:uint):IEdge;
 	}
 }

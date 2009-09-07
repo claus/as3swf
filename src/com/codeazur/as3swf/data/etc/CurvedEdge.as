@@ -17,5 +17,9 @@
 		override public function reverseWithNewFillStyle(newFillStyleIdx:uint):IEdge {
 			return new CurvedEdge(to, control, from, lineStyleIdx, newFillStyleIdx);
 		}
+		
+		override public function toString():String {
+			return "stroke:" + lineStyleIdx + ", fill:" + fillStyleIdx + ", start:" + from.toString() + ", control:" + control.toString() + ", end:" + to.toString() + (isDuplicate ? " (DUPE)" : "");;
+		}
 	}
 }

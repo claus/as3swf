@@ -8,9 +8,16 @@
 	
 	public interface IShapeExportDocumentHandler
 	{
+		function beginFills():void;
+		function endFills():void;
+		
 		function beginFill(color:uint, alpha:Number = 1.0):void;
 		function beginGradientFill(type:String, colors:Array, alphas:Array, ratios:Array, matrix:Matrix = null, spreadMethod:String = "pad", interpolationMethod:String = "rgb", focalPointRatio:Number = 0):void;
 		function endFill():void;
+
+		function beginLines():void;
+		function endLines():void;
+		
 		function lineStyle(thickness:Number = NaN, color:uint = 0, alpha:Number = 1.0, pixelHinting:Boolean = false, scaleMode:String = "normal", caps:String = null, joints:String = null, miterLimit:Number = 3):void;
 		function moveTo(x:Number, y:Number):void;
 		function lineTo(x:Number, y:Number):void;

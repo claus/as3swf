@@ -169,6 +169,7 @@
 			var path:Vector.<IEdge> = sortFillPath(fillPath);
 			var fillStyleIdx:uint = uint.MAX_VALUE;
 			var pos:Point = new Point(Number.MAX_VALUE, Number.MAX_VALUE);
+			var hasFills:Boolean = false;
 			var hasOpenFill:Boolean = false;
 			for (var i:uint = 0; i < path.length; i++) {
 				var e:IEdge = path[i];
@@ -181,6 +182,10 @@
 							hasOpenFill = false;
 						}
 					} else {
+						if (!hasFills) {
+							handler.beginFills();
+							hasFills = true;
+						}
 						try {
 							var fillStyle:SWFFillStyle = tmpFillStyles[fillStyleIdx - 1];
 							handler.beginFill(ColorUtils.rgb(fillStyle.rgb), ColorUtils.alpha(fillStyle.rgb));
@@ -207,6 +212,9 @@
 			}
 			if (hasOpenFill) {
 				handler.endFill();
+			}
+			if (hasFills) {
+				handler.endFills();
 			}
 		}
 		

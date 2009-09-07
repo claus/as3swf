@@ -11,6 +11,11 @@
 	{
 		public function DefaultShapeExportDocumentHandler() {}
 		
+		public function beginFills():void { trace("// Fills:"); }
+		public function endFills():void {}
+		public function beginLines():void { trace("// Lines:"); }
+		public function endLines():void {}
+		
 		public function beginFill(color:uint, alpha:Number = 1.0):void {
 			if (alpha != 1.0) {
 				trace(StringUtils.printf("graphics.beginFill(0x%06x, %f);", color, alpha));

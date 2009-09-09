@@ -8,6 +8,9 @@
 	
 	public interface IShapeExportDocumentHandler
 	{
+		function beginShape():void;
+		function endShape():void;
+		
 		function beginFills():void;
 		function endFills():void;
 		

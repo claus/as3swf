@@ -11,6 +11,8 @@
 	{
 		public function DefaultShapeExportDocumentHandler() {}
 		
+		public function beginShape():void {}
+		public function endShape():void {}
 		public function beginFills():void { trace("// Fills:"); }
 		public function endFills():void {}
 		public function beginLines():void { trace("// Lines:"); }

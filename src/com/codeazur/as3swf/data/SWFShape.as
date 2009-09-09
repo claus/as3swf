@@ -156,10 +156,14 @@
 					case SWFShapeRecord.TYPE_END:
 						// We're done. Process the last subpath, if any
 						processSubPath(path, subPath, currentFillStyleIdx0, currentFillStyleIdx1);
+						// Let the doc handler know that a shape export starts
+						handler.beginShape();
 						// Export fills first
 						exportFillPath(path, handler);
 						// Export strokes last
 						exportLinePath(path, handler);
+						// Let the doc handler know that we're done exporting a shape
+						handler.endShape();
 						break;
 				}
 			}

@@ -226,6 +226,7 @@
 			var path:Vector.<IEdge> = new Vector.<IEdge>();
 			var pos:Point = new Point(Number.MAX_VALUE, Number.MAX_VALUE);
 			var lineStyle:SWFLineStyle;
+			var hasLines:Boolean = false;
 			for (var lineStyleIdx:uint = 1; lineStyleIdx <= tmpLineStyles.length; lineStyleIdx++) {
 				var newLineStyle:Boolean = true;
 				try {
@@ -237,6 +238,10 @@
 					var e:IEdge = linePath[i];
 					if (!e.isDuplicate) {
 						if (e.lineStyleIdx == lineStyleIdx) {
+							if (!hasLines) {
+								handler.beginLines();
+								hasLines = true;
+							}
 							if (newLineStyle) {
 								if (lineStyle != null) {
 									handler.lineStyle(lineStyle.width / 20, ColorUtils.rgb(lineStyle.color), ColorUtils.alpha(lineStyle.color));
@@ -259,6 +264,9 @@
 						}
 					}
 				}
+			}
+			if (hasLines) {
+				handler.endLines();
 			}
 		}
 		

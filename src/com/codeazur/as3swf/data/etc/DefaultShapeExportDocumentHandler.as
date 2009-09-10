@@ -5,6 +5,8 @@
 	import flash.display.InterpolationMethod;
 	import flash.display.LineScaleMode;
 	import flash.display.SpreadMethod;
+	import flash.display.CapsStyle;
+	import flash.display.JointStyle;
 	import flash.geom.Matrix;
 	
 	public class DefaultShapeExportDocumentHandler implements IShapeExportDocumentHandler
@@ -27,7 +29,62 @@
 		}
 		
 		public function beginGradientFill(type:String, colors:Array, alphas:Array, ratios:Array, matrix:Matrix = null, spreadMethod:String = SpreadMethod.PAD, interpolationMethod:String = InterpolationMethod.RGB, focalPointRatio:Number = 0):void {
-			trace("graphics.beginGradientFill(###TODO###);");
+			var asMatrix:String = "null";
+			if (matrix != null) {
+				asMatrix = "new Matrix(" + 
+					matrix.a + "," + 
+					matrix.b + "," + 
+					matrix.c + "," + 
+					matrix.d + "," + 
+					matrix.tx + "," + 
+					matrix.ty + ")";
+			}
+			var asColors:String = "";
+			for (var i:uint = 0; i < colors.length; i++) {
+				asColors += StringUtils.printf("0x%06x", colors[i]);
+				if (i < colors.length - 1) { asColors += ","; }
+			}
+			if (focalPointRatio != 0.0) {
+				trace(StringUtils.printf("graphics.beginGradientFill('%s', [%s], [%s], [%s], %s, '%s', '%s', %s);", 
+					type,
+					asColors,
+					alphas.join(","),
+					ratios.join(","),
+					asMatrix,
+					spreadMethod,
+					interpolationMethod,
+					focalPointRatio.toString()));
+			} else if (interpolationMethod != InterpolationMethod.RGB) {
+				trace(StringUtils.printf("graphics.beginGradientFill('%s', [%s], [%s], [%s], %s, '%s', '%s');", 
+					type,
+					asColors,
+					alphas.join(","),
+					ratios.join(","),
+					asMatrix,
+					spreadMethod,
+					interpolationMethod));
+			} else if (spreadMethod != SpreadMethod.PAD) {
+				trace(StringUtils.printf("graphics.beginGradientFill('%s', [%s], [%s], [%s], %s, '%s');", 
+					type,
+					asColors,
+					alphas.join(","),
+					ratios.join(","),
+					asMatrix,
+					spreadMethod));
+			} else if (matrix != null) {
+				trace(StringUtils.printf("graphics.beginGradientFill('%s', [%s], [%s], [%s], %s);", 
+					type,
+					asColors,
+					alphas.join(","),
+					ratios.join(","),
+					asMatrix));
+			} else {
+				trace(StringUtils.printf("graphics.beginGradientFill('%s', [%s], [%s], [%s]);", 
+					type,
+					asColors,
+					alphas.join(","),
+					ratios.join(",")));
+			}
 		}
 		
 		public function endFill():void {
@@ -42,13 +99,13 @@
 					(startCaps == null ? "null" : "'" + startCaps + "'"),
 					(joints == null ? "null" : "'" + joints + "'"),
 					miterLimit));
-			} else if(joints != null) {
+			} else if (joints != null && joints != JointStyle.ROUND) {
 				trace(StringUtils.printf("graphics.lineStyle(%f, 0x%06x, %f, %s, %s, %s, %s);", 
 					thickness, color, alpha, pixelHinting.toString(),
 					(scaleMode == null ? "null" : "'" + scaleMode + "'"),
 					(startCaps == null ? "null" : "'" + startCaps + "'"),
 					"'" + joints + "'"));
-			} else if(startCaps != null) {
+			} else if(startCaps != null && startCaps != CapsStyle.ROUND) {
 				trace(StringUtils.printf("graphics.lineStyle(%f, 0x%06x, %f, %s, %s, %s);", 
 					thickness, color, alpha, pixelHinting.toString(),
 					(scaleMode == null ? "null" : "'" + scaleMode + "'"),

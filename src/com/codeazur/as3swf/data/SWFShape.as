@@ -1,5 +1,7 @@
 ﻿package com.codeazur.as3swf.data
 {
+	import com.codeazur.as3swf.data.consts.GradientInterpolationMode;
+	import com.codeazur.as3swf.data.consts.GradientSpreadMode;
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.SWFFillStyle;
 	import com.codeazur.as3swf.data.SWFLineStyle;
@@ -16,6 +18,8 @@
 	import com.codeazur.as3swf.data.consts.LineJointStyle;
 	import com.codeazur.as3swf.utils.ColorUtils;
 	import com.codeazur.utils.StringUtils;
+	import flash.display.GradientType;
+	import flash.geom.Matrix;
 
 	import flash.display.LineScaleMode;
 	import flash.geom.Point;
@@ -195,7 +199,39 @@
 						}
 						try {
 							var fillStyle:SWFFillStyle = tmpFillStyles[fillStyleIdx - 1];
-							handler.beginFill(ColorUtils.rgb(fillStyle.rgb), ColorUtils.alpha(fillStyle.rgb));
+							switch(fillStyle.type) {
+								case 0x00:
+									handler.beginFill(ColorUtils.rgb(fillStyle.rgb), ColorUtils.alpha(fillStyle.rgb));
+									break;
+								case 0x10:
+								case 0x12:
+								case 0x13:
+									var colors:Array = [];
+									var alphas:Array = [];
+									var ratios:Array = [];
+									var gradientRecord:SWFGradientRecord;
+									for (var gri:uint = 0; gri < fillStyle.gradient.records.length; gri++) {
+										gradientRecord = fillStyle.gradient.records[gri];
+										colors.push(ColorUtils.rgb(gradientRecord.color));
+										alphas.push(ColorUtils.alpha(gradientRecord.color));
+										ratios.push(gradientRecord.ratio);
+									}
+									handler.beginGradientFill(
+										(fillStyle.type == 0x10) ? GradientType.LINEAR : GradientType.RADIAL,
+										colors, alphas, ratios,
+										fillStyle.gradientMatrix.matrix,
+										GradientSpreadMode.toString(fillStyle.gradient.spreadMode),
+										GradientInterpolationMode.toString(fillStyle.gradient.interpolationMode),
+										fillStyle.gradient.focalPoint
+									);
+									break;
+								case 0x40:
+								case 0x41:
+								case 0x42:
+								case 0x43:
+									// TODO: implement bitmap fills
+									break;
+							}
 						} catch (e:Error) {
 							// Font shapes define no fillstyles per se, but do reference fillstyle index 1,
 							// which represents the font color. We just report solid black in this case.

@@ -2,19 +2,25 @@
 {
 	import com.codeazur.as3swf.SWFData;
 	
+	import flash.geom.Matrix;
+	
 	public class SWFMatrix
 	{
-		public var scaleX:Number;
-		public var scaleY:Number;
-		public var rotateSkew0:Number;
-		public var rotateSkew1:Number;
-		public var translateX:int;
-		public var translateY:int;
+		public var scaleX:Number = 1.0;
+		public var scaleY:Number = 1.0;
+		public var rotateSkew0:Number = 0.0;
+		public var rotateSkew1:Number = 0.0;
+		public var translateX:int = 0.0;
+		public var translateY:int = 0.0;
 		
 		public function SWFMatrix(data:SWFData = null) {
 			if (data != null) {
 				parse(data);
 			}
+		}
+		
+		public function get matrix():Matrix {
+			return new Matrix(scaleX, rotateSkew0, rotateSkew1, scaleY, translateX / 20, translateY / 20);
 		}
 		
 		public function parse(data:SWFData):void {

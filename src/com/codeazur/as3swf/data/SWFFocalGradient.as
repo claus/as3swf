@@ -4,8 +4,6 @@
 	
 	public class SWFFocalGradient extends SWFGradient
 	{
-		public var focalPoint:Number;
-		
 		public function SWFFocalGradient(data:SWFData = null, level:uint = 1) {
 			super(data, level);
 		}

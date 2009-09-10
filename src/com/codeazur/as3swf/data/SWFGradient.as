@@ -6,6 +6,9 @@
 	{
 		public var spreadMode:uint;
 		public var interpolationMode:uint;
+
+		// Forward declarations of properties in SWFFocalGradient
+		public var focalPoint:Number = 0.0;
 		
 		protected var _records:Vector.<SWFGradientRecord>;
 		

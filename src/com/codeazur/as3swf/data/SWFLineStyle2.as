@@ -6,17 +6,6 @@
 	
 	public class SWFLineStyle2 extends SWFLineStyle
 	{
-		public var startCapsStyle:uint = LineCapsStyle.ROUND;
-		public var endCapsStyle:uint = LineCapsStyle.ROUND;
-		public var jointStyle:uint = LineJointStyle.ROUND;
-		public var hasFillFlag:Boolean;
-		public var noHScaleFlag:Boolean;
-		public var noVScaleFlag:Boolean;
-		public var pixelHintingFlag:Boolean;
-		public var noClose:Boolean;
-		public var miterLimitFactor:Number;
-		public var fillType:SWFFillStyle;
-		
 		public function SWFLineStyle2(data:SWFData = null, level:uint = 1) {
 			super(data, level);
 		}
@@ -29,7 +18,7 @@
 			noHScaleFlag = (data.readUB(1) == 1);
 			noVScaleFlag = (data.readUB(1) == 1);
 			pixelHintingFlag = (data.readUB(1) == 1);
-			var reserved:uint = data.readUB(5);
+			data.readUB(5);
 			noClose = (data.readUB(1) == 1);
 			endCapsStyle = data.readUB(2);
 			if (jointStyle == LineJointStyle.MITER) {

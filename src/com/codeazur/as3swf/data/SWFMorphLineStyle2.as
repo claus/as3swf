@@ -6,17 +6,6 @@
 	
 	public class SWFMorphLineStyle2 extends SWFMorphLineStyle
 	{
-		public var startCapsStyle:uint = LineCapsStyle.ROUND;
-		public var endCapsStyle:uint = LineCapsStyle.ROUND;
-		public var jointStyle:uint = LineJointStyle.ROUND;
-		public var hasFillFlag:Boolean;
-		public var noHScaleFlag:Boolean;
-		public var noVScaleFlag:Boolean;
-		public var pixelHintingFlag:Boolean;
-		public var noClose:Boolean;
-		public var miterLimitFactor:Number;
-		public var fillType:SWFMorphFillStyle;
-		
 		public function SWFMorphLineStyle2(data:SWFData = null, level:uint = 1) {
 			super(data, level);
 		}

@@ -1,7 +1,5 @@
 ﻿package com.codeazur.as3swf.data
 {
-	import com.codeazur.as3swf.data.consts.LineCapsStyle;
-	import com.codeazur.as3swf.data.consts.LineJointStyle;
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.SWFFillStyle;
 	import com.codeazur.as3swf.data.SWFLineStyle;
@@ -10,14 +8,16 @@
 	import com.codeazur.as3swf.data.SWFShapeRecordStraightEdge;
 	import com.codeazur.as3swf.data.SWFShapeRecordStyleChange;
 	import com.codeazur.as3swf.data.etc.IEdge;
-	import com.codeazur.as3swf.data.etc.IShapeExportDocumentHandler;
 	import com.codeazur.as3swf.data.etc.CurvedEdge;
 	import com.codeazur.as3swf.data.etc.StraightEdge;
+	import com.codeazur.as3swf.data.etc.IShapeExportDocumentHandler;
 	import com.codeazur.as3swf.data.etc.DefaultShapeExportDocumentHandler;
+	import com.codeazur.as3swf.data.consts.LineCapsStyle;
+	import com.codeazur.as3swf.data.consts.LineJointStyle;
 	import com.codeazur.as3swf.utils.ColorUtils;
 	import com.codeazur.utils.StringUtils;
-	import flash.display.LineScaleMode;
 
+	import flash.display.LineScaleMode;
 	import flash.geom.Point;
 	
 	public class SWFShape
@@ -247,37 +247,24 @@
 							}
 							if (newLineStyle) {
 								if (lineStyle != null) {
-									var pixelHinting:Boolean = false;
 									var scaleMode:String = LineScaleMode.NORMAL;
-									var startCaps:String = null;
-									var endCaps:String = null;
-									var joints:String = null;
-									var miterLimit:Number = 3;
-									if (lineStyle is SWFLineStyle2) {
-										var lineStyle2:SWFLineStyle2 = lineStyle as SWFLineStyle2;
-										pixelHinting = lineStyle2.pixelHintingFlag;
-										if (lineStyle2.noHScaleFlag && lineStyle2.noVScaleFlag) {
-											scaleMode = LineScaleMode.NONE;
-										} else if (lineStyle2.noHScaleFlag) {
-											scaleMode = LineScaleMode.HORIZONTAL;
-										} else if (lineStyle2.noVScaleFlag) {
-											scaleMode = LineScaleMode.VERTICAL;
-										}
-										startCaps = LineCapsStyle.toString(lineStyle2.startCapsStyle);
-										endCaps = LineCapsStyle.toString(lineStyle2.endCapsStyle);
-										joints = LineJointStyle.toString(lineStyle2.jointStyle);
-										miterLimit = lineStyle2.miterLimitFactor;
+									if (lineStyle.noHScaleFlag && lineStyle.noVScaleFlag) {
+										scaleMode = LineScaleMode.NONE;
+									} else if (lineStyle.noHScaleFlag) {
+										scaleMode = LineScaleMode.HORIZONTAL;
+									} else if (lineStyle.noVScaleFlag) {
+										scaleMode = LineScaleMode.VERTICAL;
 									}
 									handler.lineStyle(
 										lineStyle.width / 20, 
 										ColorUtils.rgb(lineStyle.color), 
 										ColorUtils.alpha(lineStyle.color), 
-										pixelHinting,
+										lineStyle.pixelHintingFlag,
 										scaleMode,
-										startCaps,
-										endCaps,
-										joints,
-										miterLimit);
+										LineCapsStyle.toString(lineStyle.startCapsStyle),
+										LineCapsStyle.toString(lineStyle.endCapsStyle),
+										LineJointStyle.toString(lineStyle.jointStyle),
+										lineStyle.miterLimitFactor);
 								} else {
 									// We should never get here
 									handler.lineStyle(0);

@@ -21,7 +21,7 @@
 		function beginLines():void;
 		function endLines():void;
 		
-		function lineStyle(thickness:Number = NaN, color:uint = 0, alpha:Number = 1.0, pixelHinting:Boolean = false, scaleMode:String = "normal", caps:String = null, joints:String = null, miterLimit:Number = 3):void;
+		function lineStyle(thickness:Number = NaN, color:uint = 0, alpha:Number = 1.0, pixelHinting:Boolean = false, scaleMode:String = "normal", startCaps:String = null, endCaps:String = null, joints:String = null, miterLimit:Number = 3):void;
 		function moveTo(x:Number, y:Number):void;
 		function lineTo(x:Number, y:Number):void;
 		function curveTo(controlX:Number, controlY:Number, anchorX:Number, anchorY:Number):void;

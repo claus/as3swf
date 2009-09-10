@@ -34,25 +34,25 @@
 			trace("graphics.endFill();");
 		}
 		
-		public function lineStyle(thickness:Number = NaN, color:uint = 0, alpha:Number = 1.0, pixelHinting:Boolean = false, scaleMode:String = LineScaleMode.NORMAL, caps:String = null, joints:String = null, miterLimit:Number = 3):void {
+		public function lineStyle(thickness:Number = NaN, color:uint = 0, alpha:Number = 1.0, pixelHinting:Boolean = false, scaleMode:String = LineScaleMode.NORMAL, startCaps:String = null, endCaps:String = null, joints:String = null, miterLimit:Number = 3):void {
 			if (miterLimit != 3) {
 				trace(StringUtils.printf("graphics.lineStyle(%f, 0x%06x, %f, %s, %s, %s, %s, %f);", 
 					thickness, color, alpha, pixelHinting.toString(),
 					(scaleMode == null ? "null" : "'" + scaleMode + "'"),
-					(caps == null ? "null" : "'" + caps + "'"),
+					(startCaps == null ? "null" : "'" + startCaps + "'"),
 					(joints == null ? "null" : "'" + joints + "'"),
 					miterLimit));
 			} else if(joints != null) {
 				trace(StringUtils.printf("graphics.lineStyle(%f, 0x%06x, %f, %s, %s, %s, %s);", 
 					thickness, color, alpha, pixelHinting.toString(),
 					(scaleMode == null ? "null" : "'" + scaleMode + "'"),
-					(caps == null ? "null" : "'" + caps + "'"),
-					(joints == null ? "null" : "'" + joints + "'")));
-			} else if(caps != null) {
+					(startCaps == null ? "null" : "'" + startCaps + "'"),
+					"'" + joints + "'"));
+			} else if(startCaps != null) {
 				trace(StringUtils.printf("graphics.lineStyle(%f, 0x%06x, %f, %s, %s, %s);", 
 					thickness, color, alpha, pixelHinting.toString(),
 					(scaleMode == null ? "null" : "'" + scaleMode + "'"),
-					(caps == null ? "null" : "'" + caps + "'")));
+					"'" + startCaps + "'"));
 			} else if(scaleMode != LineScaleMode.NORMAL) {
 				trace(StringUtils.printf("graphics.lineStyle(%f, 0x%06x, %f, %s, %s);", 
 					thickness, color, alpha, pixelHinting.toString(),

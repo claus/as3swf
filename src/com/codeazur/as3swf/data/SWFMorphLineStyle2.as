@@ -1,14 +1,14 @@
 ﻿package com.codeazur.as3swf.data
 {
 	import com.codeazur.as3swf.SWFData;
-	import com.codeazur.as3swf.data.consts.LineCapStyle;
-	import com.codeazur.as3swf.data.consts.LineJoinStyle;
+	import com.codeazur.as3swf.data.consts.LineCapsStyle;
+	import com.codeazur.as3swf.data.consts.LineJointStyle;
 	
 	public class SWFMorphLineStyle2 extends SWFMorphLineStyle
 	{
-		public var startCapStyle:uint = LineCapStyle.ROUND;
-		public var endCapStyle:uint = LineCapStyle.ROUND;
-		public var joinStyle:uint = LineJoinStyle.ROUND;
+		public var startCapsStyle:uint = LineCapsStyle.ROUND;
+		public var endCapsStyle:uint = LineCapsStyle.ROUND;
+		public var jointStyle:uint = LineJointStyle.ROUND;
 		public var hasFillFlag:Boolean;
 		public var noHScaleFlag:Boolean;
 		public var noVScaleFlag:Boolean;
@@ -24,16 +24,16 @@
 		override public function parse(data:SWFData, level:uint = 1):void {
 			startWidth = data.readUI16();
 			endWidth = data.readUI16();
-			startCapStyle = data.readUB(2);
-			joinStyle = data.readUB(2);
+			startCapsStyle = data.readUB(2);
+			jointStyle = data.readUB(2);
 			hasFillFlag = (data.readUB(1) == 1);
 			noHScaleFlag = (data.readUB(1) == 1);
 			noVScaleFlag = (data.readUB(1) == 1);
 			pixelHintingFlag = (data.readUB(1) == 1);
 			var reserved:uint = data.readUB(5);
 			noClose = (data.readUB(1) == 1);
-			endCapStyle = data.readUB(2);
-			if (joinStyle) {
+			endCapsStyle = data.readUB(2);
+			if (jointStyle == LineJointStyle.MITER) {
 				miterLimitFactor = data.readFIXED8();
 			}
 			if (hasFillFlag) {
@@ -48,9 +48,9 @@
 			var str:String = "[SWFMorphLineStyle2] " +
 				"StartWidth: " + startWidth + ", " +
 				"EndWidth: " + endWidth + ", " +
-				"StartCap: " + LineCapStyle.toString(startCapStyle) + ", " +
-				"EndCap: " + LineCapStyle.toString(endCapStyle) + ", " +
-				"Join: " + LineJoinStyle.toString(joinStyle);
+				"StartCaps: " + LineCapsStyle.toString(startCapsStyle) + ", " +
+				"EndCaps: " + LineCapsStyle.toString(endCapsStyle) + ", " +
+				"Joint: " + LineJointStyle.toString(jointStyle);
 			if (hasFillFlag) {
 				str += ", Fill: " + fillType.toString();
 			} else {

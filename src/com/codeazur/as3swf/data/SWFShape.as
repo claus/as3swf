@@ -93,9 +93,7 @@
 			var currentLineStyleIdx:uint = 0;
 			var path:Vector.<IEdge> = new Vector.<IEdge>();
 			var subPath:Vector.<IEdge> = new Vector.<IEdge>();
-			if (handler == null) {
-				handler = new DefaultShapeExportDocumentHandler();
-			}
+			if (handler == null) { handler = new DefaultShapeExportDocumentHandler(); }
 			for (var i:uint = 0; i < _records.length; i++) {
 				var shapeRecord:SWFShapeRecord = _records[i];
 				switch(shapeRecord.type) {

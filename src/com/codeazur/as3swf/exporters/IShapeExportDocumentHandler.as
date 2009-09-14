@@ -1,4 +1,4 @@
-﻿package com.codeazur.as3swf.data.etc
+﻿package com.codeazur.as3swf.exporters
 {
 	import flash.display.BitmapData;
 	import flash.display.InterpolationMethod;

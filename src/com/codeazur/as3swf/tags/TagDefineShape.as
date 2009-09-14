@@ -3,7 +3,7 @@
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.SWFRectangle;
 	import com.codeazur.as3swf.data.SWFShapeWithStyle;
-	import com.codeazur.as3swf.data.etc.IShapeExportDocumentHandler;
+	import com.codeazur.as3swf.exporters.IShapeExportDocumentHandler;
 	
 	import flash.geom.Point;
 	

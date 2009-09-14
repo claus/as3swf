@@ -1,7 +1,5 @@
 ﻿package com.codeazur.as3swf.data
 {
-	import com.codeazur.as3swf.data.consts.GradientInterpolationMode;
-	import com.codeazur.as3swf.data.consts.GradientSpreadMode;
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.SWFFillStyle;
 	import com.codeazur.as3swf.data.SWFLineStyle;
@@ -9,20 +7,23 @@
 	import com.codeazur.as3swf.data.SWFShapeRecordCurvedEdge;
 	import com.codeazur.as3swf.data.SWFShapeRecordStraightEdge;
 	import com.codeazur.as3swf.data.SWFShapeRecordStyleChange;
+	import com.codeazur.as3swf.data.consts.GradientInterpolationMode;
+	import com.codeazur.as3swf.data.consts.GradientSpreadMode;
+	import com.codeazur.as3swf.data.consts.LineCapsStyle;
+	import com.codeazur.as3swf.data.consts.LineJointStyle;
 	import com.codeazur.as3swf.data.etc.IEdge;
 	import com.codeazur.as3swf.data.etc.CurvedEdge;
 	import com.codeazur.as3swf.data.etc.StraightEdge;
-	import com.codeazur.as3swf.data.etc.IShapeExportDocumentHandler;
-	import com.codeazur.as3swf.data.etc.DefaultShapeExportDocumentHandler;
-	import com.codeazur.as3swf.data.consts.LineCapsStyle;
-	import com.codeazur.as3swf.data.consts.LineJointStyle;
+	import com.codeazur.as3swf.exporters.IShapeExportDocumentHandler;
+	import com.codeazur.as3swf.exporters.DefaultShapeExportDocumentHandler;
 	import com.codeazur.as3swf.utils.ColorUtils;
-	import com.codeazur.utils.StringUtils;
-	import flash.display.GradientType;
-	import flash.geom.Matrix;
 
-	import flash.display.LineScaleMode;
+	import com.codeazur.utils.StringUtils;
+
+	import flash.geom.Matrix;
 	import flash.geom.Point;
+	import flash.display.GradientType;
+	import flash.display.LineScaleMode;
 	
 	public class SWFShape
 	{

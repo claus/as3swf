@@ -1,4 +1,4 @@
-﻿package com.codeazur.as3swf.data.etc
+﻿package com.codeazur.as3swf.exporters
 {
 	import com.codeazur.utils.StringUtils;
 

@@ -20,7 +20,7 @@
 		}
 		
 		public function get matrix():Matrix {
-			return new Matrix(scaleX, rotateSkew0, rotateSkew1, scaleY, translateX / 20, translateY / 20);
+			return new Matrix(scaleX, rotateSkew0, rotateSkew1, scaleY, translateX, translateY);
 		}
 		
 		public function parse(data:SWFData):void {

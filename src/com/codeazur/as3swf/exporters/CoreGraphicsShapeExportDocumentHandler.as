@@ -21,7 +21,7 @@
 		protected var _m:String = "";
 		protected var _h:String = "";
 		
-		protected var _name:String = "DemoShapeView";
+		protected var _className:String = "DemoShapeView";
 		protected var _author:String = "###Author###";
 		protected var _copyright:String = "###Company###";
 
@@ -33,9 +33,9 @@
 		
 		protected var active:String = NOT_ACTIVE;
 		
-		public function CoreGraphicsShapeExportDocumentHandler(aName:String = null, aAuthor:String = null, aCopyright:String = null)
+		public function CoreGraphicsShapeExportDocumentHandler(aClassName:String = null, aAuthor:String = null, aCopyright:String = null)
 		{
-			_name = aName;
+			_className = aClassName;
 			_author = aAuthor;
 			_copyright = aCopyright;
 		}
@@ -43,8 +43,8 @@
 		public function get m():String { return _m; }
 		public function get h():String { return _h; }
 		
-		public function get name():String { return _name; }
-		public function set name(value:String):void { _name = value; }
+		public function get className():String { return _className; }
+		public function set className(value:String):void { _className = value; }
 		
 		public function get author():String { return _author; }
 		public function set author(value:String):void { _author = value; }
@@ -55,16 +55,16 @@
 
 		override public function beginShape():void {
 			_m = "//\r" +
-				"//  " + name + ".m\r" +
-				"//  " + name + "\r" +
+				"//  " + className + ".m\r" +
+				"//  " + className + "\r" +
 				"//\r" +
 				"//  Created by " + _author + " on " + new Date().toDateString() + ".\r" +
 				"//  Copyright " + new Date().fullYear + " " + _copyright + ". All rights reserved.\r" +
 				"//\r" +
 				"\r" +
-				"#import \"" + name + ".h\"\r" +
+				"#import \"" + className + ".h\"\r" +
 				"\r" +
-				"@implementation " + name + "\r" +
+				"@implementation " + className + "\r" +
 				"\r" +
 				"- (id)initWithFrame:(CGRect)frame {\r" + 
 				"\tif (self = [super initWithFrame:frame]) {\r" + 
@@ -76,8 +76,8 @@
 				"- (void)drawRect:(CGRect)rect {\r" +
 				"\tCGContextRef ctx = UIGraphicsGetCurrentContext();\r";
 			_h = "//\r" +
-				"//  " + name + ".h\r" +
-				"//  " + name + "\r" +
+				"//  " + className + ".h\r" +
+				"//  " + className + "\r" +
 				"//\r" +
 				"//  Created by " + _author + " on " + new Date().toDateString() + ".\r" +
 				"//  Copyright " + new Date().fullYear + " " + _copyright + ". All rights reserved.\r" +
@@ -85,7 +85,7 @@
 				"\r" +
 				"#import <UIKit/UIKit.h>\r" +
 				"\r" +
-				"@interface " + name + " : UIView {\r" +
+				"@interface " + className + " : UIView {\r" +
 				"}\r";
 		}
 		

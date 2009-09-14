@@ -197,15 +197,18 @@
 							handler.beginFills();
 							hasFills = true;
 						}
+						hasOpenFill = true;
 						try {
 							var fillStyle:SWFFillStyle = tmpFillStyles[fillStyleIdx - 1];
 							switch(fillStyle.type) {
 								case 0x00:
+									// Solid fill
 									handler.beginFill(ColorUtils.rgb(fillStyle.rgb), ColorUtils.alpha(fillStyle.rgb));
 									break;
 								case 0x10:
 								case 0x12:
 								case 0x13:
+									// Gradient fill
 									var colors:Array = [];
 									var alphas:Array = [];
 									var ratios:Array = [];
@@ -229,7 +232,16 @@
 								case 0x41:
 								case 0x42:
 								case 0x43:
-									// TODO: implement bitmap fills
+									// Bitmap fill
+									handler.beginBitmapFill(
+										fillStyle.bitmapId,
+										fillStyle.bitmapMatrix.matrix,
+										(fillStyle.type == 0x40 || fillStyle.type == 0x42),
+										(fillStyle.type == 0x40 || fillStyle.type == 0x41)
+									);
+									break;
+								default:
+									hasOpenFill = false;
 									break;
 							}
 						} catch (e:Error) {
@@ -237,11 +249,10 @@
 							// which represents the font color. We just report solid black in this case.
 							handler.beginFill(0);
 						}
-						hasOpenFill = true;
 					}
 				}
 				if (hasOpenFill) {
-					if (pos.x != e.from.x || pos.y != e.from.y) {
+					if (!pos.equals(e.from)) {
 						handler.moveTo(e.from.x, e.from.y);
 					}
 					if (e is CurvedEdge) {
@@ -341,7 +352,7 @@
 					if (fillStyleIdx == e.fillStyleIdx) {
 						newPath.push(e);
 						oldPath.splice(i, 1);
-						if (posStart.x == e.to.x && posStart.y == e.to.y) {
+						if (posStart.equals(e.to)) {
 							// The end point of the current edge matches the start point of the subshape
 							// That means that the subshape is closed and complete.
 							// Bail out of the inner loop, continue with next subshape.

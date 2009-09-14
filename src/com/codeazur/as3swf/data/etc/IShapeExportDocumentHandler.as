@@ -16,6 +16,7 @@
 		
 		function beginFill(color:uint, alpha:Number = 1.0):void;
 		function beginGradientFill(type:String, colors:Array, alphas:Array, ratios:Array, matrix:Matrix = null, spreadMethod:String = "pad", interpolationMethod:String = "rgb", focalPointRatio:Number = 0):void;
+		function beginBitmapFill(bitmapId:uint, matrix:Matrix = null, repeat:Boolean = true, smooth:Boolean = false):void;
 		function endFill():void;
 
 		function beginLines():void;

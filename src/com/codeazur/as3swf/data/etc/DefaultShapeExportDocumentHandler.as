@@ -15,7 +15,7 @@
 		
 		public function beginShape():void {}
 		public function endShape():void {}
-		public function beginFills():void { trace("// Fills:"); }
+		public function beginFills():void { trace("// Fills:"); trace("graphics.lineStyle();"); }
 		public function endFills():void {}
 		public function beginLines():void { trace("// Lines:"); }
 		public function endLines():void {}
@@ -84,6 +84,26 @@
 					asColors,
 					alphas.join(","),
 					ratios.join(",")));
+			}
+		}
+
+		public function beginBitmapFill(bitmapId:uint, matrix:Matrix = null, repeat:Boolean = true, smooth:Boolean = false):void {
+			var asMatrix:String = "null";
+			if (matrix != null) {
+				asMatrix = "new Matrix(" + 
+					matrix.a + "," + 
+					matrix.b + "," + 
+					matrix.c + "," + 
+					matrix.d + "," + 
+					matrix.tx + "," + 
+					matrix.ty + ")";
+			}
+			if (smooth) {
+				trace(StringUtils.printf("graphics.beginBitmapFill(%d, %s, %s, %s);", bitmapId, asMatrix, repeat, smooth));
+			} else if (!repeat) {
+				trace(StringUtils.printf("graphics.beginBitmapFill(%d, %s, %s, %s);", bitmapId, asMatrix, repeat));
+			} else {
+				trace(StringUtils.printf("graphics.beginBitmapFill(%d, %s, %s, %s);", bitmapId, asMatrix));
 			}
 		}
 		

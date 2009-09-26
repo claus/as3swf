@@ -195,8 +195,16 @@
 		}
 		
 		public function writeEncodedU32(value:uint):void {
-			// TODO: writeEncodedU32
-			throw new Error("writeEncodedU32() not yet implemented");
+			for (;;) {
+				var v:uint = value & 0x7f;
+				
+				if ((value >>= 7) == 0) {
+					writeUI8(v);
+					break;
+				}
+				
+				writeUI8(v & 0x80);
+			}
 		}
 
 		/////////////////////////////////////////////////////////

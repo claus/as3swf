@@ -34,6 +34,7 @@
 		}
 		
 		public function get tags():Vector.<ITag> { return _tags; }
+		public function set tags(value:Vector.<ITag>):void {_tags = value;}
 		
 		public function loadBytes(data:ByteArray):void {
 			var swfData:SWFData = new SWFData();

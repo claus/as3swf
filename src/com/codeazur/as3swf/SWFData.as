@@ -5,7 +5,7 @@
 	import com.codeazur.as3swf.data.filters.*;
 	import com.codeazur.as3swf.factories.*;
 	import com.codeazur.utils.BitArray;
-
+	
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
 	
@@ -233,8 +233,7 @@
 		}
 		
 		public function writeFB(bits:uint, value:Number):void {
-			// TODO: writeFB
-			throw new Error("writeFB() not yet implemented");
+			writeSB(bits, value * 65536);
 		}
 		
 		/////////////////////////////////////////////////////////
@@ -339,8 +338,33 @@
 		}
 		
 		public function writeMATRIX(value:SWFMatrix):void {
-			// TODO: writeMATRIX
-			throw new Error("writeMATRIX() not yet implemented");
+			this.resetBitsPending();
+			
+			var hasScale :uint = value.scaleX != 1 || value.scaleY != 1 ? 1 : 0;
+			var hasRotate :uint = value.rotateSkew0 != 0 || value.rotateSkew1 != 0 ? 1 : 0;
+			
+			writeBits(1, hasScale);
+			
+			if (hasScale) {
+				var scaleBits:uint = getMinFBits(value.scaleX, value.scaleY);
+				writeUB(5, scaleBits);
+				writeFB(scaleBits, value.scaleX);
+				writeFB(scaleBits, value.scaleY);
+			}
+			
+			writeBits(1, hasRotate);
+			
+			if (hasRotate) {
+				var rotateBits:uint = getMinFBits(value.rotateSkew0, value.rotateSkew1);
+				writeUB(5, rotateBits);
+				writeFB(rotateBits, value.rotateSkew0);
+				writeFB(rotateBits, value.rotateSkew1);
+			}
+			
+			var translateBits:uint = getMinSBits(value.translateX, value.translateY);
+			writeUB(5, translateBits);
+			writeSB(translateBits, value.translateX);
+			writeSB(translateBits, value.translateY);
 		}
 
 		/////////////////////////////////////////////////////////
@@ -599,7 +623,7 @@
 		/////////////////////////////////////////////////////////
 		
 		public function readTagHeader():SWFRecordHeader {
-			var tagTypeAndLength:uint = readUI16();
+ 			var tagTypeAndLength:uint = readUI16();
 			var tagLength:uint = tagTypeAndLength & 0x3f;
 			if (tagLength == 0x3f) {
 				// The SWF10 spec sez that this is a signed int.

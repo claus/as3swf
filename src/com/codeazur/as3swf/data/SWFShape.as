@@ -151,14 +151,14 @@
 					case SWFShapeRecord.TYPE_CURVEDEDGE:
 						var curvedEdgeRecord:SWFShapeRecordCurvedEdge = shapeRecord as SWFShapeRecordCurvedEdge;
 						from = new Point(xPos, yPos);
-						var xPosControl = xPos + curvedEdgeRecord.controlDeltaX / 20;
-						var yPosControl = yPos + curvedEdgeRecord.controlDeltaY / 20;
+						var xPosControl :Number = xPos + curvedEdgeRecord.controlDeltaX / 20;
+						var yPosControl :Number = yPos + curvedEdgeRecord.controlDeltaY / 20;
 						xPos = xPosControl + curvedEdgeRecord.anchorDeltaX / 20;
 						yPos = yPosControl + curvedEdgeRecord.anchorDeltaY / 20;
 						control = new Point(xPosControl, yPosControl);
 						to = new Point(xPos, yPos);
 						subPath.push(new CurvedEdge(from, control, to, currentLineStyleIdx, currentFillStyleIdx1));
-						break;
+						break; 
 					case SWFShapeRecord.TYPE_END:
 						// We're done. Process the last subpath, if any
 						processSubPath(path, subPath, currentFillStyleIdx0, currentFillStyleIdx1);

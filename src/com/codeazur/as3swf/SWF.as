@@ -71,6 +71,7 @@
 			frameCount = data.readUI16();
 			tags.length = 0;
 			var t:uint = getTimer();
+			
 			while (true) {
 				var raw:ByteArray = data.readRawTag();
 				var header:SWFRecordHeader = data.readTagHeader();

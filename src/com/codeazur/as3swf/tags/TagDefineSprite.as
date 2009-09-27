@@ -12,8 +12,8 @@
 	{
 		public static const TYPE:uint = 39;
 		
-		protected var spriteId:uint;
-		protected var frameCount:uint;
+		public var spriteId:uint;
+		public var frameCount:uint;
 		
 		protected var _controlTags:Vector.<ITag>;
 		
@@ -57,7 +57,7 @@
 						throw(e);
 					}
 				}
-			}
+			} 
 			data.writeTagHeader(type, body.length);
 			data.writeBytes(body);
 		}

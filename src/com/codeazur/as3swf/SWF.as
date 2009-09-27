@@ -1,17 +1,12 @@
 ﻿package com.codeazur.as3swf
 {
-	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.SWFRecordHeader;
 	import com.codeazur.as3swf.data.SWFRectangle;
 	import com.codeazur.as3swf.factories.SWFTagFactory;
 	import com.codeazur.as3swf.tags.ITag;
-	import com.codeazur.as3swf.tags.Tag;
-
-	import flash.utils.IDataInput;
+	
 	import flash.utils.ByteArray;
 	import flash.utils.getTimer;
-	
-	import flash.system.System;
 	
 	public class SWF
 	{
@@ -75,7 +70,6 @@
 			while (true) {
 				var raw:ByteArray = data.readRawTag();
 				var header:SWFRecordHeader = data.readTagHeader();
-				
 				var tag:ITag = SWFTagFactory.create(header.type);
 				tag.raw = raw;
 				tag.parse(data, header.length, version);
@@ -84,7 +78,7 @@
 					break;
 				}
 			}
-			trace((getTimer() - t) + " ms");
+		//	trace((getTimer() - t) + " ms");
 		}
 		
 		public function publish(data:SWFData):void {

@@ -8,7 +8,7 @@
 		
 		public function FilterColorMatrix(id:uint) {
 			super(id);
-			_colorMatrix = new Vector.<Number>(20, true);
+			_colorMatrix = new Vector.<Number>();
 		}
 		
 		public function get colorMatrix():Vector.<Number> { return _colorMatrix; }

@@ -624,7 +624,7 @@
 		
 		public function readTagHeader():SWFRecordHeader {
  			var tagTypeAndLength:uint = readUI16();
-			var tagLength:uint = tagTypeAndLength & 0x3f;
+			var tagLength:uint = tagTypeAndLength & 0x003f;
 			if (tagLength == 0x3f) {
 				// The SWF10 spec sez that this is a signed int.
 				// Shouldn't it be an unsigned int?
@@ -677,11 +677,13 @@
 		public function readRawTag():ByteArray {
 			var raw:ByteArray;
 			var pos:uint = position;
+
 			var header:SWFRecordHeader = readTagHeader();
 			if (header.length > 0) {
 				raw = new ByteArray();
 				readBytes(raw, 0, header.length);
 			}
+
 			position = pos;
 			return raw;
 		}

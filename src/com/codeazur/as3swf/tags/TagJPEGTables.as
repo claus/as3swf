@@ -17,6 +17,7 @@
 		public function get jpegTables():ByteArray { return _jpegTables; }
 		
 		public function parse(data:SWFData, length:uint, version:uint):void {
+			//_jpegTables.readBytes(data, 0, length);
 			data.readBytes(_jpegTables, 0, length)
 		}
 		

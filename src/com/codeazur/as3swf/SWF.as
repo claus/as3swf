@@ -75,6 +75,7 @@
 			while (true) {
 				var raw:ByteArray = data.readRawTag();
 				var header:SWFRecordHeader = data.readTagHeader();
+				
 				var tag:ITag = SWFTagFactory.create(header.type);
 				tag.raw = raw;
 				tag.parse(data, header.length, version);

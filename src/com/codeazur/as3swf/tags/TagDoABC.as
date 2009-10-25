@@ -17,6 +17,16 @@
 			_bytes = new ByteArray();
 		}
 		
+		public static function create(abcData:ByteArray = null, aName:String = "", aLazyInitializeFlag:Boolean = true):TagDoABC {
+			var doABC:TagDoABC = new TagDoABC();
+			if (abcData != null && abcData.length > 0) {
+				doABC.bytes.writeBytes(abcData);
+			}
+			doABC.abcName = aName;
+			doABC.lazyInitializeFlag = aLazyInitializeFlag;
+			return doABC;
+		}
+		
 		public function get bytes():ByteArray { return _bytes; }
 
 		public function parse(data:SWFData, length:uint, version:uint):void {

@@ -6,9 +6,15 @@
 	{
 		public static const TYPE:uint = 9;
 		
-		public var color:uint;
+		public var color:uint = 0xffffff;
 		
 		public function TagSetBackgroundColor() {}
+		
+		public static function create(aColor:uint = 0xffffff):TagSetBackgroundColor {
+			var setBackgroundColor:TagSetBackgroundColor = new TagSetBackgroundColor();
+			setBackgroundColor.color = aColor;
+			return setBackgroundColor;
+		}
 		
 		public function parse(data:SWFData, length:uint, version:uint):void {
 			color = data.readRGB();

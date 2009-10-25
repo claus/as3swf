@@ -6,11 +6,11 @@
 	{
 		public static const TYPE:uint = 69;
 		
-		public var useDirectBlit:Boolean;
-		public var useGPU:Boolean;
-		public var hasMetadata:Boolean;
-		public var actionscript3:Boolean;
-		public var useNetwork:Boolean;
+		public var useDirectBlit:Boolean = false;
+		public var useGPU:Boolean = false;
+		public var hasMetadata:Boolean = false;
+		public var actionscript3:Boolean = true;
+		public var useNetwork:Boolean = false;
 
 		public function TagFileAttributes() {}
 		

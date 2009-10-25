@@ -10,12 +10,12 @@
 	
 	public class SWF
 	{
-		public var version:int;
+		public var version:int = 10;
 		public var fileLength:uint;
 		public var fileLengthCompressed:uint;
 		public var frameSize:SWFRectangle;
-		public var frameRate:Number;
-		public var frameCount:uint;
+		public var frameRate:Number = 50;
+		public var frameCount:uint = 1;
 
 		public var compressed:Boolean;
 		
@@ -25,6 +25,8 @@
 			_tags = new Vector.<ITag>();
 			if (data != null) {
 				loadBytes(data);
+			} else {
+				frameSize = new SWFRectangle();
 			}
 		}
 		

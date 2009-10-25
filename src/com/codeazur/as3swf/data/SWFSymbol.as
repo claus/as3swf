@@ -13,6 +13,13 @@
 			}
 		}
 
+		public static function create(aTagID:uint, aName:String):SWFSymbol {
+			var swfSymbol:SWFSymbol = new SWFSymbol();
+			swfSymbol.tagId = aTagID;
+			swfSymbol.name = aName;
+			return swfSymbol;
+		}
+		
 		public function parse(data:SWFData):void {
 			tagId = data.readUI16();
 			name = data.readString();

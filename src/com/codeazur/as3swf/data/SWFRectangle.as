@@ -4,10 +4,10 @@
 	
 	public class SWFRectangle
 	{
-		public var xmin:int;
-		public var xmax:int;
-		public var ymin:int;
-		public var ymax:int;
+		public var xmin:int = 0;
+		public var xmax:int = 11000;
+		public var ymin:int = 0;
+		public var ymax:int = 8000;
 		
 		public function SWFRectangle(data:SWFData = null) {
 			if (data != null) {

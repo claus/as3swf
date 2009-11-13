@@ -1,6 +1,7 @@
 ﻿package com.codeazur.as3swf.tags
 {
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.utils.ColorUtils;
 	
 	public class TagSetBackgroundColor extends Tag implements ITag
 	{
@@ -31,7 +32,7 @@
 		
 		public function toString(indent:uint = 0):String {
 			return toStringMain(indent) +
-				"Color: " + color.toString(16);
+				"Color: " + ColorUtils.rgbToString(color);
 		}
 	}
 }

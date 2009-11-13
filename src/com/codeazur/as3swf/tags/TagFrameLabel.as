@@ -12,6 +12,8 @@
 		
 		public function parse(data:SWFData, length:uint, version:uint):void {
 			frameName = data.readString();
+			
+			// TODO: handle NamedAnchor flag? (SWF6+, Flash only)
 		}
 		
 		public function publish(data:SWFData, version:uint):void {

@@ -24,9 +24,10 @@
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "Metadata"; }
 		override public function get version():uint { return 1; }
-		
+			
 		public function toString(indent:uint = 0):String {
-			return toStringMain(indent);
+			return toStringMain(indent) +
+				" " + xmlString;
 		}
 	}
 }

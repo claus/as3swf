@@ -21,5 +21,11 @@
 		public static function b(color:uint):Number {
 			return Number(rgb(color) & 0xff) / 255;
 		}
+		
+		public static function rgbToString(color:uint):String {
+			var result:String = rgb(color).toString(16).toUpperCase();
+			while (result.length < 6) { result = "0" + result; }
+			return "#" + result;
+		}
 	}
 }

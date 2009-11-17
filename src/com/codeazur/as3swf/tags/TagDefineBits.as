@@ -39,7 +39,8 @@
 		
 		public function toString(indent:uint = 0):String {
 			return toStringMain(indent) +
-				"ID: " + characterId;
+				"ID: " + characterId + ", " +
+				"Length: " + _bitmapData.length;
 		}
 	}
 }

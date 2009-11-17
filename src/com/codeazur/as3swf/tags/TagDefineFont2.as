@@ -95,6 +95,10 @@
 			}
 		}
 		
+		override public function publish(data:SWFData, version:uint):void {
+			// TODO: Implement publish() for TagDefineFont2.
+		}
+		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "DefineFont2"; }
 		

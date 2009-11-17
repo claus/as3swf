@@ -205,6 +205,8 @@
 				
 				writeUI8(v & 0x80);
 			}
+import com.codeazur.as3swf.data.SWFShape;
+
 		}
 
 		/////////////////////////////////////////////////////////
@@ -395,6 +397,10 @@
 		
 		public function readSHAPE():SWFShape {
 			return new SWFShape(this);
+		}
+		
+		public function writeSHAPE(value:SWFShape):void {
+			// TODO: Implement writeSHAPE()
 		}
 		
 		public function readSHAPEWITHSTYLE(level:uint = 1):SWFShapeWithStyle {

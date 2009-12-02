@@ -1,11 +1,12 @@
 ﻿package com.codeazur.as3swf.data.actions.swf4
 {
-	import com.codeazur.as3swf.data.actions.*;
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.data.actions.*;
 	
 	public class ActionGetURL2 extends Action implements IAction
 	{
 		public var sendVarsMethod:uint;
+		public var reserved:uint;
 		public var loadTargetFlag:Boolean;
 		public var loadVariablesFlag:Boolean;
 		
@@ -15,7 +16,7 @@
 		
 		override public function parse(data:SWFData):void {
 			sendVarsMethod = data.readUB(2);
-			data.readUB(4); // reserved, always 0
+			reserved = data.readUB(4); // reserved, always 0
 			loadTargetFlag = (data.readUB(1) == 1);
 			loadVariablesFlag = (data.readUB(1) == 1);
 		}
@@ -23,7 +24,7 @@
 		override public function publish(data:SWFData):void {
 			var body:SWFData = new SWFData();
 			body.writeUB(2, sendVarsMethod);
-			body.writeUB(4, 0); // reserved, always 0
+			body.writeUB(4, reserved); // reserved, always 0
 			body.writeUB(1, loadTargetFlag ? 1 : 0);
 			body.writeUB(1, loadVariablesFlag ? 1 : 0);
 			write(data, body);
@@ -31,9 +32,25 @@
 		
 		public function toString(indent:uint = 0):String {
 			return "[ActionGetURL2] " +
-				"SendVarsMethod: " + sendVarsMethod + ", ";
-				"LoadTargetFlag: " + loadTargetFlag + ", ";
+				"SendVarsMethod: " + sendVarsMethod + " (" + sendVarsMethodToString() + "), ",
+				"Reserved: " + reserved + ", ",
+				"LoadTargetFlag: " + loadTargetFlag + ", ",
 				"LoadVariablesFlag: " + loadVariablesFlag;
+		}
+		
+		public function sendVarsMethodToString():String {
+			if (!sendVarsMethod) {
+				return "None";
+			}
+			else if (sendVarsMethod == 1) {
+				return "GET";
+			}
+			else if (sendVarsMethod == 2) {
+				return "POST";
+			}
+			else {
+				throw new Error("sendVarsMethod is only defined for values of 0, 1, and 2.");
+			}
 		}
 	}
 }

@@ -38,7 +38,7 @@
 		override public function get name():String { return "JPEGTables"; }
 		
 		public function toString(indent:uint = 0):String {
-			return toStringMain(indent) + " length:" + _jpegTables.length;
+			return toStringMain(indent) + " Length: " + _jpegTables.length;
 		}
 	}
 }

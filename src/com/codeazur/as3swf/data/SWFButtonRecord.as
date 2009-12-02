@@ -1,7 +1,6 @@
 ﻿package com.codeazur.as3swf.data
 {
 	import com.codeazur.as3swf.SWFData;
-	import com.codeazur.as3swf.data.consts.BlendMode;
 	import com.codeazur.as3swf.data.filters.IFilter;
 	
 	public class SWFButtonRecord
@@ -46,7 +45,7 @@
 				if (hasFilterList) {
 					var numberOfFilters:uint = data.readUI8();
 					for (var i:uint = 0; i < numberOfFilters; i++) {
-						_filterList.push(data.readFILTER())
+						_filterList.push(data.readFILTER());
 					}
 				}
 				if (hasBlendMode) {

@@ -37,7 +37,7 @@
 			if (keyCode > 0) {
 				str += ", KeyCode: " + keyCode;
 			}
-			str += ":"
+			str += ":";
 			for (var i:uint = 0; i < _actions.length; i++) {
 				str += "\n" + StringUtils.repeat(indent + 2) + _actions[i].toString(indent + 2);
 			}

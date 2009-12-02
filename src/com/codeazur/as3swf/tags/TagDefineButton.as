@@ -4,7 +4,6 @@
 	import com.codeazur.as3swf.data.actions.IAction;
 	import com.codeazur.as3swf.data.SWFButtonRecord;
 	import com.codeazur.as3swf.data.SWFRectangle;
-	import com.codeazur.as3swf.data.SWFShapeWithStyle;
 	import com.codeazur.utils.StringUtils;
 	
 	public class TagDefineButton extends Tag implements ITag

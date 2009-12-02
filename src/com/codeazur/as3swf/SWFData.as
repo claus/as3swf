@@ -695,9 +695,17 @@
 		public function dump(length:uint, offset:int = 0):void {
 			var pos:uint = position;
 			position += offset;
-			var str:String = "bitsPending:" + bitsPending + ", ";
+			var str:String = "bitsPending: " + bitsPending;
 			for (var i:uint = 0; i < length; i++) {
-				str += readUnsignedByte().toString(16) + " ";
+				var b:String = readUnsignedByte().toString(16);
+				if(b.length == 1) { b = "0" + b; }
+				if(i % 16 == 0) {
+					var addr:String = (pos + offset + i).toString(16);
+					addr = "00000000".substr(0, 8 - addr.length) + addr;
+					str += "\r" + addr + ": ";
+				}
+				b += " ";
+				str += b;
 			}
 			position = pos;
 			trace(str);

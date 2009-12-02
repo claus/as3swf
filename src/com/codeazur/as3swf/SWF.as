@@ -6,7 +6,6 @@
 	import com.codeazur.as3swf.tags.ITag;
 	
 	import flash.utils.ByteArray;
-	import flash.utils.getTimer;
 	
 	public class SWF
 	{
@@ -67,20 +66,24 @@
 			frameRate = data.readFIXED8();
 			frameCount = data.readUI16();
 			tags.length = 0;
-			var t:uint = getTimer();
 			
 			while (true) {
 				var raw:ByteArray = data.readRawTag();
 				var header:SWFRecordHeader = data.readTagHeader();
 				var tag:ITag = SWFTagFactory.create(header.type);
+				var pos:uint = data.position;
 				tag.raw = raw;
-				tag.parse(data, header.length, version);
+				try {
+					tag.parse(data, header.length, version);
+				} catch(e:Error) {
+					trace(tag.name + ": " + e);
+				}
 				tags.push(tag);
 				if (header.type == 0) {
 					break;
 				}
+				data.position += header.length - data.position + pos;
 			}
-		//	trace((getTimer() - t) + " ms");
 		}
 		
 		public function publish(data:SWFData):void {
@@ -129,7 +132,7 @@
 				"FrameCount: " + frameCount + ", " +
 				"Tags: " + tags.length;
 			if (tags.length > 0) {
-				str += "\n  Tags:"
+				str += "\n  Tags:";
 				for (var i:uint = 0; i < Math.min(100000, tags.length); i++) {
 					str += "\n" + tags[i].toString(4);
 				}

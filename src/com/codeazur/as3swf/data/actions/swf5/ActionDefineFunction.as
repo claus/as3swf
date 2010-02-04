@@ -51,7 +51,9 @@
 				((functionName == null || functionName.length == 0) ? "<anonymous>" : functionName) +
 				"(" + functionParams.join(", ") + ")";
 			for (var i:uint = 0; i < functionBody.length; i++) {
-				str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + functionBody[i].toString(indent + 4);
+				if(functionBody[i]) {
+					str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + functionBody[i].toString(indent + 4);
+				}
 			}
 			return str;
 		}

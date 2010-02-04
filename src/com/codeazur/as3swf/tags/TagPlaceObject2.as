@@ -113,7 +113,7 @@
 			if (hasColorTransform) { str += ", ColorTransform: " + colorTransform; }
 			if (hasRatio) { str += ", Ratio: " + ratio; }
 			if (hasName) { str += ", Name: " + objName; }
-			if (hasClipActions) {
+			if (hasClipActions && clipActions != null) {
 				str += "\n" + StringUtils.repeat(indent + 2) + clipActions.toString(indent + 2);
 			}
 			return str;

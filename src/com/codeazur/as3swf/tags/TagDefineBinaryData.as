@@ -42,7 +42,9 @@
 		override public function get version():uint { return 9; }
 		
 		public function toString(indent:uint = 0):String {
-			return toStringMain(indent);
+			return toStringMain(indent) +
+				"ID: " + tagId + ", " +
+				"Length: " + _binaryData.length;
 		}
 	}
 }

@@ -26,8 +26,15 @@
 		override public function get version():uint { return 1; }
 			
 		public function toString(indent:uint = 0):String {
-			return toStringMain(indent) +
-				" " + xmlString;
+			var str:String = toStringMain(indent)
+			var xml:XML;
+			try {
+				xml = new XML(xmlString);
+				str += " " + xml.toXMLString();
+			} catch(error:Error) {
+				str += " " + xmlString;
+			}
+			return str;
 		}
 	}
 }

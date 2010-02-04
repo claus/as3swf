@@ -101,6 +101,7 @@
 		public function toString(indent:uint = 0):String {
 			var str:String = toStringMain(indent) +
 				"ID: " + characterId + ", " +
+				((hasText && initialText.length > 0) ? "Text: " + initialText + ", " : "") +
 				((variableName.length > 0) ? "VariableName: " + variableName + ", " : "") +
 				"Bounds: " + bounds;
 			return str;

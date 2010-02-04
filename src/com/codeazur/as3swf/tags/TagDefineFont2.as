@@ -7,7 +7,7 @@
 	
 	import flash.utils.ByteArray;
 	
-	public class TagDefineFont2 extends TagDefineFont implements ITag
+	public class TagDefineFont2 extends TagDefineFont implements IDefinitionTag
 	{
 		public static const TYPE:uint = 48;
 		
@@ -44,7 +44,7 @@
 		
 		override public function parse(data:SWFData, length:uint, version:uint):void
 		{
-			fontId = data.readUI16();
+			_characterId = data.readUI16();
 			
 			var flags:uint = data.readUI8();
 			hasLayout = ((flags & 0x80) != 0);
@@ -104,7 +104,7 @@
 		
 		override public function toString(indent:uint = 0):String {
 			var str:String = toStringMain(indent) +
-				"ID: " + fontId + ", " +
+				"ID: " + characterId + ", " +
 				"FontName: " + fontName + ", " +
 				"Italic: " + italic + ", " +
 				"Bold: " + bold + ", " +

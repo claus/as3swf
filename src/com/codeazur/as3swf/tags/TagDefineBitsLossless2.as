@@ -1,6 +1,6 @@
 ﻿package com.codeazur.as3swf.tags
 {
-	public class TagDefineBitsLossless2 extends TagDefineBitsLossless implements ITag
+	public class TagDefineBitsLossless2 extends TagDefineBitsLossless implements IDefinitionTag
 	{
 		public static const TYPE:uint = 36;
 		

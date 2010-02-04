@@ -6,16 +6,16 @@
 	import com.codeazur.as3swf.data.SWFRectangle;
 	import com.codeazur.as3swf.data.SWFShape;
 	
-	public class TagDefineMorphShape extends Tag implements ITag
+	public class TagDefineMorphShape extends Tag implements IDefinitionTag
 	{
 		public static const TYPE:uint = 46;
 		
-		public var characterId:uint;
 		public var startBounds:SWFRectangle;
 		public var endBounds:SWFRectangle;
 		public var startEdges:SWFShape;
 		public var endEdges:SWFShape;
 		
+		protected var _characterId:uint;
 		protected var _morphFillStyles:Vector.<SWFMorphFillStyle>;
 		protected var _morphLineStyles:Vector.<SWFMorphLineStyle>;
 		
@@ -24,11 +24,12 @@
 			_morphLineStyles = new Vector.<SWFMorphLineStyle>();
 		}
 		
+		public function get characterId():uint { return _characterId; }
 		public function get morphFillStyles():Vector.<SWFMorphFillStyle> { return _morphFillStyles; }
 		public function get morphLineStyles():Vector.<SWFMorphLineStyle> { return _morphLineStyles; }
 		
 		public function parse(data:SWFData, length:uint, version:uint):void {
-			characterId = data.readUI16();
+			_characterId = data.readUI16();
 			startBounds = data.readRECT();
 			endBounds = data.readRECT();
 			var offset:uint = data.readUI32();

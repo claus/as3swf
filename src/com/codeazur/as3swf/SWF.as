@@ -3,9 +3,11 @@
 	import com.codeazur.as3swf.data.SWFRecordHeader;
 	import com.codeazur.as3swf.data.SWFRectangle;
 	import com.codeazur.as3swf.factories.SWFTagFactory;
+	import com.codeazur.as3swf.tags.IDefinitionTag;
 	import com.codeazur.as3swf.tags.ITag;
 	
 	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
 	
 	public class SWF
 	{
@@ -19,9 +21,11 @@
 		public var compressed:Boolean;
 		
 		protected var _tags:Vector.<ITag>;
+		protected var _dictionary:Dictionary;
 
 		public function SWF(data:ByteArray = null) {
 			_tags = new Vector.<ITag>();
+			_dictionary = new Dictionary();
 			if (data != null) {
 				loadBytes(data);
 			} else {
@@ -31,6 +35,8 @@
 		
 		public function get tags():Vector.<ITag> { return _tags; }
 		public function set tags(value:Vector.<ITag>):void {_tags = value;}
+		
+		public function get dictionary():Dictionary { return _dictionary; }
 		
 		public function loadBytes(data:ByteArray):void {
 			var swfData:SWFData = new SWFData();
@@ -67,7 +73,8 @@
 			frameCount = data.readUI16();
 			tags.length = 0;
 			
-			while (true) {
+			while (true)
+			{
 				var raw:ByteArray = data.readRawTag();
 				var header:SWFRecordHeader = data.readTagHeader();
 				var tag:ITag = SWFTagFactory.create(header.type);
@@ -76,9 +83,15 @@
 				try {
 					tag.parse(data, header.length, version);
 				} catch(e:Error) {
-					trace(tag.name + ": " + e);
 				}
 				tags.push(tag);
+				if(tag is IDefinitionTag) {
+					// Register definition tag in dictionary (key: character id, value: tag index)
+					var definitionTag:IDefinitionTag = tag as IDefinitionTag;
+					if(definitionTag.characterId > 0) {
+						dictionary[definitionTag.characterId] = tags.length - 1;
+					}
+				}
 				if (header.type == 0) {
 					break;
 				}

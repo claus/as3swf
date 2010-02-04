@@ -5,7 +5,7 @@
 
 	import flash.utils.ByteArray;
 	
-	public class TagDefineBitsJPEG3 extends TagDefineBitsJPEG2 implements ITag
+	public class TagDefineBitsJPEG3 extends TagDefineBitsJPEG2 implements IDefinitionTag
 	{
 		public static const TYPE:uint = 35;
 		
@@ -18,7 +18,7 @@
 		public function get bitmapAlphaData():ByteArray { return _bitmapAlphaData; }
 		
 		override public function parse(data:SWFData, length:uint, version:uint):void {
-			characterId = data.readUI16();
+			_characterId = data.readUI16();
 			var alphaDataOffset:uint = data.readUI32();
 			data.readBytes(_bitmapData, 0, alphaDataOffset);
 			if (bitmapData[0] == 0xff && (bitmapData[1] == 0xd8 || bitmapData[1] == 0xd9)) {

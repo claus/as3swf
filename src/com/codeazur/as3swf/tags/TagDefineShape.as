@@ -7,18 +7,21 @@
 	
 	import flash.geom.Point;
 	
-	public class TagDefineShape extends Tag implements ITag
+	public class TagDefineShape extends Tag implements IDefinitionTag
 	{
 		public static const TYPE:uint = 2;
 		
-		public var shapeId:uint;
 		public var shapeBounds:SWFRectangle;
 		public var shapes:SWFShapeWithStyle;
+
+		protected var _characterId:uint;
 		
 		public function TagDefineShape() {}
 		
+		public function get characterId():uint { return _characterId; }
+		
 		public function parse(data:SWFData, length:uint, version:uint):void {
-			shapeId = data.readUI16();
+			_characterId = data.readUI16();
 			shapeBounds = data.readRECT();
 			shapes = data.readSHAPEWITHSTYLE();
 		}
@@ -36,7 +39,7 @@
 		
 		public function toString(indent:uint = 0):String {
 			var str:String = toStringMain(indent) +
-				"ID: " + shapeId + ", " +
+				"ID: " + characterId + ", " +
 				"Bounds: " + shapeBounds;
 			str += shapes.toString(indent + 2);
 			return str;

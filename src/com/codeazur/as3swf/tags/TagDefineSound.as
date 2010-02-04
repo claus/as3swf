@@ -1,25 +1,25 @@
 ﻿package com.codeazur.as3swf.tags
 {
-	import com.codeazur.as3swf.data.etc.MPEGFrame;
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.consts.SoundCompression;
 	import com.codeazur.as3swf.data.consts.SoundRate;
 	import com.codeazur.as3swf.data.consts.SoundSize;
 	import com.codeazur.as3swf.data.consts.SoundType;
+	import com.codeazur.as3swf.data.etc.MPEGFrame;
 	
 	import flash.utils.ByteArray;
 	
-	public class TagDefineSound extends Tag implements ITag
+	public class TagDefineSound extends Tag implements IDefinitionTag
 	{
 		public static const TYPE:uint = 14;
 		
-		public var soundId:uint;
 		public var soundFormat:uint;
 		public var soundRate:uint;
 		public var soundSize:uint;
 		public var soundType:uint;
 		public var soundSampleCount:uint;
 
+		protected var _characterId:uint;
 		protected var _soundData:ByteArray;
 		
 		public function TagDefineSound() {
@@ -28,7 +28,7 @@
 		
 		public static function create(id:uint, format:uint = SoundCompression.MP3, rate:uint = SoundRate.KHZ_44, size:uint = SoundSize.BIT_16, type:uint = SoundType.STEREO, sampleCount:uint = 0, aSoundData:ByteArray = null):TagDefineSound {
 			var defineSound:TagDefineSound = new TagDefineSound();
-			defineSound.soundId = id;
+			defineSound._characterId = id;
 			defineSound.soundFormat = format;
 			defineSound.soundRate = rate;
 			defineSound.soundSize = size;
@@ -43,7 +43,7 @@
 		public static function createWithMP3(id:uint, mp3:ByteArray):TagDefineSound {
 			if (mp3 != null && mp3.length > 0) {
 				var defineSound:TagDefineSound = new TagDefineSound();
-				defineSound.soundId = id;
+				defineSound._characterId = id;
 				defineSound.processMP3(mp3);
 				return defineSound;
 			} else {
@@ -51,10 +51,11 @@
 			}
 		}
 		
+		public function get characterId():uint { return _characterId; }
 		public function get soundData():ByteArray { return _soundData; }
 		
 		public function parse(data:SWFData, length:uint, version:uint):void {
-			soundId = data.readUI16();
+			_characterId = data.readUI16();
 			soundFormat = data.readUB(4);
 			soundRate = data.readUB(2);
 			soundSize = data.readUB(1);
@@ -65,7 +66,7 @@
 		
 		public function publish(data:SWFData, version:uint):void {
 			var body:SWFData = new SWFData();
-			body.writeUI16(soundId);
+			body.writeUI16(characterId);
 			body.writeUB(4, soundFormat);
 			body.writeUB(2, soundRate);
 			body.writeUB(1, soundSize);
@@ -83,7 +84,7 @@
 		
 		public function toString(indent:uint = 0):String {
 			var str:String = toStringMain(indent) +
-				"SoundID: " + soundId + ", " +
+				"SoundID: " + characterId + ", " +
 				"Format: " + soundFormat + ", " +
 				"Rate: " + SoundRate.toString(soundRate) + ", " +
 				"Size: " + SoundSize.toString(soundSize) + ", " +

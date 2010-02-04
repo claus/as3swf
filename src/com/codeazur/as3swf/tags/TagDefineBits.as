@@ -4,22 +4,22 @@
 	
 	import flash.utils.ByteArray;
 	
-	public class TagDefineBits extends Tag implements ITag
+	public class TagDefineBits extends Tag implements IDefinitionTag
 	{
 		public static const TYPE:uint = 6;
 		
-		public var characterId:uint;
-
+		protected var _characterId:uint;
 		protected var _bitmapData:ByteArray;
 		
 		public function TagDefineBits() {
 			_bitmapData = new ByteArray();
 		}
 		
+		public function get characterId():uint { return _characterId; }
 		public function get bitmapData():ByteArray { return _bitmapData; }
 		
 		public function parse(data:SWFData, length:uint, version:uint):void {
-			characterId = data.readUI16();
+			_characterId = data.readUI16();
 			if (length > 2) {
 				data.readBytes(_bitmapData, 0, length - 2);
 			}
@@ -27,7 +27,7 @@
 		
 		public function publish(data:SWFData, version:uint):void {
 			data.writeTagHeader(type, _bitmapData.length + 2);
-			data.writeUI16(characterId);
+			data.writeUI16(_characterId);
 			if (_bitmapData.length > 0) {
 				data.writeBytes(_bitmapData);
 			}

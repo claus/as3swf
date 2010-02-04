@@ -6,12 +6,11 @@
 	import com.codeazur.as3swf.data.SWFRectangle;
 	import com.codeazur.utils.StringUtils;
 	
-	public class TagDefineButton extends Tag implements ITag
+	public class TagDefineButton extends Tag implements IDefinitionTag
 	{
 		public static const TYPE:uint = 7;
 		
-		public var buttonId:uint;
-
+		protected var _characterId:uint;
 		protected var _characters:Vector.<SWFButtonRecord>;
 		protected var _actions:Vector.<IAction>;
 		
@@ -20,11 +19,12 @@
 			_actions = new Vector.<IAction>();
 		}
 		
+		public function get characterId():uint { return _characterId; }
 		public function get characters():Vector.<SWFButtonRecord> { return _characters; }
 		public function get actions():Vector.<IAction> { return _actions; }
 		
 		public function parse(data:SWFData, length:uint, version:uint):void {
-			buttonId = data.readUI16();
+			_characterId = data.readUI16();
 			var record:SWFButtonRecord;
 			while ((record = data.readBUTTONRECORD()) != null) {
 				_characters.push(record);
@@ -44,7 +44,7 @@
 		
 		public function toString(indent:uint = 0):String {
 			var str:String = toStringMain(indent) +
-				"ID: " + buttonId;
+				"ID: " + _characterId;
 			var i:uint;
 			if (_characters.length > 0) {
 				str += "\n" + StringUtils.repeat(indent + 2) + "Characters:";

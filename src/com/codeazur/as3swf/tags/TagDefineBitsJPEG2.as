@@ -3,7 +3,7 @@
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.consts.BitmapType;
 	
-	public class TagDefineBitsJPEG2 extends TagDefineBits implements ITag
+	public class TagDefineBitsJPEG2 extends TagDefineBits implements IDefinitionTag
 	{
 		public static const TYPE:uint = 21;
 		

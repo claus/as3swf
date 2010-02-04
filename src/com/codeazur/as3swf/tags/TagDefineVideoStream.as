@@ -4,11 +4,10 @@
 	import com.codeazur.as3swf.data.consts.VideoCodecID;
 	import com.codeazur.as3swf.data.consts.VideoDeblockingType;
 	
-	public class TagDefineVideoStream extends Tag implements ITag
+	public class TagDefineVideoStream extends Tag implements IDefinitionTag
 	{
 		public static const TYPE:uint = 60;
 
-		public var characterId:uint;
 		public var numFrames:uint;
 		public var width:uint;
 		public var height:uint;
@@ -16,10 +15,14 @@
 		public var smoothing:Boolean;
 		public var codecId:uint;
 		
+		protected var _characterId:uint;
+		
 		public function TagDefineVideoStream() {}
 		
+		public function get characterId():uint { return _characterId; }
+		
 		public function parse(data:SWFData, length:uint, version:uint):void {
-			characterId = data.readUI16();
+			_characterId = data.readUI16();
 			numFrames = data.readUI16();
 			width = data.readUI16();
 			height = data.readUI16();

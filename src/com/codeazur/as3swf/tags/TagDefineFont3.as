@@ -1,6 +1,6 @@
 ﻿package com.codeazur.as3swf.tags
 {
-	public class TagDefineFont3 extends TagDefineFont2 implements ITag
+	public class TagDefineFont3 extends TagDefineFont2 implements IDefinitionTag
 	{
 		public static const TYPE:uint = 75;
 		
@@ -11,7 +11,7 @@
 		
 		override public function toString(indent:uint = 0):String {
 			var str:String = toStringMain(indent) +
-				"ID: " + fontId + ", " +
+				"ID: " + characterId + ", " +
 				"FontName: " + fontName + ", " +
 				"Italic: " + italic + ", " +
 				"Bold: " + bold + ", " +

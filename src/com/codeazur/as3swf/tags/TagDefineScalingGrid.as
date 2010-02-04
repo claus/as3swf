@@ -3,17 +3,20 @@
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.SWFRectangle;
 	
-	public class TagDefineScalingGrid extends Tag implements ITag
+	public class TagDefineScalingGrid extends Tag implements IDefinitionTag
 	{
 		public static const TYPE:uint = 78;
 		
-		public var characterId:uint;
 		public var splitter:SWFRectangle;
+
+		protected var _characterId:uint;
 		
 		public function TagDefineScalingGrid() {}
 		
+		public function get characterId():uint { return _characterId; }
+		
 		public function parse(data:SWFData, length:uint, version:uint):void {
-			characterId = data.readUI16();
+			_characterId = data.readUI16();
 			splitter = data.readRECT();
 		}
 		

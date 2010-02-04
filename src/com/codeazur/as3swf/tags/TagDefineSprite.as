@@ -8,23 +8,24 @@
 	
 	import flash.utils.ByteArray;
 	
-	public class TagDefineSprite extends Tag implements ITag
+	public class TagDefineSprite extends Tag implements IDefinitionTag
 	{
 		public static const TYPE:uint = 39;
 		
-		public var spriteId:uint;
 		public var frameCount:uint;
 		
+		protected var _characterId:uint;
 		protected var _controlTags:Vector.<ITag>;
 		
 		public function TagDefineSprite() {
 			_controlTags = new Vector.<ITag>();
 		}
 		
+		public function get characterId():uint { return _characterId; }
 		public function get controlTags():Vector.<ITag> { return _controlTags; }
 		
 		public function parse(data:SWFData, length:uint, version:uint):void {
-			spriteId = data.readUI16();
+			_characterId = data.readUI16();
 			frameCount = data.readUI16();
 			_controlTags.length = 0;
 			while (true) {
@@ -42,7 +43,7 @@
 		
 		public function publish(data:SWFData, version:uint):void {
 			var body:SWFData = new SWFData();
-			body.writeUI16(spriteId);
+			body.writeUI16(characterId);
 			body.writeUI16(frameCount); // TODO: get the real number of frames from controlTags
 			for (var i:uint = 0; i < _controlTags.length; i++) {
 				try {
@@ -68,7 +69,7 @@
 		
 		public function toString(indent:uint = 0):String {
 			var str:String = toStringMain(indent) +
-				"ID: " + spriteId + ", " +
+				"ID: " + characterId + ", " +
 				"FrameCount: " + frameCount + ", " +
 				"Tags: " + _controlTags.length;
 			if (_controlTags.length > 0) {

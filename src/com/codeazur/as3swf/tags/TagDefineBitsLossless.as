@@ -5,26 +5,27 @@
 
 	import flash.utils.ByteArray;
 	
-	public class TagDefineBitsLossless extends Tag implements ITag
+	public class TagDefineBitsLossless extends Tag implements IDefinitionTag
 	{
 		public static const TYPE:uint = 20;
 		
-		public var characterId:uint;
 		public var bitmapFormat:uint;
 		public var bitmapWidth:uint;
 		public var bitmapHeight:uint;
 		public var bitmapColorTableSize:uint;
 		
+		protected var _characterId:uint;
 		protected var _zlibBitmapData:ByteArray;
 		
 		public function TagDefineBitsLossless() {
 			_zlibBitmapData = new ByteArray();
 		}
 		
+		public function get characterId():uint { return _characterId; }
 		public function get zlibBitmapData():ByteArray { return _zlibBitmapData; }
 		
 		public function parse(data:SWFData, length:uint, version:uint):void {
-			characterId = data.readUI16();
+			_characterId = data.readUI16();
 			bitmapFormat = data.readUI8();
 			bitmapWidth = data.readUI16();
 			bitmapHeight = data.readUI16();
@@ -36,7 +37,7 @@
 		
 		public function publish(data:SWFData, version:uint):void {
 			var body:SWFData = new SWFData();
-			body.writeUI16(characterId);
+			body.writeUI16(_characterId);
 			body.writeUI8(bitmapFormat);
 			body.writeUI16(bitmapWidth);
 			body.writeUI16(bitmapHeight);

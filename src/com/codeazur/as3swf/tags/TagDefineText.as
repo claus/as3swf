@@ -6,24 +6,25 @@
 	import com.codeazur.as3swf.data.SWFTextRecord;
 	import com.codeazur.utils.StringUtils;
 	
-	public class TagDefineText extends Tag implements ITag
+	public class TagDefineText extends Tag implements IDefinitionTag
 	{
 		public static const TYPE:uint = 11;
 		
-		public var characterId:uint;
 		public var textBounds:SWFRectangle;
 		public var textMatrix:SWFMatrix;
 		
+		protected var _characterId:uint;
 		protected var _records:Vector.<SWFTextRecord>;
 		
 		public function TagDefineText() {
 			_records = new Vector.<SWFTextRecord>();
 		}
 		
+		public function get characterId():uint { return _characterId; }
 		public function get records():Vector.<SWFTextRecord> { return _records; }
 		
 		public function parse(data:SWFData, length:uint, version:uint):void {
-			characterId = data.readUI16();
+			_characterId = data.readUI16();
 			textBounds = data.readRECT();
 			textMatrix = data.readMATRIX();
 			var glyphBits:uint = data.readUI8();

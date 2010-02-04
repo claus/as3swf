@@ -6,11 +6,11 @@
 	
 	import flash.utils.ByteArray;
 	
-	public class TagDefineFont extends Tag implements ITag
+	public class TagDefineFont extends Tag implements IDefinitionTag
 	{
 		public static const TYPE:uint = 10;
 		
-		protected var fontId:uint;
+		protected var _characterId:uint;
 		
 		protected var _glyphShapeTable:Vector.<SWFShape>;
 		
@@ -18,10 +18,11 @@
 			_glyphShapeTable = new Vector.<SWFShape>();
 		}
 		
+		public function get characterId():uint { return _characterId; }
 		public function get glyphShapeTable():Vector.<SWFShape> { return _glyphShapeTable; }
 		
 		public function parse(data:SWFData, length:uint, version:uint):void {
-			fontId = data.readUI16();
+			_characterId = data.readUI16();
 			// Because the GlyphShapeTable immediately follows the OffsetTable,
 			// the number of entries in each table (the number of glyphs in the font) can be inferred by
 			// dividing the first entry in the OffsetTable by two.
@@ -42,7 +43,7 @@
 			// don't know the exact length in bytes yet.
 			
 			// Write the fontID
-			body.writeUI16(fontId);
+			body.writeUI16(_characterId);
 			
 			for (i = 0, len = _glyphShapeTable.length; i < len; i++) {
 				
@@ -71,7 +72,7 @@
 		
 		public function toString(indent:uint = 0):String {
 			var str:String = toStringMain(indent) +
-				"ID: " + fontId + ", " +
+				"ID: " + characterId + ", " +
 				"Glyphs: " + _glyphShapeTable.length;
 			return str + toStringCommon(indent);
 		}

@@ -3,7 +3,7 @@
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.SWFRectangle;
 	
-	public class TagDefineShape4 extends TagDefineShape3 implements ITag
+	public class TagDefineShape4 extends TagDefineShape3 implements IDefinitionTag
 	{
 		public static const TYPE:uint = 83;
 		
@@ -15,7 +15,7 @@
 		public function TagDefineShape4() {}
 		
 		override public function parse(data:SWFData, length:uint, version:uint):void {
-			shapeId = data.readUI16();
+			_characterId = data.readUI16();
 			shapeBounds = data.readRECT();
 			edgeBounds = data.readRECT();
 			var flags:uint = data.readUI8();
@@ -30,7 +30,7 @@
 		
 		override public function toString(indent:uint = 0):String {
 			var str:String = toStringMain(indent) +
-				"ID: " + shapeId + ", " +
+				"ID: " + characterId + ", " +
 				"ShapeBounds: " + shapeBounds + ", " +
 				"EdgeBounds: " + edgeBounds;
 			str += shapes.toString(indent + 2);

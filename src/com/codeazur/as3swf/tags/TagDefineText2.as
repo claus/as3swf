@@ -4,14 +4,14 @@
 	import com.codeazur.as3swf.data.SWFTextRecord;
 	import com.codeazur.utils.StringUtils;
 	
-	public class TagDefineText2 extends TagDefineText implements ITag
+	public class TagDefineText2 extends TagDefineText implements IDefinitionTag
 	{
 		public static const TYPE:uint = 33;
 		
 		public function TagDefineText2() {}
 		
 		override public function parse(data:SWFData, length:uint, version:uint):void {
-			characterId = data.readUI16();
+			_characterId = data.readUI16();
 			textBounds = data.readRECT();
 			textMatrix = data.readMATRIX();
 			var glyphBits:uint = data.readUI8();

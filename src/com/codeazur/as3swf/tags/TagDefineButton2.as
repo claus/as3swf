@@ -6,13 +6,13 @@
 	import com.codeazur.as3swf.data.SWFButtonRecord;
 	import com.codeazur.utils.StringUtils;
 	
-	public class TagDefineButton2 extends Tag implements ITag
+	public class TagDefineButton2 extends Tag implements IDefinitionTag
 	{
 		public static const TYPE:uint = 34;
 		
-		public var buttonId:uint;
 		public var trackAsMenu:Boolean;
 		
+		protected var _characterId:uint;
 		protected var _characters:Vector.<SWFButtonRecord>;
 		protected var _condActions:Vector.<SWFButtonCondAction>;
 		
@@ -21,11 +21,12 @@
 			_condActions = new Vector.<SWFButtonCondAction>();
 		}
 		
+		public function get characterId():uint { return _characterId; }
 		public function get characters():Vector.<SWFButtonRecord> { return _characters; }
 		public function get condActions():Vector.<SWFButtonCondAction> { return _condActions; }
 		
 		public function parse(data:SWFData, length:uint, version:uint):void {
-			buttonId = data.readUI16();
+			_characterId = data.readUI16();
 			trackAsMenu = ((data.readUI8() & 0x01) != 0);
 			var actionOffset:uint = data.readUI16();
 			var record:SWFButtonRecord;
@@ -52,7 +53,7 @@
 		
 		public function toString(indent:uint = 0):String {
 			var str:String = toStringMain(indent) +
-				"ID: " + buttonId + ", TrackAsMenu: " + trackAsMenu;
+				"ID: " + characterId + ", TrackAsMenu: " + trackAsMenu;
 			var i:uint;
 			if (_characters.length > 0) {
 				str += "\n" + StringUtils.repeat(indent + 2) + "Characters:";

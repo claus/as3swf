@@ -3,11 +3,10 @@
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.SWFRectangle;
 	
-	public class TagDefineEditText extends Tag implements ITag
+	public class TagDefineEditText extends Tag implements IDefinitionTag
 	{
 		public static const TYPE:uint = 37;
 		
-		public var characterId:uint;
 		public var bounds:SWFRectangle;
 		public var variableName:String;
 		
@@ -40,10 +39,14 @@
 		public var leading:int;
 		public var initialText:String;
 
+		protected var _characterId:uint;
+		
 		public function TagDefineEditText() {}
 		
+		public function get characterId():uint { return _characterId; }
+		
 		public function parse(data:SWFData, length:uint, version:uint):void {
-			characterId = data.readUI16();
+			_characterId = data.readUI16();
 			bounds = data.readRECT();
 			var flags1:uint = data.readUI8();
 			hasText = ((flags1 & 0x80) != 0);

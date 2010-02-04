@@ -101,6 +101,7 @@
 		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "DefineFont2"; }
+		override public function get version():uint { return 3; }
 		
 		override public function toString(indent:uint = 0):String {
 			var str:String = toStringMain(indent) +

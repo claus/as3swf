@@ -29,6 +29,7 @@
 		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "SoundStreamBlock"; }
+		override public function get version():uint { return 1; }
 		
 		public function toString(indent:uint = 0):String {
 			return toStringMain(indent) + "Length: " + _soundData.length;

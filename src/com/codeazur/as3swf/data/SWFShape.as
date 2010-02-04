@@ -151,8 +151,8 @@
 					case SWFShapeRecord.TYPE_CURVEDEDGE:
 						var curvedEdgeRecord:SWFShapeRecordCurvedEdge = shapeRecord as SWFShapeRecordCurvedEdge;
 						from = new Point(xPos, yPos);
-						var xPosControl :Number = xPos + curvedEdgeRecord.controlDeltaX / 20;
-						var yPosControl :Number = yPos + curvedEdgeRecord.controlDeltaY / 20;
+						var xPosControl:Number = xPos + curvedEdgeRecord.controlDeltaX / 20;
+						var yPosControl:Number = yPos + curvedEdgeRecord.controlDeltaY / 20;
 						xPos = xPosControl + curvedEdgeRecord.anchorDeltaX / 20;
 						yPos = yPosControl + curvedEdgeRecord.anchorDeltaY / 20;
 						control = new Point(xPosControl, yPosControl);
@@ -396,7 +396,7 @@
 		}
 
 		public function toString(indent:uint = 0):String {
-			var str:String = "\n" + StringUtils.repeat(indent) + "Shapes:";
+			var str:String = "\n" + StringUtils.repeat(indent) + "ShapeRecords:";
 			for (var i:uint = 0; i < _records.length; i++) {
 				str += "\n" + StringUtils.repeat(indent + 2) + _records[i].toString(indent + 2);
 			}

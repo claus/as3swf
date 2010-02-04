@@ -15,7 +15,7 @@
 		public function beginFills():void {}
 		public function endFills():void {}
 
-		public function beginLines():void { trace("// Lines:"); }
+		public function beginLines():void {}
 		public function endLines():void {}
 		
 		public function beginFill(color:uint, alpha:Number = 1.0):void {}

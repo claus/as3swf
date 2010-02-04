@@ -10,8 +10,8 @@
 	public class SWF
 	{
 		public var version:int = 10;
-		public var fileLength:uint;
-		public var fileLengthCompressed:uint;
+		public var fileLength:uint = 0;
+		public var fileLengthCompressed:uint = 0;
 		public var frameSize:SWFRectangle;
 		public var frameRate:Number = 50;
 		public var frameCount:uint = 1;

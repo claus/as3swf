@@ -1,7 +1,5 @@
 package com.codeazur.as3swf.exporters
 {
-	import com.codeazur.utils.StringUtils;
-	
 	import flash.display.GraphicsEndFill;
 	import flash.display.GraphicsGradientFill;
 	import flash.display.GraphicsPath;
@@ -38,7 +36,16 @@ package com.codeazur.as3swf.exporters
 		
 		override public function beginGradientFill(type:String, colors:Array, alphas:Array, ratios:Array, matrix:Matrix = null, spreadMethod:String = SpreadMethod.PAD, interpolationMethod:String = InterpolationMethod.RGB, focalPointRatio:Number = 0):void {
 			cleanUpGraphicsPath();
-			_graphicsData.push(new GraphicsGradientFill(type, colors, alphas, ratios, matrix, spreadMethod, interpolationMethod, focalPointRatio));
+			_graphicsData.push(new GraphicsGradientFill(
+				type,
+				colors,
+				alphas,
+				ratios,
+				matrix,
+				spreadMethod,
+				interpolationMethod,
+				focalPointRatio
+			));
 		}
 
 		//override public function beginBitmapFill(bitmapId:uint, matrix:Matrix = null, repeat:Boolean = true, smooth:Boolean = false):void {
@@ -53,9 +60,15 @@ package com.codeazur.as3swf.exporters
 
 		override public function lineStyle(thickness:Number = NaN, color:uint = 0, alpha:Number = 1.0, pixelHinting:Boolean = false, scaleMode:String = LineScaleMode.NORMAL, startCaps:String = null, endCaps:String = null, joints:String = null, miterLimit:Number = 3):void {
 			cleanUpGraphicsPath();
-			tmpGraphicsPath = new GraphicsPath();
-			var fill:GraphicsSolidFill = new GraphicsSolidFill(color, alpha);
-			_graphicsData.push(new GraphicsStroke(thickness, pixelHinting, scaleMode, startCaps, joints, miterLimit, fill)); 
+			_graphicsData.push(new GraphicsStroke(
+				thickness,
+				pixelHinting,
+				scaleMode,
+				startCaps,
+				joints,
+				miterLimit,
+				new GraphicsSolidFill(color, alpha)
+			)); 
 		}
 		
 		override public function moveTo(x:Number, y:Number):void {

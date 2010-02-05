@@ -38,6 +38,10 @@
 		
 		public function get dictionary():Dictionary { return _dictionary; }
 		
+		public function getTagByCharacterId(characterId:uint):ITag {
+			return tags[dictionary[characterId]];
+		}
+		
 		public function loadBytes(data:ByteArray):void {
 			var swfData:SWFData = new SWFData();
 			data.position = 0;
@@ -136,14 +140,14 @@
 		}
 		
 		public function toString():String {
-			var str:String = "[SWF] " +
-				"Version: " + version + ", " +
-				"FileLength: " + fileLength + ", " +
-				"FileLengthCompressed: " + fileLengthCompressed + ", " +
-				"FrameSize: " + frameSize.toStringSize() + ", " +
-				"FrameRate: " + frameRate + ", " +
-				"FrameCount: " + frameCount + ", " +
-				"Tags: " + tags.length;
+			var str:String = "[SWF]\n" +
+				"  Header:\n" +
+				"    Version: " + version + "\n" +
+				"    FileLength: " + fileLength + "\n" +
+				"    FileLengthCompressed: " + fileLengthCompressed + "\n" +
+				"    FrameSize: " + frameSize.toStringSize() + "\n" +
+				"    FrameRate: " + frameRate + "\n" +
+				"    FrameCount: " + frameCount;
 			if (tags.length > 0) {
 				str += "\n  Tags:";
 				for (var i:uint = 0; i < Math.min(100000, tags.length); i++) {

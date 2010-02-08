@@ -4,7 +4,7 @@
 	import com.codeazur.as3swf.data.SWFColorTransform;
 	import com.codeazur.as3swf.data.SWFMatrix;
 	
-	public class TagPlaceObject extends Tag implements ITag
+	public class TagPlaceObject extends Tag implements ITag, IDisplayListTag
 	{
 		public static const TYPE:uint = 4;
 		

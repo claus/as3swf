@@ -4,7 +4,11 @@
 	import com.codeazur.as3swf.data.SWFRectangle;
 	import com.codeazur.as3swf.factories.SWFTagFactory;
 	import com.codeazur.as3swf.tags.IDefinitionTag;
+	import com.codeazur.as3swf.tags.IDisplayListTag;
 	import com.codeazur.as3swf.tags.ITag;
+	import com.codeazur.as3swf.tags.TagEnd;
+	import com.codeazur.as3swf.tags.TagPlaceObject;
+	import com.codeazur.as3swf.tags.TagRemoveObject;
 	
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
@@ -22,10 +26,14 @@
 		
 		protected var _tags:Vector.<ITag>;
 		protected var _dictionary:Dictionary;
-
+		protected var _frames:Vector.<SWFFrame>;
+		
+		protected var currentFrame:SWFFrame;
+		
 		public function SWF(data:ByteArray = null) {
 			_tags = new Vector.<ITag>();
 			_dictionary = new Dictionary();
+			_frames = new Vector.<SWFFrame>();
 			if (data != null) {
 				loadBytes(data);
 			} else {
@@ -34,9 +42,10 @@
 		}
 		
 		public function get tags():Vector.<ITag> { return _tags; }
-		public function set tags(value:Vector.<ITag>):void {_tags = value;}
 		
 		public function get dictionary():Dictionary { return _dictionary; }
+		
+		public function get frames():Vector.<SWFFrame> { return _frames; }
 		
 		public function getTagByCharacterId(characterId:uint):ITag {
 			return tags[dictionary[characterId]];
@@ -70,36 +79,48 @@
 			fileLength = data.readUI32();
 			fileLengthCompressed = data.length;
 			if (compressed) {
+				// The following data (up to end of file) is compressed, if header has CWS signature
 				data.swfUncompress();
 			}
 			frameSize = data.readRECT();
 			frameRate = data.readFIXED8();
 			frameCount = data.readUI16();
+
 			tags.length = 0;
+			frames.length = 0;
+			_dictionary = new Dictionary();
+			currentFrame = new SWFFrame();
+			
+			var raw:ByteArray;
+			var header:SWFRecordHeader;
+			var tag:ITag;
+			var pos:uint;
 			
 			while (true)
 			{
-				var raw:ByteArray = data.readRawTag();
-				var header:SWFRecordHeader = data.readTagHeader();
-				var tag:ITag = SWFTagFactory.create(header.type);
-				var pos:uint = data.position;
+				raw = data.readRawTag();
+				header = data.readTagHeader();
+				tag = SWFTagFactory.create(header.type);
+				pos = data.position;
+				// We currently persist the raw tag to be able to publish  
+				// tags that don't have publish() implemented yet.
+				// This will probably go away once feature complete.
 				tag.raw = raw;
 				try {
 					tag.parse(data, header.length, version);
 				} catch(e:Error) {
+					// If we get here there was a problem parsing this particular tag.
+					// Possible SWF exploit, or obfuscated SWF.
+					// TODO: register errors and warnings
 				}
-				tags.push(tag);
-				if(tag is IDefinitionTag) {
-					// Register definition tag in dictionary (key: character id, value: tag index)
-					var definitionTag:IDefinitionTag = tag as IDefinitionTag;
-					if(definitionTag.characterId > 0) {
-						dictionary[definitionTag.characterId] = tags.length - 1;
-					}
-				}
-				if (header.type == 0) {
+				// Register parsed tag, build dictionary and display list etc
+				processTag(tag);
+				// Check for End tag, bail out if found.
+				if (header.type == TagEnd.TYPE) {
 					break;
 				}
-				data.position += header.length - data.position + pos;
+				// Adjust position (just in case the parser under- or overflows)
+				data.position = header.length + pos;
 			}
 		}
 		
@@ -139,7 +160,44 @@
 			data.position = endPos;
 		}
 		
+		protected function processTag(tag:ITag):void {
+			var currentTagIndex:uint = tags.length;
+			// Register tag
+			tags.push(tag);
+			// Register definition tag in dictionary (key: character id, value: tag index)
+			if(tag is IDefinitionTag) {
+				var definitionTag:IDefinitionTag = tag as IDefinitionTag;
+				if(definitionTag.characterId > 0) {
+					dictionary[definitionTag.characterId] = currentTagIndex;
+				}
+			}
+			// Register display list tag  
+			if(tag is IDisplayListTag) {
+				switch(tag.name) {
+					case "ShowFrame":
+						currentFrame.tagIndexEnd = currentTagIndex;
+						frames.push(currentFrame);
+						currentFrame = currentFrame.clone();
+						currentFrame.frameNumber = frames.length;
+						currentFrame.tagIndexStart = currentTagIndex + 1; 
+						break;
+					case "PlaceObject":
+					case "PlaceObject2":
+					case "PlaceObject3":
+						var placeObject:TagPlaceObject = tag as TagPlaceObject;
+						currentFrame.placeObject(currentTagIndex, placeObject.depth, placeObject.characterId);
+						break;
+					case "RemoveObject":
+					case "RemoveObject2":
+						var removeObject:TagRemoveObject = tag as TagRemoveObject;
+						currentFrame.removeObject(removeObject.depth, removeObject.characterId);
+						break;
+				}
+			}
+		}
+		
 		public function toString():String {
+			var i:uint;
 			var str:String = "[SWF]\n" +
 				"  Header:\n" +
 				"    Version: " + version + "\n" +
@@ -150,8 +208,14 @@
 				"    FrameCount: " + frameCount;
 			if (tags.length > 0) {
 				str += "\n  Tags:";
-				for (var i:uint = 0; i < Math.min(100000, tags.length); i++) {
+				for (i = 0; i < tags.length; i++) {
 					str += "\n" + tags[i].toString(4);
+				}
+			}
+			if (frames.length > 0) {
+				str += "\n  Frames:";
+				for (i = 0; i < frames.length; i++) {
+					str += "\n" + frames[i].toString(4);
 				}
 			}
 			return str;

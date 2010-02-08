@@ -1,5 +1,6 @@
 ﻿package com.codeazur.as3swf.exporters
 {
+	import com.codeazur.as3swf.SWF;
 	import com.codeazur.utils.StringUtils;
 	
 	import flash.display.CapsStyle;
@@ -13,7 +14,9 @@
 	{
 		protected var _actionScript:String;
 		
-		public function ASShapeExportDocumentHandler() {}
+		public function ASShapeExportDocumentHandler(swf:SWF) {
+			super(swf);
+		}
 		
 		public function get actionScript():String { return _actionScript; }
 		

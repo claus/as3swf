@@ -1,5 +1,9 @@
 ﻿package com.codeazur.as3swf.exporters
 {
+	import com.codeazur.as3swf.SWF;
+	import com.codeazur.as3swf.utils.ColorUtils;
+	import com.codeazur.as3swf.utils.ObjCUtils;
+	
 	import flash.display.CapsStyle;
 	import flash.display.GradientType;
 	import flash.display.InterpolationMethod;
@@ -8,12 +12,11 @@
 	import flash.display.SpreadMethod;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
-	
-	import com.codeazur.as3swf.utils.ColorUtils;
-	import com.codeazur.as3swf.utils.ObjCUtils;
 
 	public class CoreGraphicsShapeExportDocumentHandler extends DefaultShapeExportDocumentHandler
 	{
+		protected static const DEFAULT_CLASSNAME:String = "DefaultClassName";
+		
 		protected static const NOT_ACTIVE:String = "notActive";
 		protected static const FILL_ACTIVE:String = "fillActive";
 		protected static const STROKE_ACTIVE:String = "strokeActive";
@@ -21,9 +24,10 @@
 		protected var _m:String = "";
 		protected var _h:String = "";
 		
-		protected var _className:String = "DemoShapeView";
-		protected var _author:String = "###Author###";
-		protected var _copyright:String = "###Company###";
+		protected var _className:String;
+		protected var _projectName:String;
+		protected var _author:String;
+		protected var _copyright:String;
 
 		protected var fills:Vector.<String>;
 		protected var strokes:Vector.<String>;
@@ -33,18 +37,26 @@
 		
 		protected var active:String = NOT_ACTIVE;
 		
-		public function CoreGraphicsShapeExportDocumentHandler(aClassName:String = null, aAuthor:String = null, aCopyright:String = null)
+		public function CoreGraphicsShapeExportDocumentHandler(swf:SWF, aClassName:String, aProjectName:String = "###ProjectName###", aAuthor:String = "###AuthorName###", aCopyright:String = "###Copyright###")
 		{
-			_className = aClassName;
+			_className = (aClassName != null && aClassName.length > 0) ? aClassName : DEFAULT_CLASSNAME;
+			_projectName = aProjectName;
 			_author = aAuthor;
 			_copyright = aCopyright;
+			super(swf);
 		}
 		
 		public function get m():String { return _m; }
+		
 		public function get h():String { return _h; }
 		
 		public function get className():String { return _className; }
-		public function set className(value:String):void { _className = value; }
+		public function set className(value:String):void {
+			_className = (value != null && value.length > 0) ? value : DEFAULT_CLASSNAME;
+		}
+		
+		public function get projectName():String { return _projectName; }
+		public function set projectName(value:String):void { _projectName = value; }
 		
 		public function get author():String { return _author; }
 		public function set author(value:String):void { _author = value; }
@@ -56,7 +68,7 @@
 		override public function beginShape():void {
 			_m = "//\r" +
 				"//  " + className + ".m\r" +
-				"//  " + className + "\r" +
+				"//  " + projectName + "\r" +
 				"//\r" +
 				"//  Created by " + _author + " on " + new Date().toDateString() + ".\r" +
 				"//  Copyright " + new Date().fullYear + " " + _copyright + ". All rights reserved.\r" +
@@ -77,7 +89,7 @@
 				"\tCGContextRef ctx = UIGraphicsGetCurrentContext();\r";
 			_h = "//\r" +
 				"//  " + className + ".h\r" +
-				"//  " + className + "\r" +
+				"//  " + projectName + "\r" +
 				"//\r" +
 				"//  Created by " + _author + " on " + new Date().toDateString() + ".\r" +
 				"//  Copyright " + new Date().fullYear + " " + _copyright + ". All rights reserved.\r" +
@@ -184,8 +196,8 @@
 				suffix += " };\r";
 				suffix += "\tCGGradientRef g = CGGradientCreateWithColorComponents(cs, colors, ratios, " + len + ");\r"
 				suffix += "\tCGContextEOClip(ctx);\r"
-				var from:Point = new Point((-16384 * matrix.a + matrix.tx) / 20, (-16384 * matrix.b + matrix.ty) / 20);
-				var to:Point = new Point((16384 * matrix.a + matrix.tx) / 20, (16384 * matrix.b + matrix.ty) / 20);
+				var from:Point = new Point(-819.2 * matrix.a + matrix.tx, -819.2 * matrix.b + matrix.ty);
+				var to:Point = new Point(819.2 * matrix.a + matrix.tx, 819.2 * matrix.b + matrix.ty);
 				suffix += "\tCGPoint from = CGPointMake(" + ObjCUtils.num2str(from.x) + ", " + ObjCUtils.num2str(from.y) + ");\r";
 				suffix += "\tCGPoint to = CGPointMake(" + ObjCUtils.num2str(to.x) + ", " + ObjCUtils.num2str(to.y) + ");\r";
 				suffix += "\tCGContextDrawLinearGradient(ctx, g, from, to, 0);\r";
@@ -242,26 +254,26 @@
 		override public function moveTo(x:Number, y:Number):void {
 			if (active != NOT_ACTIVE) {
 				geometry += "\tCGContextMoveToPoint(ctx, " + 
-					ObjCUtils.num2str(x) + ", " + 
-					ObjCUtils.num2str(y) + ");\r";
+					ObjCUtils.num2str(x, true) + ", " + 
+					ObjCUtils.num2str(y, true) + ");\r";
 			}
 		}
 		
 		override public function lineTo(x:Number, y:Number):void {
 			if (active != NOT_ACTIVE) {
 				geometry += "\tCGContextAddLineToPoint(ctx, " + 
-					ObjCUtils.num2str(x) + ", " + 
-					ObjCUtils.num2str(y) + ");\r";
+					ObjCUtils.num2str(x, true) + ", " + 
+					ObjCUtils.num2str(y, true) + ");\r";
 			}
 		}
 		
 		override public function curveTo(controlX:Number, controlY:Number, anchorX:Number, anchorY:Number):void {
 			if (active != NOT_ACTIVE) {
 				geometry += "\tCGContextAddQuadCurveToPoint(ctx, " + 
-					ObjCUtils.num2str(controlX) + ", " + 
-					ObjCUtils.num2str(controlY) + ", " +
-					ObjCUtils.num2str(anchorX) + ", " + 
-					ObjCUtils.num2str(anchorY) + ");\r";
+					ObjCUtils.num2str(controlX, true) + ", " + 
+					ObjCUtils.num2str(controlY, true) + ", " +
+					ObjCUtils.num2str(anchorX, true) + ", " + 
+					ObjCUtils.num2str(anchorY, true) + ");\r";
 			}
 		}
 

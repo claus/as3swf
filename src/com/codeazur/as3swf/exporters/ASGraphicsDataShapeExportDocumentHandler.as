@@ -1,5 +1,7 @@
 package com.codeazur.as3swf.exporters
 {
+	import com.codeazur.as3swf.SWF;
+	
 	import flash.display.GraphicsEndFill;
 	import flash.display.GraphicsGradientFill;
 	import flash.display.GraphicsPath;
@@ -17,7 +19,9 @@ package com.codeazur.as3swf.exporters
 		
 		protected var tmpGraphicsPath:GraphicsPath;
 		
-		public function ASGraphicsDataShapeExportDocumentHandler() {}
+		public function ASGraphicsDataShapeExportDocumentHandler(swf:SWF) {
+			super(swf);
+		}
 		
 		public function get graphicsData():Vector.<IGraphicsData> { return _graphicsData; }
 		

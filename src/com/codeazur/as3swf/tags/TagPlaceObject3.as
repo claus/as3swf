@@ -5,7 +5,7 @@
 	import com.codeazur.as3swf.data.filters.IFilter;
 	import com.codeazur.utils.StringUtils;
 	
-	public class TagPlaceObject3 extends TagPlaceObject2 implements ITag
+	public class TagPlaceObject3 extends TagPlaceObject2 implements ITag, IDisplayListTag
 	{
 		public static const TYPE:uint = 70;
 		

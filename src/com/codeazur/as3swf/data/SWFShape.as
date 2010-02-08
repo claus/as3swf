@@ -1,29 +1,23 @@
 ﻿package com.codeazur.as3swf.data
 {
 	import com.codeazur.as3swf.SWFData;
-	import com.codeazur.as3swf.data.SWFFillStyle;
-	import com.codeazur.as3swf.data.SWFLineStyle;
-	import com.codeazur.as3swf.data.SWFShapeRecord;
-	import com.codeazur.as3swf.data.SWFShapeRecordCurvedEdge;
-	import com.codeazur.as3swf.data.SWFShapeRecordStraightEdge;
-	import com.codeazur.as3swf.data.SWFShapeRecordStyleChange;
 	import com.codeazur.as3swf.data.consts.GradientInterpolationMode;
 	import com.codeazur.as3swf.data.consts.GradientSpreadMode;
 	import com.codeazur.as3swf.data.consts.LineCapsStyle;
 	import com.codeazur.as3swf.data.consts.LineJointStyle;
-	import com.codeazur.as3swf.data.etc.IEdge;
 	import com.codeazur.as3swf.data.etc.CurvedEdge;
+	import com.codeazur.as3swf.data.etc.IEdge;
 	import com.codeazur.as3swf.data.etc.StraightEdge;
-	import com.codeazur.as3swf.exporters.IShapeExportDocumentHandler;
 	import com.codeazur.as3swf.exporters.DefaultShapeExportDocumentHandler;
+	import com.codeazur.as3swf.exporters.IShapeExportDocumentHandler;
 	import com.codeazur.as3swf.utils.ColorUtils;
-
 	import com.codeazur.utils.StringUtils;
-
-	import flash.geom.Matrix;
-	import flash.geom.Point;
+	
 	import flash.display.GradientType;
 	import flash.display.LineScaleMode;
+	import flash.geom.Matrix;
+	import flash.geom.Point;
+	import flash.utils.Dictionary;
 	
 	public class SWFShape
 	{
@@ -31,6 +25,8 @@
 
 		protected var tmpFillStyles:Vector.<SWFFillStyle>;
 		protected var tmpLineStyles:Vector.<SWFLineStyle>;
+		protected var tmpFillEdgeMaps:Vector.<Dictionary>;
+		protected var tmpLineEdgeMaps:Vector.<Dictionary>;
 
 		public function SWFShape(data:SWFData = null, level:uint = 1) {
 			_records = new Vector.<SWFShapeRecord>();
@@ -91,9 +87,12 @@
 			var currentFillStyleIdx0:uint = 0;
 			var currentFillStyleIdx1:uint = 0;
 			var currentLineStyleIdx:uint = 0;
+			tmpFillEdgeMaps = new Vector.<Dictionary>();
+			tmpLineEdgeMaps = new Vector.<Dictionary>();
+			
 			var path:Vector.<IEdge> = new Vector.<IEdge>();
 			var subPath:Vector.<IEdge> = new Vector.<IEdge>();
-			if (handler == null) { handler = new DefaultShapeExportDocumentHandler(); }
+			if (handler == null) { handler = new DefaultShapeExportDocumentHandler(null); }
 			for (var i:uint = 0; i < _records.length; i++) {
 				var shapeRecord:SWFShapeRecord = _records[i];
 				switch(shapeRecord.type) {
@@ -162,6 +161,21 @@
 					case SWFShapeRecord.TYPE_END:
 						// We're done. Process the last subpath, if any
 						processSubPath(path, subPath, currentFillStyleIdx0, currentFillStyleIdx1);
+						/*
+						for(var ii:uint = 0; ii < path.length; ii++) {
+							var e:IEdge = path[ii];
+							//if(e.fillStyleIdx == 3) {
+								trace(
+									Math.round(e.from.x*20), 
+									Math.round(e.from.y*20),
+									Math.round(e.to.x*20), 
+									Math.round(e.to.y*20),
+									(e.isDuplicate ? "   ###DUPE###   " : "   "),
+									e.fillStyleIdx
+								);
+							//}
+						}
+						*/
 						// Let the doc handler know that a shape export starts
 						handler.beginShape();
 						// Export fills first
@@ -174,7 +188,7 @@
 				}
 			}
 		}
-		
+
 		protected function exportFillPath(fillPath:Vector.<IEdge>, handler:IShapeExportDocumentHandler):void {
 			var path:Vector.<IEdge> = sortFillPath(fillPath);
 			var fillStyleIdx:uint = uint.MAX_VALUE;
@@ -198,6 +212,7 @@
 						}
 						hasOpenFill = true;
 						try {
+							var matrix:Matrix;
 							var fillStyle:SWFFillStyle = tmpFillStyles[fillStyleIdx - 1];
 							switch(fillStyle.type) {
 								case 0x00:
@@ -212,6 +227,9 @@
 									var alphas:Array = [];
 									var ratios:Array = [];
 									var gradientRecord:SWFGradientRecord;
+									matrix = fillStyle.gradientMatrix.matrix.clone();
+									matrix.tx /= 20;
+									matrix.ty /= 20;
 									for (var gri:uint = 0; gri < fillStyle.gradient.records.length; gri++) {
 										gradientRecord = fillStyle.gradient.records[gri];
 										colors.push(ColorUtils.rgb(gradientRecord.color));
@@ -220,8 +238,7 @@
 									}
 									handler.beginGradientFill(
 										(fillStyle.type == 0x10) ? GradientType.LINEAR : GradientType.RADIAL,
-										colors, alphas, ratios,
-										fillStyle.gradientMatrix.matrix,
+										colors, alphas, ratios, matrix,
 										GradientSpreadMode.toString(fillStyle.gradient.spreadMode),
 										GradientInterpolationMode.toString(fillStyle.gradient.interpolationMode),
 										fillStyle.gradient.focalPoint
@@ -232,9 +249,12 @@
 								case 0x42:
 								case 0x43:
 									// Bitmap fill
+									matrix = fillStyle.bitmapMatrix.matrix.clone();
+									matrix.tx /= 20;
+									matrix.ty /= 20;
 									handler.beginBitmapFill(
 										fillStyle.bitmapId,
-										fillStyle.bitmapMatrix.matrix,
+										matrix,
 										(fillStyle.type == 0x40 || fillStyle.type == 0x42),
 										(fillStyle.type == 0x40 || fillStyle.type == 0x41)
 									);
@@ -369,8 +389,13 @@
 		protected function processSubPath(path:Vector.<IEdge>, subPath:Vector.<IEdge>, fillStyleIdx0:uint, fillStyleIdx1:uint):void {
 			var j:int;
 			var hasDuplicates:Boolean = (fillStyleIdx0 != 0 && fillStyleIdx1 != 0);
-			if (fillStyleIdx1 != 0 || (fillStyleIdx0 == 0 && fillStyleIdx1 == 0)) {
+			var hasFill:Boolean = !(fillStyleIdx0 == 0 && fillStyleIdx1 == 0);
+			if (fillStyleIdx1 != 0 || !hasFill) {
 				for (j = 0; j < subPath.length; j++) {
+					if(hasFill) {
+						//registerEdgeInMap(tmpFillEdgeMaps, subPath[j]);
+					}
+					
 					path.push(subPath[j]);
 				}
 			}

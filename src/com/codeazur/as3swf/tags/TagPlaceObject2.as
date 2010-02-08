@@ -4,7 +4,7 @@
 	import com.codeazur.as3swf.data.SWFClipActions;
 	import com.codeazur.utils.StringUtils;
 	
-	public class TagPlaceObject2 extends TagPlaceObject implements ITag
+	public class TagPlaceObject2 extends TagPlaceObject implements ITag, IDisplayListTag
 	{
 		public static const TYPE:uint = 26;
 		

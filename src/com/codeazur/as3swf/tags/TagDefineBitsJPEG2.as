@@ -7,8 +7,6 @@
 	{
 		public static const TYPE:uint = 21;
 		
-		public var bitmapType:uint = BitmapType.JPEG;
-		
 		public function TagDefineBitsJPEG2() {}
 		
 		override public function parse(data:SWFData, length:uint, version:uint):void {

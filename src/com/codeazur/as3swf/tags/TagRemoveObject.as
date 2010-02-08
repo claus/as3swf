@@ -2,11 +2,11 @@
 {
 	import com.codeazur.as3swf.SWFData;
 	
-	public class TagRemoveObject extends Tag implements ITag
+	public class TagRemoveObject extends Tag implements ITag, IDisplayListTag
 	{
 		public static const TYPE:uint = 5;
 		
-		public var characterId:uint;
+		public var characterId:uint = 0;
 		public var depth:uint;
 		
 		public function TagRemoveObject() {}

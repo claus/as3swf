@@ -13,7 +13,7 @@
 		}
 		
 		public function toString():String {
-			return "Offset: " + offset + ", Name: " + name;
+			return "Frame: " + offset + ", Name: " + name;
 		}
 	}
 }

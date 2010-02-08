@@ -1,5 +1,7 @@
 ﻿package com.codeazur.as3swf.exporters
 {
+	import com.codeazur.as3swf.SWF;
+	
 	import flash.display.InterpolationMethod;
 	import flash.display.LineScaleMode;
 	import flash.display.SpreadMethod;
@@ -7,7 +9,11 @@
 	
 	public class DefaultShapeExportDocumentHandler implements IShapeExportDocumentHandler
 	{
-		public function DefaultShapeExportDocumentHandler() {}
+		protected var swf:SWF;
+		
+		public function DefaultShapeExportDocumentHandler(swf:SWF) {
+			this.swf = swf;
+		}
 		
 		public function beginShape():void {}
 		public function endShape():void {}

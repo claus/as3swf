@@ -1,12 +1,18 @@
 ﻿package com.codeazur.as3swf.tags
 {
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.data.consts.BitmapType;
 	
+	import flash.display.BitmapData;
+	import flash.display.Loader;
+	import flash.events.Event;
 	import flash.utils.ByteArray;
 	
 	public class TagDefineBits extends Tag implements IDefinitionTag
 	{
 		public static const TYPE:uint = 6;
+		
+		public var bitmapType:uint = BitmapType.JPEG;
 		
 		protected var _characterId:uint;
 		protected var _bitmapData:ByteArray;
@@ -31,6 +37,23 @@
 			if (_bitmapData.length > 0) {
 				data.writeBytes(_bitmapData);
 			}
+		}
+		
+		protected var loader:Loader;
+		protected var onCompleteCallback:Function;
+		
+		public function exportBitmapData(onComplete:Function):void {
+			onCompleteCallback = onComplete;
+			loader = new Loader();
+			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, exportCompleteHandler);
+			loader.loadBytes(_bitmapData);
+		}
+		
+		protected function exportCompleteHandler(event:Event):void {
+			var loader:Loader = event.target.loader as Loader;
+			var bitmapData:BitmapData = new BitmapData(loader.content.width, loader.content.height);
+			bitmapData.draw(loader);
+			onCompleteCallback(bitmapData);
 		}
 		
 		override public function get type():uint { return TYPE; }

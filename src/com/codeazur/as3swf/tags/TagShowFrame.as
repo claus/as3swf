@@ -2,7 +2,7 @@
 {
 	import com.codeazur.as3swf.SWFData;
 	
-	public class TagShowFrame extends Tag implements ITag
+	public class TagShowFrame extends Tag implements ITag, IDisplayListTag
 	{
 		public static const TYPE:uint = 1;
 		

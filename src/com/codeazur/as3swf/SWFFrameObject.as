@@ -12,17 +12,20 @@ package com.codeazur.as3swf
 		public var placedAtIndex:uint;
 		// The tag index of the PlaceObject tag that modified this object (optional, only for tweens)
 		public var lastModifiedAtIndex:uint;
+		// Whether this is a keyframe or not
+		public var isKeyframe:Boolean;
 		
-		public function SWFFrameObject(depth:uint, characterId:uint, placedAtIndex:uint, lastModifiedAtIndex:uint = 0)
+		public function SWFFrameObject(depth:uint, characterId:uint, placedAtIndex:uint, lastModifiedAtIndex:uint = 0, isKeyframe:Boolean = false)
 		{
 			this.depth = depth;
 			this.characterId = characterId;
 			this.placedAtIndex = placedAtIndex;
 			this.lastModifiedAtIndex = lastModifiedAtIndex;
+			this.isKeyframe = isKeyframe;
 		}
 		
 		public function clone():SWFFrameObject {
-			return new SWFFrameObject(depth, characterId, placedAtIndex, lastModifiedAtIndex);
+			return new SWFFrameObject(depth, characterId, placedAtIndex, lastModifiedAtIndex, false);
 		}
 		
 		public function toString(indent:uint = 0):String {
@@ -32,6 +35,9 @@ package com.codeazur.as3swf
 				"PlacedAt: "  + placedAtIndex;
 			if(lastModifiedAtIndex) {
 				str += ", LastModifiedAt: " + lastModifiedAtIndex;
+			}
+			if(isKeyframe) {
+				str += ", Keyframe";
 			}
 			return str;
 		}

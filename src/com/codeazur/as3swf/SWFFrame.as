@@ -34,12 +34,14 @@ package com.codeazur.as3swf
 					// This means that the previous character is reused 
 					// and most likely modified by transforms
 					frameObject.lastModifiedAtIndex = tagIndex;
+					frameObject.isKeyframe = false;
 				} else {					
 					// A character id is defined:
 					// This means that the previous character is replaced 
 					// (possible transforms defined in previous frames are discarded)
 					frameObject.lastModifiedAtIndex = 0;
 					frameObject.placedAtIndex = tagIndex;
+					frameObject.isKeyframe = true;
 					if(characterId != frameObject.characterId) {
 						// The character id does not match the previous character:
 						// An entirely new character is placed at this depth.
@@ -48,7 +50,7 @@ package com.codeazur.as3swf
 				}
 			} else {
 				// No character defined at specified depth. Create one.
-				_objects[depth] = new SWFFrameObject(depth, characterId, tagIndex);
+				_objects[depth] = new SWFFrameObject(depth, characterId, tagIndex, 0, true);
 			}
 		}
 		

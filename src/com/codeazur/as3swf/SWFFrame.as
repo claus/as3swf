@@ -19,6 +19,8 @@ package com.codeazur.as3swf
 			_objects = new Dictionary();
 		}
 		
+		public function get objects():Dictionary { return _objects; }
+		
 		public function get tagCount():uint {
 			return tagIndexEnd - tagIndexStart + 1;
 		}
@@ -50,14 +52,7 @@ package com.codeazur.as3swf
 				"Length: " + tagCount;
 			var strobj:String = "";
 			for(var depth:String in _objects) {
-				var o:Object = _objects[depth];
-				strobj += "\n" + StringUtils.repeat(indent + 2) +
-					"Depth: " + depth + ", " +
-					"CharacterId: " + o.characterId + ", " +
-					"PlacedAtIndex: "  + o.placedAtIndex;
-				if(o.modifiedAtIndex) {
-					strobj += ", ModifiedAtIndex: " + o.modifiedAtIndex;
-				}
+				strobj += SWFFrameObject(_objects[depth]).toString(indent);
 			}
 			return str + strobj;
 		}

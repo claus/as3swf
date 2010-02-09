@@ -27,6 +27,7 @@
 		protected var _tags:Vector.<ITag>;
 		protected var _dictionary:Dictionary;
 		protected var _frames:Vector.<SWFFrame>;
+		protected var _layers:Vector.<Array>;
 		
 		protected var currentFrame:SWFFrame;
 		
@@ -46,6 +47,8 @@
 		public function get dictionary():Dictionary { return _dictionary; }
 		
 		public function get frames():Vector.<SWFFrame> { return _frames; }
+		
+		public function get layers():Vector.<Array> { return _layers; }
 		
 		public function getTagByCharacterId(characterId:uint):ITag {
 			return tags[dictionary[characterId]];
@@ -122,6 +125,8 @@
 				// Adjust position (just in case the parser under- or overflows)
 				data.position = header.length + pos;
 			}
+			
+			buildLayers();
 		}
 		
 		public function publish(data:SWFData):void {
@@ -196,6 +201,30 @@
 			}
 		}
 		
+		protected function buildLayers():void {
+			var i:uint;
+			var depths:Dictionary = new Dictionary();
+			var depthsAvailable:Array = [];
+			for(i = 0; i < frames.length; i++) {
+				var frame:SWFFrame = frames[i];
+				for(var depth:String in frame.objects) {
+					var depthInt:uint = parseInt(depth);
+					var depthIndex:int = depthsAvailable.indexOf(depthInt);
+					if(depthIndex > -1) {
+						(depths[depth] as Array).push(frame.frameNumber);
+					} else {
+						depths[depth] = [frame.frameNumber];
+						depthsAvailable.push(depthInt);
+					}
+				}
+			}
+			depthsAvailable.sort(Array.NUMERIC);
+			_layers = new Vector.<Array>();
+			for(i = 0; i < depthsAvailable.length; i++) {
+				_layers.push(depths[depthsAvailable[i]]);
+			}
+		}
+		
 		public function toString():String {
 			var i:uint;
 			var str:String = "[SWF]\n" +
@@ -216,6 +245,12 @@
 				str += "\n  Frames:";
 				for (i = 0; i < frames.length; i++) {
 					str += "\n" + frames[i].toString(4);
+				}
+			}
+			if (layers.length > 0) {
+				str += "\n  Layers:";
+				for (i = 0; i < layers.length; i++) {
+					str += "\n    [" + i + "] Frames " + layers[i].join(", ");
 				}
 			}
 			return str;

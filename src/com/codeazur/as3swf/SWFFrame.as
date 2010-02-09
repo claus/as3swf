@@ -28,13 +28,26 @@ package com.codeazur.as3swf
 		public function placeObject(tagIndex:uint, depth:uint, characterId:uint = 0):void {
 			var frameObject:SWFFrameObject = _objects[depth] as SWFFrameObject; 
 			if(frameObject) {
+				// A character is already available at the specified depth
 				if(characterId == 0) {
-					frameObject.modifiedAtIndex = tagIndex;
-				} else if(frameObject.characterId != characterId) {
-					frameObject.modifiedAtIndex = tagIndex;
-					frameObject.characterId = characterId;
+					// The PlaceObject tag has no character id defined:
+					// This means that the previous character is reused 
+					// and most likely modified by transforms
+					frameObject.lastModifiedAtIndex = tagIndex;
+				} else {					
+					// A character id is defined:
+					// This means that the previous character is replaced 
+					// (possible transforms defined in previous frames are discarded)
+					frameObject.lastModifiedAtIndex = 0;
+					frameObject.placedAtIndex = tagIndex;
+					if(characterId != frameObject.characterId) {
+						// The character id does not match the previous character:
+						// An entirely new character is placed at this depth.
+						frameObject.characterId = characterId;
+					}
 				}
 			} else {
+				// No character defined at specified depth. Create one.
 				_objects[depth] = new SWFFrameObject(depth, characterId, tagIndex);
 			}
 		}

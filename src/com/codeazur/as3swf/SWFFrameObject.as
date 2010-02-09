@@ -11,27 +11,27 @@ package com.codeazur.as3swf
 		// The tag index of the PlaceObject tag that placed this object on the display list
 		public var placedAtIndex:uint;
 		// The tag index of the PlaceObject tag that modified this object (optional, only for tweens)
-		public var modifiedAtIndex:uint;
+		public var lastModifiedAtIndex:uint;
 		
-		public function SWFFrameObject(depth:uint, characterId:uint, placedAtIndex:uint, modifiedAtIndex:uint = 0)
+		public function SWFFrameObject(depth:uint, characterId:uint, placedAtIndex:uint, lastModifiedAtIndex:uint = 0)
 		{
 			this.depth = depth;
 			this.characterId = characterId;
 			this.placedAtIndex = placedAtIndex;
-			this.modifiedAtIndex = modifiedAtIndex;
+			this.lastModifiedAtIndex = lastModifiedAtIndex;
 		}
 		
 		public function clone():SWFFrameObject {
-			return new SWFFrameObject(depth, characterId, placedAtIndex, modifiedAtIndex);
+			return new SWFFrameObject(depth, characterId, placedAtIndex, lastModifiedAtIndex);
 		}
 		
 		public function toString(indent:uint = 0):String {
 			var str:String = "\n" + StringUtils.repeat(indent + 2) +
 				"Depth: " + depth + ", " +
 				"CharacterId: " + characterId + ", " +
-				"PlacedAtIndex: "  + placedAtIndex;
-			if(modifiedAtIndex) {
-				str += ", ModifiedAtIndex: " + modifiedAtIndex;
+				"PlacedAt: "  + placedAtIndex;
+			if(lastModifiedAtIndex) {
+				str += ", LastModifiedAt: " + lastModifiedAtIndex;
 			}
 			return str;
 		}

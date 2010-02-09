@@ -27,8 +27,13 @@ package com.codeazur.as3swf
 		
 		public function placeObject(tagIndex:uint, depth:uint, characterId:uint = 0):void {
 			var frameObject:SWFFrameObject = _objects[depth] as SWFFrameObject; 
-			if(frameObject && (characterId == 0 || frameObject.characterId == characterId)) {
-				_objects[depth] = new SWFFrameObject(depth, frameObject.characterId, frameObject.placedAtIndex, tagIndex);
+			if(frameObject) {
+				if(characterId == 0) {
+					frameObject.modifiedAtIndex = tagIndex;
+				} else if(frameObject.characterId != characterId) {
+					frameObject.modifiedAtIndex = tagIndex;
+					frameObject.characterId = characterId;
+				}
 			} else {
 				_objects[depth] = new SWFFrameObject(depth, characterId, tagIndex);
 			}

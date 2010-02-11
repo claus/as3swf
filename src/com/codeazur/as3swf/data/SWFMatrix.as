@@ -10,8 +10,8 @@
 		public var scaleY:Number = 1.0;
 		public var rotateSkew0:Number = 0.0;
 		public var rotateSkew1:Number = 0.0;
-		public var translateX:int = 0.0;
-		public var translateY:int = 0.0;
+		public var translateX:int = 0;
+		public var translateY:int = 0;
 		
 		public function SWFMatrix(data:SWFData = null) {
 			if (data != null) {

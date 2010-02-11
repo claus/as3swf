@@ -24,11 +24,11 @@
 			var i:uint;
 			var fillStylesLen:uint = readStyleArrayLength(data, level);
 			for (i = 0; i < fillStylesLen; i++) {
-				_fillStyles.push(data.readFILLSTYLE(level));
+				fillStyles.push(data.readFILLSTYLE(level));
 			}
 			var lineStylesLen:uint = readStyleArrayLength(data, level);
 			for (i = 0; i < lineStylesLen; i++) {
-				_lineStyles.push(level <= 3 ? data.readLINESTYLE(level) : data.readLINESTYLE2(level));
+				lineStyles.push(level <= 3 ? data.readLINESTYLE(level) : data.readLINESTYLE2(level));
 			}
 			var numFillBits:uint = data.readUB(4);
 			var numLineBits:uint = data.readUB(4);
@@ -36,6 +36,27 @@
 			readShapeRecords(data, numFillBits, numLineBits, level);
 		}
 		
+		override public function publish(data:SWFData, level:uint = 1):void {
+			data.resetBitsPending();
+			var i:uint;
+			var fillStylesLen:uint = fillStyles.length;
+			writeStyleArrayLength(data, fillStylesLen, level);
+			for (i = 0; i < fillStylesLen; i++) {
+				fillStyles[i].publish(data, level);
+			}
+			var lineStylesLen:uint = lineStyles.length;
+			writeStyleArrayLength(data, lineStylesLen, level);
+			for (i = 0; i < lineStylesLen; i++) {
+				lineStyles[i].publish(data, level);
+			}
+			var fillBits:uint = data.calculateMaxBits(false, [fillStylesLen]);
+			var lineBits:uint = data.calculateMaxBits(false, [fillStylesLen]);
+			data.writeUB(4, fillBits);
+			data.writeUB(4, lineBits);
+			data.resetBitsPending();
+			writeShapeRecords(data, fillBits, lineBits, level);
+		}
+				
 		override public function export(handler:IShapeExportDocumentHandler = null):void {
 			tmpFillStyles = _fillStyles.concat();
 			tmpLineStyles = _lineStyles.concat();
@@ -68,6 +89,15 @@
 				len = data.readUI16();
 			}
 			return len;
+		}
+		
+		protected function writeStyleArrayLength(data:SWFData, length:uint, level:uint = 1):void {
+			if (level >= 2 && length > 0xfe) {
+				data.writeUI8(0xff);
+				data.writeUI16(length);
+			} else {
+				data.writeUI8(length);
+			}
 		}
 	}
 }

@@ -27,7 +27,12 @@
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
-			throw(new Error("TODO: implement publish()"));
+			var body:SWFData = new SWFData();
+			body.writeUI16(characterId);
+			body.writeRECT(shapeBounds);
+			body.writeSHAPEWITHSTYLE(shapes);
+			data.writeTagHeader(type, body.length);
+			data.writeBytes(body);
 		}
 		
 		public function export(handler:IShapeExportDocumentHandler = null):void {

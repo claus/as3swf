@@ -25,7 +25,7 @@
 		}
 		
 		public function publish(data:SWFData):void {
-			var numBits:uint = data.calculateMaxBits(true, xmin, xmax, ymin, ymax);
+			var numBits:uint = data.calculateMaxBits(true, [xmin, xmax, ymin, ymax]);
 			data.resetBitsPending();
 			data.writeUB(5, numBits);
 			data.writeSB(numBits, xmin);

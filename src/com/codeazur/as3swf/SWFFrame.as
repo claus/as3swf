@@ -70,11 +70,10 @@ package com.codeazur.as3swf
 			var str:String = StringUtils.repeat(indent) + "[" + frameNumber + "] " +
 				"Start: " + tagIndexStart + ", " +
 				"Length: " + tagCount;
-			var strobj:String = "";
 			for(var depth:String in _objects) {
-				strobj += SWFFrameObject(_objects[depth]).toString(indent);
+				str += SWFFrameObject(_objects[depth]).toString(indent);
 			}
-			return str + strobj;
+			return str;
 		}
 	}
 }

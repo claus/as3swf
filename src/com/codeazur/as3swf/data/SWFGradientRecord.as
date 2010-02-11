@@ -18,6 +18,15 @@
 			color = (level <= 2) ? data.readRGB() : data.readRGBA();
 		}
 		
+		public function publish(data:SWFData, level:uint):void {
+			data.writeUI8(ratio);
+			if(level <= 2) {
+				data.writeRGB(color);
+			} else {
+				data.writeRGBA(color);
+			}
+		}
+		
 		public function toString():String {
 			return "[" + ratio + "," + color.toString(16) + "]";
 		}

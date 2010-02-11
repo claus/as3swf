@@ -65,13 +65,52 @@
 				numLineBits = data.readUB(4);
 			}
 		}
-		
+
+		override public function publish(data:SWFData = null, level:uint = 1):void {
+			if(stateMoveTo) {
+				var moveBits:uint = data.calculateMaxBits(true, [moveDeltaX, moveDeltaY]);
+				data.writeUB(5, moveBits);
+				data.writeSB(moveBits, moveDeltaX);
+				data.writeSB(moveBits, moveDeltaY);
+			}
+			if(stateFillStyle0) { data.writeUB(numFillBits, fillStyle0); }
+			if(stateFillStyle1) { data.writeUB(numFillBits, fillStyle1); }
+			if(stateLineStyle) { data.writeUB(numLineBits, lineStyle); }
+			if (stateNewStyles) {
+				data.resetBitsPending();
+				var i:uint;
+				var fillStylesLen:uint = fillStyles.length;
+				writeStyleArrayLength(data, fillStylesLen, level);
+				for (i = 0; i < fillStylesLen; i++) {
+					fillStyles[i].publish(data, level);
+				}
+				var lineStylesLen:uint = lineStyles.length;
+				writeStyleArrayLength(data, lineStylesLen, level);
+				for (i = 0; i < lineStylesLen; i++) {
+					lineStyles[i].publish(data, level);
+				}
+				numFillBits = data.calculateMaxBits(false, [fillStylesLen]);
+				numLineBits = data.calculateMaxBits(false, [lineStylesLen]);
+				data.writeUB(4, numFillBits);
+				data.writeUB(4, numLineBits);
+			}
+		}
+
 		protected function readStyleArrayLength(data:SWFData, level:uint = 1):uint {
 			var len:uint = data.readUI8();
 			if (level >= 2 && len == 0xff) {
 				len = data.readUI16();
 			}
 			return len;
+		}
+		
+		protected function writeStyleArrayLength(data:SWFData, length:uint, level:uint = 1):void {
+			if (level >= 2 && length > 0xfe) {
+				data.writeUI8(0xff);
+				data.writeUI16(length);
+			} else {
+				data.writeUI8(length);
+			}
 		}
 		
 		override public function toString(indent:uint = 0):String {

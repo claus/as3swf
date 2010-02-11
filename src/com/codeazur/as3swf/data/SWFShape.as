@@ -41,7 +41,18 @@
 			data.resetBitsPending();
 			var numFillBits:uint = data.readUB(4);
 			var numLineBits:uint = data.readUB(4);
+			trace("###",numFillBits,numLineBits);
 			readShapeRecords(data, numFillBits, numLineBits, level);
+		}
+		
+		public function publish(data:SWFData, level:uint = 1):void {
+			data.resetBitsPending();
+			// This is a simple SHAPE (used by DefineFont):
+			// fillBits is always 1: one fill, the font color
+			// lineBits is always 0: no edges
+			data.writeUB(4, 1);
+			data.writeUB(4, 0);
+			writeShapeRecords(data, 1, 0);
 		}
 		
 		protected function readShapeRecords(data:SWFData, fillBits:uint, lineBits:uint, level:uint = 1):void {
@@ -76,6 +87,45 @@
 			}
 		}
 
+		protected function writeShapeRecords(data:SWFData, fillBits:uint, lineBits:uint, level:uint = 1):void {
+			for(var i:uint = 0; i < records.length; i++) {
+				var shapeRecord:SWFShapeRecord = records[i];
+				if(shapeRecord.isEdgeRecord) {
+					// EdgeRecordFlag (set)
+					data.writeUB(1, 1);
+					if(shapeRecord.type == SWFShapeRecord.TYPE_STRAIGHTEDGE) {
+						// StraightFlag (set)
+						data.writeUB(1, 1);
+						data.writeSTRAIGHTEDGERECORD(SWFShapeRecordStraightEdge(shapeRecord));
+					} else {
+						// StraightFlag (not set)
+						data.writeUB(1, 0);
+						data.writeCURVEDEDGERECORD(SWFShapeRecordCurvedEdge(shapeRecord));
+					}
+				} else {
+					// EdgeRecordFlag (not set)
+					data.writeUB(1, 0);
+					if(shapeRecord.type == SWFShapeRecord.TYPE_END) {
+						data.writeUB(5, 0);
+					} else {
+						var states:uint = 0;
+						var styleChangeRecord:SWFShapeRecordStyleChange = shapeRecord as SWFShapeRecordStyleChange;
+						if(styleChangeRecord.stateNewStyles) { states |= 0x10; }
+						if(styleChangeRecord.stateLineStyle) { states |= 0x08; }
+						if(styleChangeRecord.stateFillStyle1) { states |= 0x04; }
+						if(styleChangeRecord.stateFillStyle0) { states |= 0x02; }
+						if(styleChangeRecord.stateMoveTo) { states |= 0x01; }
+						data.writeUB(5, states);
+						data.writeSTYLECHANGERECORD(styleChangeRecord, fillBits, lineBits, level);
+						if (styleChangeRecord.stateNewStyles) {
+							fillBits = styleChangeRecord.numFillBits;
+							lineBits = styleChangeRecord.numLineBits;
+						}
+					}
+				}
+			}
+		}
+		
 		public function export(handler:IShapeExportDocumentHandler = null):void {
 			var xPos:Number = 0;
 			var yPos:Number = 0;

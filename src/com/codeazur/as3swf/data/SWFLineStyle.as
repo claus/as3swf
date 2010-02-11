@@ -32,6 +32,15 @@
 			color = (level <= 2) ? data.readRGB() : data.readRGBA();
 		}
 		
+		public function publish(data:SWFData, level:uint = 1):void {
+			data.writeUI16(width);
+			if(level <= 2) {
+				data.writeRGB(color);
+			} else {
+				data.writeRGBA(color);
+			}
+		}
+		
 		public function toString():String {
 			return "[SWFLineStyle] Width: " + width + " Color: " + color.toString(16);
 		}

@@ -18,9 +18,24 @@
 		
 		override public function parse(data:SWFData = null, level:uint = 1):void {
 			generalLineFlag = (data.readUB(1) == 1);
-			vertLineFlag = !generalLineFlag ? (data.readSB(1) != 0) : false;
+			vertLineFlag = !generalLineFlag ? (data.readUB(1) == 1) : false;
 			deltaX = (generalLineFlag || !vertLineFlag) ? data.readSB(numBits) : 0;
 			deltaY = (generalLineFlag || vertLineFlag) ? data.readSB(numBits) : 0;
+		}
+		
+		override public function publish(data:SWFData = null, level:uint = 1):void {
+			var deltas:Array = [];
+			if(generalLineFlag || !vertLineFlag) { deltas.push(deltaX); }
+			if(generalLineFlag || vertLineFlag) { deltas.push(deltaY); }
+			numBits = data.calculateMaxBits(true, deltas);
+			data.writeUB(4, numBits - 2);
+			data.writeUB(1, generalLineFlag ? 1 : 0);
+			if(!generalLineFlag) {
+				data.writeUB(1, vertLineFlag ? 1 : 0);
+			}
+			for(var i:uint = 0; i < deltas.length; i++) {
+				data.writeSB(numBits, int(deltas[i]));
+			}
 		}
 		
 		override public function get type():uint { return SWFShapeRecord.TYPE_STRAIGHTEDGE; }

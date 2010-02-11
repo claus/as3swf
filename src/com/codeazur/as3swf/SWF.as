@@ -203,14 +203,15 @@
 		
 		protected function buildLayers():void {
 			var i:uint;
+			var depth:String;
+			var depthInt:uint;
 			var depths:Dictionary = new Dictionary();
 			var depthsAvailable:Array = [];
 			for(i = 0; i < frames.length; i++) {
 				var frame:SWFFrame = frames[i];
-				for(var depth:String in frame.objects) {
-					var depthInt:uint = parseInt(depth);
-					var depthIndex:int = depthsAvailable.indexOf(depthInt);
-					if(depthIndex > -1) {
+				for(depth in frame.objects) {
+					depthInt = parseInt(depth);
+					if(depthsAvailable.indexOf(depthInt) > -1) {
 						(depths[depth] as Array).push(frame.frameNumber);
 					} else {
 						depths[depth] = [frame.frameNumber];
@@ -223,6 +224,12 @@
 			for(i = 0; i < depthsAvailable.length; i++) {
 				_layers.push(depths[depthsAvailable[i]]);
 			}
+			for(i = 0; i < frames.length; i++) {
+				var frameObjs:Dictionary = frames[i].objects;
+				for(depth in frameObjs) {
+					SWFFrameObject(frameObjs[depth]).layer = depthsAvailable.indexOf(parseInt(depth));
+				}
+			}	
 		}
 		
 		public function toString():String {
@@ -247,12 +254,14 @@
 					str += "\n" + frames[i].toString(4);
 				}
 			}
+			/*
 			if (layers.length > 0) {
 				str += "\n  Layers:";
 				for (i = 0; i < layers.length; i++) {
 					str += "\n    [" + i + "] Frames " + layers[i].join(", ");
 				}
 			}
+			*/
 			return str;
 		}
 	}

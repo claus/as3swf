@@ -31,6 +31,27 @@
 			}
 		}
 		
+		override public function publish(data:SWFData, level:uint = 1):void {
+			data.writeUI16(width);
+			data.writeUB(2, startCapsStyle);
+			data.writeUB(2, jointStyle);
+			data.writeUB(1, hasFillFlag ? 1 : 0);
+			data.writeUB(1, noHScaleFlag ? 1 : 0);
+			data.writeUB(1, noVScaleFlag ? 1 : 0);
+			data.writeUB(1, pixelHintingFlag ? 1 : 0);
+			data.writeUB(5, 0);
+			data.writeUB(1, noClose ? 1 : 0);
+			data.writeUB(2, endCapsStyle);
+			if (jointStyle == LineJointStyle.MITER) {
+				data.writeFIXED8(miterLimitFactor);
+			}
+			if (hasFillFlag) {
+				data.writeFILLSTYLE(fillType, level);
+			} else {
+				data.writeRGBA(color);
+			}
+		}
+		
 		override public function toString():String {
 			var str:String = "[SWFLineStyle2] Width: " + width + ", " +
 				"StartCaps: " + LineCapsStyle.toString(startCapsStyle) + ", " +

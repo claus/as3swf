@@ -25,6 +25,21 @@
 			shapes = data.readSHAPEWITHSTYLE(4);
 		}
 		
+		override public function publish(data:SWFData, version:uint):void {
+			var body:SWFData = new SWFData();
+			body.writeUI16(characterId);
+			body.writeRECT(shapeBounds);
+			body.writeRECT(edgeBounds);
+			var flags:uint = 0;
+			if(usesFillWindingRule) { flags |= 0x04; }
+			if(usesNonScalingStrokes) { flags |= 0x02; }
+			if(usesScalingStrokes) { flags |= 0x01; }
+			body.writeUI8(flags);
+			body.writeSHAPEWITHSTYLE(shapes, 4);
+			data.writeTagHeader(type, body.length);
+			data.writeBytes(body);
+		}
+		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "DefineShape4"; }
 		override public function get version():uint { return 8; }

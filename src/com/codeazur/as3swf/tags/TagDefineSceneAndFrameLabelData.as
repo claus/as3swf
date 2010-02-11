@@ -39,21 +39,18 @@
 		public function publish(data:SWFData, version:uint):void {
 			var i:uint;
 			var body:SWFData = new SWFData();
-
 			body.writeEncodedU32(this.scenes.length);
 			for (i = 0; i < this.scenes.length; i++) {
 				var scene:SWFScene = this.scenes[i];
 				body.writeEncodedU32(scene.offset);
 				body.writeString(scene.name);
 			}
-			
 			body.writeEncodedU32(this.frameLabels.length);
 			for (i = 0; i < this.frameLabels.length; i++) {
 				var label :SWFFrameLabel = this.frameLabels[i];
 				body.writeEncodedU32(label.frameNumber);
 				body.writeString(label.name);
 			}
-
 			data.writeTagHeader(type, body.length);
 			data.writeBytes(body);
 		}

@@ -13,6 +13,11 @@
 			focalPoint = data.readFIXED8();
 		}
 		
+		override public function publish(data:SWFData, level:uint = 1):void {
+			super.publish(data, level);
+			data.writeFIXED8(focalPoint);
+		}
+		
 		override public function toString():String {
 			return "(" + _records.join(",") + ")";
 		}

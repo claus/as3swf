@@ -23,6 +23,15 @@
 			anchorDeltaY = data.readSB(numBits);
 		}
 		
+		override public function publish(data:SWFData = null, level:uint = 1):void {
+			numBits = data.calculateMaxBits(true, [controlDeltaX, controlDeltaY, anchorDeltaX, anchorDeltaY]);
+			data.writeUB(4, numBits - 2);
+			data.writeSB(numBits, controlDeltaX);
+			data.writeSB(numBits, controlDeltaY);
+			data.writeSB(numBits, anchorDeltaX);
+			data.writeSB(numBits, anchorDeltaY);
+		}
+		
 		override public function get type():uint { return SWFShapeRecord.TYPE_CURVEDEDGE; }
 		
 		override public function toString(indent:uint = 0):String {

@@ -197,15 +197,17 @@
 		public function writeEncodedU32(value:uint):void {
 			for (;;) {
 				var v:uint = value & 0x7f;
-				
 				if ((value >>= 7) == 0) {
 					writeUI8(v);
 					break;
 				}
-				
 				writeUI8(v & 0x80);
 			}
-import com.codeazur.as3swf.data.SWFShape;
+import com.codeazur.as3swf.data.SWFFillStyle;
+import com.codeazur.as3swf.data.SWFFocalGradient;
+import com.codeazur.as3swf.data.SWFGradientRecord;
+import com.codeazur.as3swf.data.SWFShapeRecordStyleChange;
+import com.codeazur.as3swf.data.SWFShapeWithStyle;
 
 		}
 
@@ -348,7 +350,8 @@ import com.codeazur.as3swf.data.SWFShape;
 			writeBits(1, hasScale);
 			
 			if (hasScale) {
-				var scaleBits:uint = getMinFBits(value.scaleX, value.scaleY);
+				var scaleBits:uint = calculateMaxBits(true, [value.scaleX * 65536, value.scaleY * 65536]);
+				//var scaleBits:uint = getMinFBits([value.scaleX, value.scaleY]);
 				writeUB(5, scaleBits);
 				writeFB(scaleBits, value.scaleX);
 				writeFB(scaleBits, value.scaleY);
@@ -357,13 +360,15 @@ import com.codeazur.as3swf.data.SWFShape;
 			writeBits(1, hasRotate);
 			
 			if (hasRotate) {
-				var rotateBits:uint = getMinFBits(value.rotateSkew0, value.rotateSkew1);
+				var rotateBits:uint = calculateMaxBits(true, [value.rotateSkew0 * 65536, value.rotateSkew1 * 65536]);
+				//var rotateBits:uint = getMinFBits([value.rotateSkew0, value.rotateSkew1]);
 				writeUB(5, rotateBits);
 				writeFB(rotateBits, value.rotateSkew0);
 				writeFB(rotateBits, value.rotateSkew1);
 			}
 			
-			var translateBits:uint = getMinSBits(value.translateX, value.translateY);
+			var translateBits:uint = calculateMaxBits(true, [value.translateX, value.translateY]);
+			//var translateBits:uint = getMinSBits([value.translateX, value.translateY]);
 			writeUB(5, translateBits);
 			writeSB(translateBits, value.translateX);
 			writeSB(translateBits, value.translateY);
@@ -400,23 +405,41 @@ import com.codeazur.as3swf.data.SWFShape;
 		}
 		
 		public function writeSHAPE(value:SWFShape):void {
-			// TODO: Implement writeSHAPE()
+			value.publish(this);
 		}
 		
 		public function readSHAPEWITHSTYLE(level:uint = 1):SWFShapeWithStyle {
 			return new SWFShapeWithStyle(this, level);
 		}
 
+		public function writeSHAPEWITHSTYLE(value:SWFShapeWithStyle, level:uint = 1):void {
+			value.publish(this, level);
+		}
+		
 		public function readSTRAIGHTEDGERECORD(numBits:uint):SWFShapeRecordStraightEdge {
 			return new SWFShapeRecordStraightEdge(this, numBits);
+		}
+		
+		public function writeSTRAIGHTEDGERECORD(value:SWFShapeRecordStraightEdge):void {
+			value.publish(this);
 		}
 		
 		public function readCURVEDEDGERECORD(numBits:uint):SWFShapeRecordCurvedEdge {
 			return new SWFShapeRecordCurvedEdge(this, numBits);
 		}
 		
+		public function writeCURVEDEDGERECORD(value:SWFShapeRecordCurvedEdge):void {
+			value.publish(this);
+		}
+		
 		public function readSTYLECHANGERECORD(states:uint, fillBits:uint, lineBits:uint, level:uint = 1):SWFShapeRecordStyleChange {
 			return new SWFShapeRecordStyleChange(this, states, fillBits, lineBits, level);
+		}
+		
+		public function writeSTYLECHANGERECORD(value:SWFShapeRecordStyleChange, fillBits:uint, lineBits:uint, level:uint = 1):void {
+			value.numFillBits = fillBits;
+			value.numLineBits = lineBits;
+			value.publish(this, level);
 		}
 		
 
@@ -428,12 +451,24 @@ import com.codeazur.as3swf.data.SWFShape;
 			return new SWFFillStyle(this, level);
 		}
 		
+		public function writeFILLSTYLE(value:SWFFillStyle, level:uint = 1):void {
+			value.publish(this, level);
+		}
+		
 		public function readLINESTYLE(level:uint = 1):SWFLineStyle {
 			return new SWFLineStyle(this, level);
 		}
 		
+		public function writeLINESTYLE(value:SWFLineStyle, level:uint = 1):void {
+			value.publish(this, level);
+		}
+		
 		public function readLINESTYLE2(level:uint = 1):SWFLineStyle2 {
 			return new SWFLineStyle2(this, level);
+		}
+		
+		public function writeLINESTYLE2(value:SWFLineStyle2, level:uint = 1):void {
+			value.publish(this, level);
 		}
 		
 		/////////////////////////////////////////////////////////
@@ -509,12 +544,24 @@ import com.codeazur.as3swf.data.SWFShape;
 			return new SWFGradient(this, level);
 		}
 		
+		public function writeGRADIENT(value:SWFGradient, level:uint = 1):void {
+			value.publish(this, level);
+		}
+		
 		public function readFOCALGRADIENT(level:uint = 1):SWFFocalGradient {
 			return new SWFFocalGradient(this, level);
 		}
 		
+		public function writeFOCALGRADIENT(value:SWFFocalGradient, level:uint = 1):void {
+			value.publish(this, level);
+		}
+		
 		public function readGRADIENTRECORD(level:uint = 1):SWFGradientRecord {
 			return new SWFGradientRecord(this, level);
+		}
+		
+		public function writeGRADIENTRECORD(value:SWFGradientRecord, level:uint = 1):void {
+			value.publish(this, level);
 		}
 		
 		/////////////////////////////////////////////////////////

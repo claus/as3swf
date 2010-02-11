@@ -18,8 +18,14 @@
 		
 		public function get type():uint { return TYPE_UNKNOWN; }
 		
+		public function get isEdgeRecord():Boolean {
+			return (type == TYPE_STRAIGHTEDGE || type == TYPE_CURVEDEDGE);
+		}
+		
 		public function parse(data:SWFData = null, level:uint = 1):void {}
 
+		public function publish(data:SWFData = null, level:uint = 1):void {}
+		
 		public function toString(indent:uint = 0):String {
 			return "[SWFShapeRecord]";
 		}

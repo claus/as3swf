@@ -14,6 +14,15 @@
 			shapes = data.readSHAPEWITHSTYLE(2);
 		}
 		
+		override public function publish(data:SWFData, version:uint):void {
+			var body:SWFData = new SWFData();
+			body.writeUI16(characterId);
+			body.writeRECT(shapeBounds);
+			body.writeSHAPEWITHSTYLE(shapes, 2);
+			data.writeTagHeader(type, body.length);
+			data.writeBytes(body);
+		}
+		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "DefineShape2"; }
 		override public function get version():uint { return 2; }

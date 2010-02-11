@@ -30,7 +30,18 @@
 				_records.push(data.readGRADIENTRECORD(level));
 			}
 		}
-		
+
+		public function publish(data:SWFData, level:uint = 1):void {
+			var numRecords:uint = records.length;
+			data.resetBitsPending();
+			data.writeUB(2, spreadMode);
+			data.writeUB(2, interpolationMode);
+			data.writeUB(4, numRecords);
+			for(var i:uint = 0; i < numRecords; i++) {
+				data.writeGRADIENTRECORD(records[i], level);
+			}
+		}
+
 		public function toString():String {
 			return "(" + _records.join(",") + ")";
 		}

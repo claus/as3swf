@@ -203,12 +203,6 @@
 				}
 				writeUI8(v & 0x80);
 			}
-import com.codeazur.as3swf.data.SWFFillStyle;
-import com.codeazur.as3swf.data.SWFFocalGradient;
-import com.codeazur.as3swf.data.SWFGradientRecord;
-import com.codeazur.as3swf.data.SWFShapeRecordStyleChange;
-import com.codeazur.as3swf.data.SWFShapeWithStyle;
-
 		}
 
 		/////////////////////////////////////////////////////////

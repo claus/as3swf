@@ -41,7 +41,6 @@
 			data.resetBitsPending();
 			var numFillBits:uint = data.readUB(4);
 			var numLineBits:uint = data.readUB(4);
-			trace("###",numFillBits,numLineBits);
 			readShapeRecords(data, numFillBits, numLineBits, level);
 		}
 		

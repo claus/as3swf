@@ -39,15 +39,12 @@
 		
 		public function publish(data:SWFData, version:uint):void {
 			var body:SWFData = new SWFData();
-		
 			body.writeUI16(characterId);
 			body.writeUI16(depth);
 			body.writeMATRIX(matrix);
-			
 			if (hasColorTransform) {
 				body.writeCXFORM(colorTransform);
 			}
-		
 			data.writeTagHeader(type, body.length);
 			data.writeBytes(body);
 		}

@@ -32,8 +32,22 @@
 			}
 		}
 		
+		public function publish(data:SWFData, version:uint):void {
+			data.writeCLIPEVENTFLAGS(eventFlags, version);
+			var actionBlock:SWFData = new SWFData();
+			if (eventFlags.keyPressEvent) {
+				actionBlock.writeUI8(keyCode);
+			}
+			for(var i:uint = 0; i < actions.length; i++) {
+				actionBlock.writeACTIONRECORD(actions[i])
+			}
+			actionBlock.writeUI8(0);
+			data.writeUI32(actionBlock.length); // actionRecordSize
+			data.writeBytes(actionBlock);
+		}
+		
 		public function toString(indent:uint = 0):String {
-			var str:String = "ClipActionRecords " + eventFlags.toString();
+			var str:String = "ClipActionRecords (" + eventFlags.toString() + "):";
 			if (keyCode > 0) {
 				str += ", KeyCode: " + keyCode;
 			}

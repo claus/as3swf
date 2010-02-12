@@ -1,10 +1,10 @@
 ﻿package com.codeazur.as3swf.tags
 {
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.data.consts.SoundCompression;
 	import com.codeazur.as3swf.data.consts.SoundRate;
 	import com.codeazur.as3swf.data.consts.SoundSize;
 	import com.codeazur.as3swf.data.consts.SoundType;
-	import com.codeazur.as3swf.data.consts.SoundCompression;
 	
 	public class TagSoundStreamHead extends Tag implements ITag
 	{
@@ -38,7 +38,21 @@
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
-			throw(new Error("TODO: implement publish()"));
+			var body:SWFData = new SWFData();
+			body.writeUB(4, 0);
+			body.writeUB(2, playbackSoundRate);
+			body.writeUB(1, playbackSoundSize);
+			body.writeUB(1, playbackSoundType);
+			body.writeUB(4, streamSoundCompression);
+			body.writeUB(2, streamSoundRate);
+			body.writeUB(1, streamSoundSize);
+			body.writeUB(1, streamSoundType);
+			body.writeUI16(streamSoundSampleCount);
+			if (streamSoundCompression == SoundCompression.MP3) {
+				body.writeSI16(latencySeek);
+			}
+			data.writeTagHeader(type, body.length);
+			data.writeBytes(body);
 		}
 		
 		override public function get type():uint { return TYPE; }

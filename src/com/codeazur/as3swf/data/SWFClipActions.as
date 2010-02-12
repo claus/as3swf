@@ -27,8 +27,21 @@
 			}
 		}
 		
+		public function publish(data:SWFData, version:uint):void {
+			data.writeUI16(0); // reserved, always 0
+			data.writeCLIPEVENTFLAGS(eventFlags, version);
+			for(var i:uint = 0; i < records.length; i++) {
+				data.writeCLIPACTIONRECORD(records[i], version);
+			}
+			if(version >= 6) {
+				data.writeUI32(0);
+			} else {
+				data.writeUI16(0);
+			}
+		}
+		
 		public function toString(indent:uint = 0):String {
-			var str:String = "ClipActionRecords " + eventFlags.toString() + ":";
+			var str:String = "ClipActions (" + eventFlags.toString() + "):";
 			for (var i:uint = 0; i < _records.length; i++) {
 				str += "\n" + StringUtils.repeat(indent + 2) + _records[i].toString(indent + 2);
 			}

@@ -23,9 +23,6 @@
 		public function parse(data:SWFData, length:uint, version:uint):void {
 			_characterId = data.readUI16();
 			shapeBounds = data.readRECT();
-			if(characterId == 15) {
-				trace("###");
-			}
 			shapes = data.readSHAPEWITHSTYLE();
 		}
 		

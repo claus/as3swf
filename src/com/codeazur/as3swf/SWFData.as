@@ -203,6 +203,10 @@
 				}
 				writeUI8(v & 0x80);
 			}
+import com.codeazur.as3swf.data.SWFClipActionRecord;
+import com.codeazur.as3swf.data.SWFClipActions;
+import com.codeazur.as3swf.data.SWFClipEventFlags;
+
 		}
 
 		/////////////////////////////////////////////////////////
@@ -647,6 +651,10 @@
 			return new SWFClipActions(this, version);
 		}
 		
+		public function writeCLIPACTIONS(value:SWFClipActions, version:uint):void {
+			value.publish(this, version);
+		}
+		
 		public function readCLIPACTIONRECORD(version:uint):SWFClipActionRecord {
 			var pos:uint = position;
 			var flags:uint = (version >= 6) ? readUI32() : readUI16();
@@ -658,8 +666,16 @@
 			}
 		}
 		
+		public function writeCLIPACTIONRECORD(value:SWFClipActionRecord, version:uint):void {
+			value.publish(this, version);
+		}
+		
 		public function readCLIPEVENTFLAGS(version:uint):SWFClipEventFlags {
 			return new SWFClipEventFlags(this, version);
+		}
+		
+		public function writeCLIPEVENTFLAGS(value:SWFClipEventFlags, version:uint):void {
+			value.publish(this, version);
 		}
 		
 		

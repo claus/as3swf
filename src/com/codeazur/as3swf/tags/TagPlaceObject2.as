@@ -50,56 +50,41 @@
 		}
 		
 		override public function publish(data:SWFData, version:uint):void {
-			var flags :uint = 0;
-			var body :SWFData = new SWFData();
-			
-			if (hasMove) flags |= 0x01; 
-			if (hasCharacter) flags |= 0x02;
-			if (hasMatrix) flags |= 0x04;
-			if (hasColorTransform) flags |= 0x08;
-			if (hasRatio) flags |= 0x10;
-			if (hasName) flags |= 0x20;
-			if (hasClipDepth) flags |= 0x40;
-			if (hasClipActions) flags |= 0x80;
-			
+			var flags:uint = 0;
+			var body:SWFData = new SWFData();
+			if (hasMove) { flags |= 0x01; }
+			if (hasCharacter) { flags |= 0x02; }
+			if (hasMatrix) { flags |= 0x04; }
+			if (hasColorTransform) { flags |= 0x08; }
+			if (hasRatio) { flags |= 0x10; }
+			if (hasName) { flags |= 0x20; }
+			if (hasClipDepth) { flags |= 0x40; }
+			if (hasClipActions) { flags |= 0x80; }
 			body.writeUI8(flags);
 			body.writeUI16(depth);
-			
-			if (hasMove) {
-				
-			}
-			
 			if (hasCharacter) {
 				body.writeUI16(characterId);
 			}
-			
 			if (hasMatrix) {
 				body.writeMATRIX(matrix);
 			}
-			
 			if (hasColorTransform) {
 				body.writeCXFORM(colorTransform);
 			}
-			
 			if (hasRatio) {
 				body.writeUI16(ratio);
 			}
-			
 			if (hasName) {
 				body.writeString(objName);
 			}
-			
 			if (hasClipDepth) {
 				body.writeUI16(clipDepth);
 			}
-			
 			if (hasClipActions) {
-				// TODO: implement writeCLIPACTIONS
+				body.writeCLIPACTIONS(clipActions, version);
 			}
-			 
 			data.writeTagHeader(type, body.length);
 			data.writeBytes(body);
-			//throw(new Error("TODO: implement publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

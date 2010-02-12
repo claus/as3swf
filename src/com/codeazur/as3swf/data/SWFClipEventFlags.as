@@ -58,6 +58,37 @@
 			}
 		}
 		
+		public function publish(data:SWFData, version:uint):void {
+			var flags1:uint = 0;
+			if(keyUpEvent) { flags1 |= 0x80; }
+			if(keyDownEvent) { flags1 |= 0x40; }
+			if(mouseUpEvent) { flags1 |= 0x20; }
+			if(mouseDownEvent) { flags1 |= 0x10; }
+			if(mouseMoveEvent) { flags1 |= 0x08; }
+			if(unloadEvent) { flags1 |= 0x04; }
+			if(enterFrameEvent) { flags1 |= 0x02; }
+			if(loadEvent) { flags1 |= 0x01; }
+			data.writeUI8(flags1);
+			var flags2:uint = 0;
+			if(dragOverEvent) { flags2 |= 0x80; }
+			if(rollOutEvent) { flags2 |= 0x40; }
+			if(rollOverEvent) { flags2 |= 0x20; }
+			if(releaseOutsideEvent) { flags2 |= 0x10; }
+			if(releaseEvent) { flags2 |= 0x08; }
+			if(pressEvent) { flags2 |= 0x04; }
+			if(initializeEvent) { flags2 |= 0x02; }
+			if(dataEvent) { flags2 |= 0x01; }
+			data.writeUI8(flags2);
+			if (version >= 6) {
+				var flags3:uint = 0;
+				if(constructEvent) { flags3 |= 0x04; }
+				if(keyPressEvent) { flags3 |= 0x02; }
+				if(dragOutEvent) { flags3 |= 0x01; }
+				data.writeUI8(flags3);
+				data.writeUI8(0); // reserved, always 0
+			}
+		}
+		
 		public function toString():String {
 			var a:Array = [];
 			if (keyUpEvent) { a.push("keyup"); }

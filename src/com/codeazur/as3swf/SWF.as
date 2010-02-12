@@ -124,7 +124,10 @@
 					break;
 				}
 				// Adjust position (just in case the parser under- or overflows)
-				data.position = header.length + pos;
+				if(data.position != header.length + pos) {
+					trace("WARNING: excess bytes: " + (data.position - (header.length + pos)));
+					data.position = header.length + pos;
+				}
 			}
 			
 			buildLayers();

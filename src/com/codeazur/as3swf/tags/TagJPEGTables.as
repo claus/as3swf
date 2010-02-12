@@ -23,15 +23,10 @@
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
-			var body :SWFData = new SWFData();
-			
-			if(_jpegTables && _jpegTables.length) {
-				_jpegTables.readBytes(data, 0, _jpegTables.length);
+			data.writeTagHeader(type, _jpegTables.length);
+			if (jpegTables.length > 0) {
+				data.writeBytes(jpegTables);
 			}
-			
-			data.writeTagHeader(type, body.length);
-			data.writeBytes(body);
-			//throw(new Error("TODO: implement "+ this.name + "#publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

@@ -27,7 +27,7 @@
 			// the number of entries in each table (the number of glyphs in the font) can be inferred by
 			// dividing the first entry in the OffsetTable by two.
 			var numGlyphs:uint = data.readUI16() >> 1;
-			// Skip offsets. We don't need them.
+			// Skip offsets. We don't need them here.
 			data.skipBytes((numGlyphs - 1) << 1);
 			for (var i:uint = 0; i < numGlyphs; i++) {
 				_glyphShapeTable.push(data.readSHAPE());
@@ -35,6 +35,8 @@
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
+			throw(new Error("TODO: implement publish()"));
+			/*
 			var body:SWFData = new SWFData();
 			var shapeTable:SWFData = new SWFData();
 			var i:uint, len:uint, prevPtr:uint = 0;
@@ -64,7 +66,7 @@
 			// actual contents out to the provided SWFData instance.
 			data.writeTagHeader(type, body.length);
 			data.writeBytes(body);
-
+			*/
 		}
 		
 		override public function get type():uint { return TYPE; }

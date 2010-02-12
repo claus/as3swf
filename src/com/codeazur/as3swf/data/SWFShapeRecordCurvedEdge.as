@@ -25,6 +25,7 @@
 		
 		override public function publish(data:SWFData = null, level:uint = 1):void {
 			numBits = data.calculateMaxBits(true, [controlDeltaX, controlDeltaY, anchorDeltaX, anchorDeltaY]);
+			if(numBits < 2) { numBits = 2; }
 			data.writeUB(4, numBits - 2);
 			data.writeSB(numBits, controlDeltaX);
 			data.writeSB(numBits, controlDeltaY);

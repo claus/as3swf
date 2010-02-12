@@ -377,8 +377,7 @@
 		}
 		
 		public function writeCXFORM(value:SWFColorTransform):void {
-			// TODO: writeCXFORM
-			throw new Error("writeCXFORM() not yet implemented");
+			value.publish(this);
 		}
 
 		public function readCXFORMWITHALPHA():SWFColorTransformWithAlpha {
@@ -386,8 +385,7 @@
 		}
 		
 		public function writeCXFORMWITHALPHA(value:SWFColorTransformWithAlpha):void {
-			// TODO: writeCXFORMWITHALPHA
-			throw new Error("writeCXFORMWITHALPHA() not yet implemented");
+			value.publish(this);
 		}
 
 		/////////////////////////////////////////////////////////

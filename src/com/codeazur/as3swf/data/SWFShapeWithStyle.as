@@ -50,7 +50,7 @@
 				lineStyles[i].publish(data, level);
 			}
 			var fillBits:uint = data.calculateMaxBits(false, [fillStylesLen]);
-			var lineBits:uint = data.calculateMaxBits(false, [fillStylesLen]);
+			var lineBits:uint = data.calculateMaxBits(false, [lineStylesLen]);
 			data.writeUB(4, fillBits);
 			data.writeUB(4, lineBits);
 			data.resetBitsPending();

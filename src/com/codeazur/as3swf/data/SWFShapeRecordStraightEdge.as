@@ -28,6 +28,7 @@
 			if(generalLineFlag || !vertLineFlag) { deltas.push(deltaX); }
 			if(generalLineFlag || vertLineFlag) { deltas.push(deltaY); }
 			numBits = data.calculateMaxBits(true, deltas);
+			if(numBits < 2) { numBits = 2; }
 			data.writeUB(4, numBits - 2);
 			data.writeUB(1, generalLineFlag ? 1 : 0);
 			if(!generalLineFlag) {

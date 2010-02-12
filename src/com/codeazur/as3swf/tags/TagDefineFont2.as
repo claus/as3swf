@@ -96,7 +96,7 @@
 		}
 		
 		override public function publish(data:SWFData, version:uint):void {
-			// TODO: Implement publish() for TagDefineFont2.
+			throw(new Error("TODO: implement publish()"));
 		}
 		
 		override public function get type():uint { return TYPE; }

@@ -112,6 +112,7 @@
 				try {
 					tag.parse(data, header.length, version);
 				} catch(e:Error) {
+					trace(e);
 					// If we get here there was a problem parsing this particular tag.
 					// Possible SWF exploit, or obfuscated SWF.
 					// TODO: register errors and warnings
@@ -145,6 +146,7 @@
 				}
 				catch (e:Error) {
 					var tag:ITag = tags[i];
+					trace(i,tag.name,e);
 					if (tag.raw != null) {
 						data.writeTagHeader(tag.type, tag.raw.length);
 						data.writeBytes(tag.raw);

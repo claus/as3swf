@@ -87,6 +87,9 @@
 		}
 
 		protected function writeShapeRecords(data:SWFData, fillBits:uint, lineBits:uint, level:uint = 1):void {
+			if(records.length == 0 || !(records[records.length - 1] is SWFShapeRecordEnd)) {
+				records.push(new SWFShapeRecordEnd());
+			}
 			for(var i:uint = 0; i < records.length; i++) {
 				var shapeRecord:SWFShapeRecord = records[i];
 				if(shapeRecord.isEdgeRecord) {

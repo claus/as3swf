@@ -143,7 +143,8 @@
 			data.writeRECT(frameSize);
 			data.writeFIXED8(frameRate);
 			data.writeUI16(frameCount); // TODO: get the real number of frames from the tags
-			for (var i:uint = 0; i < tags.length; i++) {
+			for (var i:uint = 0; i < tags.length; i++)
+			{
 				try {
 					tags[i].publish(data, version);
 				}

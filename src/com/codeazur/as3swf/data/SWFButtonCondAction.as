@@ -30,7 +30,6 @@
 		public function get actions():Vector.<IAction> { return _actions; }
 		
 		public function parse(data:SWFData):void {
-			condActionSize = data.readUI16();
 			var flags:uint = (data.readUI8() << 8) | data.readUI8();
 			condIdleToOverDown = ((flags & 0x8000) != 0);
 			condOutDownToIdle = ((flags & 0x4000) != 0);
@@ -46,6 +45,26 @@
 			while ((action = data.readACTIONRECORD()) != null) {
 				_actions.push(action);
 			}
+		}
+		
+		public function publish(data:SWFData):void {
+			var flags1:uint = 0;
+			if(condIdleToOverDown) { flags1 |= 0x80; }
+			if(condOutDownToIdle) { flags1 |= 0x40; }
+			if(condOutDownToOverDown) { flags1 |= 0x20; }
+			if(condOverDownToOutDown) { flags1 |= 0x10; }
+			if(condOverDownToOverUp) { flags1 |= 0x08; }
+			if(condOverUpToOverDown) { flags1 |= 0x04; }
+			if(condOverUpToIdle) { flags1 |= 0x02; }
+			if(condIdleToOverUp) { flags1 |= 0x01; }
+			data.writeUI8(flags1);
+			var flags2:uint = condKeyPress << 1;
+			if(condOverDownToIdle) { flags2 |= 0x01; }
+			data.writeUI8(flags2);
+			for(var i:uint = 0; i < actions.length; i++) {
+				data.writeACTIONRECORD(actions[i]);
+			}
+			data.writeUI8(0);
 		}
 		
 		public function toString(indent:uint = 0):String {

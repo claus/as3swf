@@ -4,6 +4,9 @@
 	
 	public interface IFilter
 	{
+		function get id():uint;
+		
 		function parse(data:SWFData):void;
+		function publish(data:SWFData):void;
 	}
 }

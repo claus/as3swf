@@ -17,5 +17,11 @@
 			blurY = data.readFIXED();
 			passes = data.readUI8() >> 3;
 		}
+		
+		override public function publish(data:SWFData):void {
+			data.writeFIXED(blurX);
+			data.writeFIXED(blurY);
+			data.writeUI8(passes << 3);
+		}
 	}
 }

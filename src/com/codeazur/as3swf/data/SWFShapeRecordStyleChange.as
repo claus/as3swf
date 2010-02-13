@@ -5,11 +5,11 @@
 	
 	public class SWFShapeRecordStyleChange extends SWFShapeRecord
 	{
-		public var stateNewStyles:Boolean;
-		public var stateLineStyle:Boolean;
-		public var stateFillStyle1:Boolean;
-		public var stateFillStyle0:Boolean;
-		public var stateMoveTo:Boolean;
+		public var stateNewStyles:Boolean = false;
+		public var stateLineStyle:Boolean = false;
+		public var stateFillStyle1:Boolean = false;
+		public var stateFillStyle0:Boolean = false;
+		public var stateMoveTo:Boolean = false;
 		
 		public var moveDeltaX:int = 0;
 		public var moveDeltaY:int = 0;

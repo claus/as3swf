@@ -36,5 +36,21 @@
 			onTop = ((flags & 0x10) != 0);
 			passes = flags & 0x0f;
 		}
+		
+		override public function publish(data:SWFData):void {
+			data.writeRGBA(shadowColor);
+			data.writeRGBA(highlightColor);
+			data.writeFIXED(blurX);
+			data.writeFIXED(blurY);
+			data.writeFIXED(angle);
+			data.writeFIXED(distance);
+			data.writeFIXED8(strength);
+			var flags:uint = (passes & 0x0f);
+			if(innerShadow) { flags |= 0x80; }
+			if(knockout) { flags |= 0x40; }
+			if(compositeSource) { flags |= 0x20; }
+			if(onTop) { flags |= 0x10; }
+			data.writeUI8(flags);
+		}
 	}
 }

@@ -203,9 +203,7 @@
 				}
 				writeUI8(v & 0x80);
 			}
-import com.codeazur.as3swf.data.SWFClipActionRecord;
-import com.codeazur.as3swf.data.SWFClipActions;
-import com.codeazur.as3swf.data.SWFClipEventFlags;
+import com.codeazur.as3swf.data.SWFButtonRecord;
 
 		}
 
@@ -480,8 +478,16 @@ import com.codeazur.as3swf.data.SWFClipEventFlags;
 			}
 		}
 
+		public function writeBUTTONRECORD(value:SWFButtonRecord, level:uint = 1):void {
+			value.publish(this, level);
+		}
+		
 		public function readBUTTONCONDACTION():SWFButtonCondAction {
 			return new SWFButtonCondAction(this);
+		}
+		
+		public function writeBUTTONCONDACTION(value:SWFButtonCondAction):void {
+			value.publish(this);
 		}
 		
 		/////////////////////////////////////////////////////////
@@ -493,6 +499,11 @@ import com.codeazur.as3swf.data.SWFClipEventFlags;
 			var filter:IFilter = SWFFilterFactory.create(filterId);
 			filter.parse(this);
 			return filter;
+		}
+		
+		public function writeFILTER(value:IFilter):void {
+			writeUI8(value.id);
+			value.publish(this);
 		}
 		
 		/////////////////////////////////////////////////////////

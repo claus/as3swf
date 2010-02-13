@@ -28,12 +28,28 @@
 			bias = data.readFLOAT();
 			var len:uint = matrixX * matrixY;
 			for (var i:uint = 0; i < len; i++) {
-				_matrix.push(data.readFLOAT);
+				matrix.push(data.readFLOAT);
 			}
 			defaultColor = data.readRGBA();
 			var flags:uint = data.readUI8();
 			clamp = ((flags & 0x02) != 0);
 			preserveAlpha = ((flags & 0x01) != 0);
+		}
+		
+		override public function publish(data:SWFData):void {
+			data.writeUI8(matrixX);
+			data.writeUI8(matrixY);
+			data.writeFLOAT(divisor);
+			data.writeFLOAT(bias);
+			var len:uint = matrixX * matrixY;
+			for (var i:uint = 0; i < len; i++) {
+				data.writeFLOAT(matrix[i]);
+			}
+			data.writeRGBA(defaultColor);
+			var flags:uint = 0;
+			if(clamp) { flags |= 0x02; }
+			if(preserveAlpha) { flags |= 0x01; }
+			data.writeUI8(flags);
 		}
 	}
 }

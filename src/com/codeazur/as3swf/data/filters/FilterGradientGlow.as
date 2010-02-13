@@ -46,5 +46,26 @@
 			onTop = ((flags & 0x20) != 0);
 			passes = flags & 0x0f;
 		}
+		
+		override public function publish(data:SWFData):void {
+			numColors = data.readUI8();
+			data.writeUI8(numColors);
+			var i:uint;
+			for (i = 0; i < numColors; i++) {
+				data.writeRGBA(gradientColors[i]);
+			}
+			for (i = 0; i < numColors; i++) {
+				data.writeUI8(gradientRatios[i]);
+			}
+			data.writeFIXED(blurX);
+			data.writeFIXED(blurY);
+			data.writeFIXED8(strength);
+			var flags:uint = (passes & 0x0f);
+			if(innerShadow) { flags |= 0x80; }
+			if(knockout) { flags |= 0x40; }
+			if(compositeSource) { flags |= 0x20; }
+			if(onTop) { flags |= 0x10; }
+			data.writeUI8(flags);
+		}
 	}
 }

@@ -54,6 +54,33 @@
 			}
 		}
 		
+		public function publish(data:SWFData, level:uint = 1):void {
+			var flags:uint = 0;
+			if(hasBlendMode) { flags |= 0x20; }
+			if(hasFilterList) { flags |= 0x10; }
+			if(stateHitTest) { flags |= 0x08; }
+			if(stateDown) { flags |= 0x04; }
+			if(stateOver) { flags |= 0x02; }
+			if(stateUp) { flags |= 0x01; }
+			data.writeUI8(flags);
+			data.writeUI16(characterId);
+			data.writeUI16(placeDepth);
+			data.writeMATRIX(placeMatrix);
+			if (level >= 2) {
+				data.writeCXFORMWITHALPHA(colorTransform);
+				if (hasFilterList) {
+					var numberOfFilters:uint = filterList.length;
+					data.writeUI8(numberOfFilters);
+					for (var i:uint = 0; i < numberOfFilters; i++) {
+						data.writeFILTER(filterList[i]);
+					}
+				}
+				if (hasBlendMode) {
+					data.writeUI8(blendMode);
+				}
+			}
+		}
+		
 		public function toString():String {
 			var str:String = "Depth: " + placeDepth + ", CharacterID: " + characterId + ", States: ";
 			var states:Array = [];

@@ -2,7 +2,7 @@
 {
 	import com.codeazur.as3swf.SWFData;
 	
-	public class Filter
+	public class Filter implements IFilter
 	{
 		protected var _id:uint;
 		
@@ -10,6 +10,14 @@
 			_id = id;
 		}
 
-		public function parse(data:SWFData):void {}
+		public function get id():uint { return _id; }
+		
+		public function parse(data:SWFData):void {
+			throw(new Error("Implement in subclasses!"));
+		}
+		
+		public function publish(data:SWFData):void {
+			throw(new Error("Implement in subclasses!"));
+		}
 	}
 }

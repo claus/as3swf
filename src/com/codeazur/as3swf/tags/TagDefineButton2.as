@@ -1,7 +1,6 @@
 ﻿package com.codeazur.as3swf.tags
 {
 	import com.codeazur.as3swf.SWFData;
-	import com.codeazur.as3swf.data.actions.IAction;
 	import com.codeazur.as3swf.data.SWFButtonCondAction;
 	import com.codeazur.as3swf.data.SWFButtonRecord;
 	import com.codeazur.utils.StringUtils;
@@ -31,21 +30,41 @@
 			var actionOffset:uint = data.readUI16();
 			var record:SWFButtonRecord;
 			while ((record = data.readBUTTONRECORD(2)) != null) {
-				_characters.push(record);
+				characters.push(record);
 			}
 			if (actionOffset != 0) {
-				while (true) {
-					var condAction:SWFButtonCondAction = data.readBUTTONCONDACTION();
-					_condActions.push(condAction);
-					if (condAction.condActionSize == 0) {
-						break;
-					}
-				}
+				var condActionSize:uint;
+				do {
+					condActionSize = data.readUI16();
+					condActions.push(data.readBUTTONCONDACTION());
+				} while(condActionSize != 0);
 			}
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
-			throw(new Error("TODO: implement publish()"));
+			var i:uint;
+			var body:SWFData = new SWFData();
+			body.writeUI16(characterId);
+			body.writeUI8(trackAsMenu ? 0x01 : 0);
+			var hasCondActions:Boolean = (condActions.length > 0); 
+			var buttonRecordsBytes:SWFData = new SWFData();
+			for(i = 0; i < characters.length; i++) {
+				buttonRecordsBytes.writeBUTTONRECORD(characters[i], 2);
+			}
+			buttonRecordsBytes.writeUI8(0);
+			body.writeUI16(hasCondActions ? buttonRecordsBytes.length : 0);
+			body.writeBytes(buttonRecordsBytes);
+			if(hasCondActions) {
+				for(i = 0; i < condActions.length; i++) {
+					var condActionBytes:SWFData = new SWFData();
+					condActionBytes.writeBUTTONCONDACTION(condActions[i]);
+					body.writeUI16(condActionBytes.length);
+					body.writeBytes(condActionBytes);
+				}
+			}
+			body.writeUI8(0);
+			data.writeTagHeader(type, body.length);
+			data.writeBytes(body);
 		}
 		
 		override public function get type():uint { return TYPE; }

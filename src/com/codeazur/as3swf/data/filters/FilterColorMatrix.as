@@ -15,7 +15,13 @@
 
 		override public function parse(data:SWFData):void {
 			for (var i:uint = 0; i < 20; i++) {
-				_colorMatrix.push(data.readFLOAT);
+				colorMatrix.push(data.readFLOAT);
+			}
+		}
+		
+		override public function publish(data:SWFData):void {
+			for (var i:uint = 0; i < 20; i++) {
+				data.writeFLOAT(colorMatrix[i]);
 			}
 		}
 	}

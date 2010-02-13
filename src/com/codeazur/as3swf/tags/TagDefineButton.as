@@ -1,9 +1,8 @@
 ﻿package com.codeazur.as3swf.tags
 {
 	import com.codeazur.as3swf.SWFData;
-	import com.codeazur.as3swf.data.actions.IAction;
 	import com.codeazur.as3swf.data.SWFButtonRecord;
-	import com.codeazur.as3swf.data.SWFRectangle;
+	import com.codeazur.as3swf.data.actions.IAction;
 	import com.codeazur.utils.StringUtils;
 	
 	public class TagDefineButton extends Tag implements IDefinitionTag
@@ -36,7 +35,19 @@
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
-			throw(new Error("TODO: implement publish()"));
+			var i:uint;
+			var body:SWFData = new SWFData();
+			body.writeUI16(characterId);
+			for(i = 0; i < characters.length; i++) {
+				data.writeBUTTONRECORD(characters[i]);
+			}
+			data.writeUI8(0);
+			for(i = 0; i < actions.length; i++) {
+				data.writeACTIONRECORD(actions[i]);
+			}
+			data.writeUI8(0);
+			data.writeTagHeader(type, body.length);
+			data.writeBytes(body);
 		}
 		
 		override public function get type():uint { return TYPE; }

@@ -1,6 +1,7 @@
 ﻿package com.codeazur.as3swf.tags
 {
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.data.SWFGlyphEntry;
 	import com.codeazur.as3swf.data.SWFMatrix;
 	import com.codeazur.as3swf.data.SWFRectangle;
 	import com.codeazur.as3swf.data.SWFTextRecord;
@@ -36,7 +37,39 @@
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
-			throw(new Error("TODO: implement publish()"));
+			var body:SWFData = new SWFData();
+			var i:uint;
+			var j:uint;
+			var record:SWFTextRecord;
+			body.writeUI16(characterId);
+			body.writeRECT(textBounds);
+			body.writeMATRIX(textMatrix);
+			// Calculate glyphBits and advanceBits values
+			var glyphBitsValues:Array = [];
+			var advanceBitsValues:Array = [];
+			var recordsLen:uint = _records.length 
+			for(i = 0; i < recordsLen; i++) {
+				record = _records[i];
+				var glyphCount:uint = record.glyphEntries.length;
+				for (j = 0; j < glyphCount; j++) {
+					var glyphEntry:SWFGlyphEntry = record.glyphEntries[j];
+					glyphBitsValues.push(glyphEntry.index);
+					advanceBitsValues.push(glyphEntry.advance);
+				}
+			}
+			var glyphBits:uint = body.calculateMaxBits(false, glyphBitsValues);
+			var advanceBits:uint = body.calculateMaxBits(true, advanceBitsValues);
+			body.writeUI8(glyphBits);
+			body.writeUI8(advanceBits);
+			// Write text records
+			record = null;
+			for(i = 0; i < recordsLen; i++) {
+				body.writeTEXTRECORD(_records[i], glyphBits, advanceBits, record);
+				record = _records[i];
+			}
+			body.writeUI8(0);
+			data.writeTagHeader(type, body.length);
+			data.writeBytes(body);
 		}
 		
 		override public function get type():uint { return TYPE; }

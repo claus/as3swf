@@ -65,6 +65,45 @@
 			}
 		}
 		
+		public function publish(data:SWFData, glyphBits:uint, advanceBits:uint, previousRecord:SWFTextRecord = null, level:uint = 1):void {
+			var flags:uint = (type << 7);
+			hasFont = (previousRecord == null
+				|| (previousRecord.fontId != fontId)
+				|| (previousRecord.textHeight != textHeight));
+			hasColor = (previousRecord == null || (previousRecord.textColor != textColor));
+			hasXOffset = (previousRecord == null || (previousRecord.xOffset != xOffset));
+			hasYOffset = (previousRecord == null || (previousRecord.yOffset != yOffset));
+			if(hasFont) { flags |= 0x08; }
+			if(hasColor) { flags |= 0x04; }
+			if(hasYOffset) { flags |= 0x02; }
+			if(hasXOffset) { flags |= 0x01; }
+			data.writeUI8(flags);
+			if(hasFont) {
+				data.writeUI16(fontId);
+			}
+			if(hasColor) {
+				if(level >= 2) {
+					data.writeRGBA(textColor);
+				} else {
+					data.writeRGB(textColor);
+				}
+			}
+			if(hasXOffset) {
+				data.writeSI16(xOffset);
+			}
+			if(hasYOffset) {
+				data.writeSI16(yOffset);
+			}
+			if(hasFont) {
+				data.writeUI16(textHeight);
+			}
+			var glyphCount:uint = _glyphEntries.length;
+			data.writeUI8(glyphCount);
+			for (var i:uint = 0; i < glyphCount; i++) {
+				data.writeGLYPHENTRY(_glyphEntries[i], glyphBits, advanceBits);
+			}
+		}
+		
 		public function toString():String {
 			var params:Array = ["Glyphs: " + _glyphEntries.length.toString()];
 			if (hasFont) { params.push("FontID: " + fontId); params.push("Height: " + textHeight); }

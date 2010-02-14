@@ -19,6 +19,12 @@
 			advance = data.readSB(advanceBits);
 		}
 		
+		public function publish(data:SWFData, glyphBits:uint, advanceBits:uint):void {
+			// GLYPHENTRYs are not byte aligned
+			data.writeUB(glyphBits, index);
+			data.writeSB(advanceBits, advance);
+		}
+		
 		public function toString():String {
 			return index.toString();
 		}

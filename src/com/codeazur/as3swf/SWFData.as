@@ -518,11 +518,19 @@ import com.codeazur.as3swf.data.SWFButtonRecord;
 				return new SWFTextRecord(this, glyphBits, advanceBits, previousRecord, level);
 			}
 		}
+		
+		public function writeTEXTRECORD(value:SWFTextRecord, glyphBits:uint, advanceBits:uint, previousRecord:SWFTextRecord = null, level:uint = 1):void {
+			value.publish(this, glyphBits, advanceBits, previousRecord, level);
+		}
 
 		public function readGLYPHENTRY(glyphBits:uint, advanceBits:uint):SWFGlyphEntry {
 			return new SWFGlyphEntry(this, glyphBits, advanceBits);
 		}
 
+		public function writeGLYPHENTRY(value:SWFGlyphEntry, glyphBits:uint, advanceBits:uint):void {
+			value.publish(this, glyphBits, advanceBits);
+		}
+		
 		/////////////////////////////////////////////////////////
 		// Zone record
 		/////////////////////////////////////////////////////////

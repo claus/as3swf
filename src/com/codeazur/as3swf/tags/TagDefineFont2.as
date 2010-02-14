@@ -123,6 +123,7 @@
 					body.writeUI16(offset + shapeTable.position);
 				}
 			}
+			// Code table offset
 			if(wideOffsets) {
 				body.writeUI32(offset + shapeTable.length);
 			} else {

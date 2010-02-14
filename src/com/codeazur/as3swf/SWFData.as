@@ -201,7 +201,7 @@
 					writeUI8(v);
 					break;
 				}
-				writeUI8(v & 0x80);
+				writeUI8(v | 0x80);
 			}
 		}
 

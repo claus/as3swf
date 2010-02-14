@@ -5,13 +5,14 @@
 	import com.codeazur.as3swf.data.filters.*;
 	import com.codeazur.as3swf.factories.*;
 	import com.codeazur.utils.BitArray;
+	import com.codeazur.utils.HalfPrecisionWriter;
 	
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
 	
 	public class SWFData extends BitArray
 	{
-		public static const FLOAT16_EXPONENT_BASE:Number = 16;
+		public static const FLOAT16_EXPONENT_BASE:Number = 15;
 		
 		public function SWFData() {
 			endian = Endian.LITTLE_ENDIAN;
@@ -168,8 +169,7 @@
 		}
 		
 		public function writeFLOAT16(value:Number):void {
-			// TODO: writeFLOAT16
-			throw new Error("writeFLOAT16() not yet implemented");
+			HalfPrecisionWriter.write(value, this);
 		}
 
 		/////////////////////////////////////////////////////////
@@ -537,10 +537,18 @@
 			return new SWFZoneRecord(this);
 		}
 
+		public function writeZONERECORD(value:SWFZoneRecord):void {
+			value.publish(this);
+		}
+		
 		public function readZONEDATA():SWFZoneData {
 			return new SWFZoneData(this);
 		}
 
+		public function writeZONEDATA(value:SWFZoneData):void {
+			value.publish(this);
+		}
+		
 		/////////////////////////////////////////////////////////
 		// Kerning record
 		/////////////////////////////////////////////////////////

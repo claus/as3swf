@@ -30,7 +30,14 @@
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
-			throw(new Error("TODO: implement publish()"));
+			var body:SWFData = new SWFData();
+			body.writeUI16(fontId);
+			body.writeUI8(csmTableHint << 6);
+			for(var i:uint = 0; i < _zoneTable.length; i++) {
+				body.writeZONERECORD(_zoneTable[i]);
+			}
+			data.writeTagHeader(type, body.length);
+			data.writeBytes(body);
 		}
 		
 		override public function get type():uint { return TYPE; }

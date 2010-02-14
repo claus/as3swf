@@ -18,6 +18,11 @@
 			range = data.readFLOAT16();
 		}
 		
+		public function publish(data:SWFData):void {
+			data.writeFLOAT16(alignmentCoordinate);
+			data.writeFLOAT16(range);
+		}
+		
 		public function toString():String {
 			return "(" + alignmentCoordinate + "," + range + ")";
 		}

@@ -28,6 +28,18 @@
 			maskY = ((mask & 0x02) != 0);
 		}
 		
+		public function publish(data:SWFData):void {
+			var numZoneData:uint = _zoneData.length;
+			data.writeUI8(numZoneData);
+			for (var i:uint = 0; i < numZoneData; i++) {
+				data.writeZONEDATA(_zoneData[i]);
+			}
+			var mask:uint = 0;
+			if(maskX) { mask |= 0x01; }
+			if(maskY) { mask |= 0x02; }
+			data.writeUI8(mask);
+		}
+		
 		public function toString(indent:uint = 0):String {
 			var str:String = "MaskY: " + maskY + ", MaskX: " + maskX;
 			for (var i:uint = 0; i < _zoneData.length; i++) {

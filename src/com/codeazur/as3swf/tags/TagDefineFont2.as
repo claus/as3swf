@@ -42,10 +42,8 @@
 		public function get fontBoundsTable():Vector.<SWFRectangle> { return _fontBoundsTable; }
 		public function get fontKerningTable():Vector.<SWFKerningRecord> { return _fontKerningTable; }
 		
-		override public function parse(data:SWFData, length:uint, version:uint):void
-		{
+		override public function parse(data:SWFData, length:uint, version:uint):void {
 			_characterId = data.readUI16();
-			
 			var flags:uint = data.readUI8();
 			hasLayout = ((flags & 0x80) != 0);
 			shiftJIS = ((flags & 0x40) != 0);
@@ -55,28 +53,22 @@
 			wideCodes = ((flags & 0x04) != 0);
 			italic = ((flags & 0x02) != 0);
 			bold = ((flags & 0x01) != 0);
-			
 			languageCode = data.readLANGCODE();
-			
 			var fontNameLen:uint = data.readUI8();
 			var fontNameRaw:ByteArray = new ByteArray();
 			data.readBytes(fontNameRaw, 0, fontNameLen);
 			fontName = fontNameRaw.readUTFBytes(fontNameLen);
-			
 			var i:uint;
 			var numGlyphs:uint = data.readUI16();
-
 			// Skip offsets. We don't need them.
 			data.skipBytes(numGlyphs << (wideOffsets ? 2 : 1));
-			
 			// Not used
 			var codeTableOffset:uint = (wideOffsets ? data.readUI32() : data.readUI16());
-			
 			for (i = 0; i < numGlyphs; i++) {
 				_glyphShapeTable.push(data.readSHAPE());
 			}
 			for (i = 0; i < numGlyphs; i++) {
-				_codeTable.push(data.readUI16());
+				_codeTable.push(wideCodes ? data.readUI16() : data.readUI8());
 			}
 			if (hasLayout) {
 				ascent = data.readSI16();
@@ -96,7 +88,78 @@
 		}
 		
 		override public function publish(data:SWFData, version:uint):void {
-			throw(new Error("TODO: implement publish()"));
+			var body:SWFData = new SWFData();
+			var numGlyphs:uint = glyphShapeTable.length;
+			var i:uint
+			body.writeUI16(characterId);
+			var flags:uint = 0;
+			if(hasLayout) { flags |= 0x80; }
+			if(shiftJIS) { flags |= 0x40; }
+			if(smallText) { flags |= 0x20; }
+			if(ansi) { flags |= 0x10; }
+			if(wideOffsets) { flags |= 0x08; }
+			if(wideCodes) { flags |= 0x04; }
+			if(italic) { flags |= 0x02; }
+			if(bold) { flags |= 0x01; }
+			body.writeUI8(flags);
+			body.writeLANGCODE(languageCode);
+			var fontNameRaw:ByteArray = new ByteArray();
+			fontNameRaw.writeUTFBytes(fontName);
+			body.writeUI8(fontNameRaw.length);
+			body.writeBytes(fontNameRaw);
+			body.writeUI16(numGlyphs);
+			var offsetTableLength:uint = (numGlyphs << (wideOffsets ? 2 : 1));
+			var codeTableOffsetLength:uint = (wideOffsets ? 4 : 2);
+			var codeTableLength:uint = (wideOffsets ? (numGlyphs << 1) : numGlyphs);
+			var offset:uint = offsetTableLength + codeTableOffsetLength;
+			var shapeTable:SWFData = new SWFData();
+			for (i = 0; i < numGlyphs; i++) {
+				// Serialize the glyph's shape to a separate bytearray
+				shapeTable.writeSHAPE(glyphShapeTable[i]);
+				// Write out the offset table for the current glyph
+				if(wideOffsets) {
+					body.writeUI32(offset + shapeTable.position);
+				} else {
+					body.writeUI16(offset + shapeTable.position);
+				}
+			}
+			if(wideOffsets) {
+				body.writeUI32(offset + shapeTable.length);
+			} else {
+				body.writeUI16(offset + shapeTable.length);
+			}
+			// Now concatenate the glyph shape table to the end (after
+			// the offset table that we were previously writing inside
+			// the for loop above).
+			body.writeBytes(shapeTable);
+			// Write the code table
+			for (i = 0; i < numGlyphs; i++) {
+				if(wideCodes) {
+					body.writeUI16(codeTable[i]);
+				} else {
+					body.writeUI8(codeTable[i]);
+				}
+			}
+			if (hasLayout) {
+				body.writeSI16(ascent);
+				body.writeSI16(descent);
+				body.writeSI16(leading);
+				for (i = 0; i < numGlyphs; i++) {
+					body.writeSI16(fontAdvanceTable[i]);
+				}
+				for (i = 0; i < numGlyphs; i++) {
+					body.writeRECT(fontBoundsTable[i]);
+				}
+				var kerningCount:uint = fontKerningTable.length;
+				body.writeUI16(kerningCount);
+				for (i = 0; i < kerningCount; i++) {
+					body.writeKERNINGRECORD(fontKerningTable[i], wideCodes);
+				}
+			}
+			// Now write the tag with the known body length, and the
+			// actual contents out to the provided SWFData instance.
+			data.writeTagHeader(type, body.length);
+			data.writeBytes(body);
 		}
 		
 		override public function get type():uint { return TYPE; }

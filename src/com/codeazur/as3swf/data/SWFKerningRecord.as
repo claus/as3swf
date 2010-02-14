@@ -20,6 +20,12 @@
 			adjustment = data.readSI16();
 		}
 		
+		public function publish(data:SWFData, wideCodes:Boolean):void {
+			if(wideCodes) { data.writeUI16(code1); } else { data.writeUI8(code1); }
+			if(wideCodes) { data.writeUI16(code2); } else { data.writeUI8(code2); }
+			data.writeSI16(adjustment);
+		}
+		
 		public function toString(indent:uint = 0):String {
 			return "Code1: " + code1 + ", " + "Code2: " + code2 + ", " + "Adjustment: " + adjustment;
 		}

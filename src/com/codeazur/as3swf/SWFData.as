@@ -543,6 +543,10 @@ import com.codeazur.as3swf.data.SWFButtonRecord;
 			return new SWFKerningRecord(this, wideCodes);
 		}
 
+		public function writeKERNINGRECORD(value:SWFKerningRecord, wideCodes:Boolean):void {
+			value.publish(this, wideCodes);
+		}
+		
 		/////////////////////////////////////////////////////////
 		// Gradients
 		/////////////////////////////////////////////////////////

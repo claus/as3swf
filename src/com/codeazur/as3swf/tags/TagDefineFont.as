@@ -4,8 +4,6 @@
 	import com.codeazur.as3swf.data.SWFShape;
 	import com.codeazur.utils.StringUtils;
 	
-	import flash.utils.ByteArray;
-	
 	public class TagDefineFont extends Tag implements IDefinitionTag
 	{
 		public static const TYPE:uint = 10;
@@ -35,38 +33,27 @@
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
-			throw(new Error("TODO: implement publish()"));
-			/*
 			var body:SWFData = new SWFData();
+			var i:uint
+			var prevPtr:uint = 0;
+			var len:uint = glyphShapeTable.length;
 			var shapeTable:SWFData = new SWFData();
-			var i:uint, len:uint, prevPtr:uint = 0;
-			
-			// Cache the tag content into body, since we
-			// don't know the exact length in bytes yet.
-			
-			// Write the fontID
-			body.writeUI16(_characterId);
-			
-			for (i = 0, len = _glyphShapeTable.length; i < len; i++) {
-				
+			body.writeUI16(characterId);
+			var offsetTableLength:uint = (len << 1);
+			for (i = 0; i < len; i++) {
 				// Serialize the glyph's shape to a separate bytearray
-				shapeTable.writeSHAPE(_glyphShapeTable[i]);
-				
+				shapeTable.writeSHAPE(glyphShapeTable[i]);
 				// Write out the offset table for the current glyph
-				body.writeUI16(shapeTable.position - prevPtr);
-				prevPtr = shapeTable.position;
+				body.writeUI16(shapeTable.position + offsetTableLength);
 			}
-			
 			// Now concatenate the glyph shape table to the end (after
 			// the offset table that we were previously writing inside
 			// the for loop above).
 			body.writeBytes(shapeTable);
-			
 			// Now write the tag with the known body length, and the
 			// actual contents out to the provided SWFData instance.
 			data.writeTagHeader(type, body.length);
 			data.writeBytes(body);
-			*/
 		}
 		
 		override public function get type():uint { return TYPE; }

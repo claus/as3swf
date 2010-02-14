@@ -5,8 +5,6 @@
 	import com.codeazur.as3swf.data.SWFShapeWithStyle;
 	import com.codeazur.as3swf.exporters.IShapeExportDocumentHandler;
 	
-	import flash.geom.Point;
-	
 	public class TagDefineShape extends Tag implements IDefinitionTag
 	{
 		public static const TYPE:uint = 2;
@@ -23,14 +21,14 @@
 		public function parse(data:SWFData, length:uint, version:uint):void {
 			_characterId = data.readUI16();
 			shapeBounds = data.readRECT();
-			shapes = data.readSHAPEWITHSTYLE();
+			shapes = data.readSHAPEWITHSTYLE(level);
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
 			var body:SWFData = new SWFData();
 			body.writeUI16(characterId);
 			body.writeRECT(shapeBounds);
-			body.writeSHAPEWITHSTYLE(shapes);
+			body.writeSHAPEWITHSTYLE(shapes, level);
 			data.writeTagHeader(type, body.length);
 			data.writeBytes(body);
 		}

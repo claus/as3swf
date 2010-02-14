@@ -53,6 +53,40 @@
 			}
 		}
 		
+		public function publish(data:SWFData, version:uint):void
+		{
+			var body:SWFData = new SWFData();
+			body.writeUI16(fontId);
+			
+			var fontNameRaw:ByteArray = new ByteArray();
+			fontNameRaw.writeUTFBytes(fontName);
+			body.writeUI8(fontNameRaw.length);
+			body.writeBytes(fontNameRaw);
+			
+			var flags:uint = 0;
+			if(smallText) { flags |= 0x20; }
+			if(shiftJIS) { flags |= 0x10; }
+			if(ansi) { flags |= 0x08; }
+			if(italic) { flags |= 0x04; }
+			if(bold) { flags |= 0x02; }
+			if(wideCodes) { flags |= 0x01; }
+			body.writeUI8(flags);
+			
+			publishLangCode(body);
+
+			var numGlyphs:uint = _codeTable.length;
+			for (var i:uint = 0; i < numGlyphs; i++) {
+				if(wideCodes) {
+					body.writeUI16(_codeTable[i]);
+				} else {
+					body.writeUI8(_codeTable[i]);
+				}
+			}
+			
+			data.writeTagHeader(type, body.length);
+			data.writeBytes(body);
+		}
+		
 		protected function parseLangCode(data:SWFData):void {
 			// Does nothing here.
 			// Overridden in TagDefineFontInfo2, where it:
@@ -60,8 +94,9 @@
 			// - sets langCodeLength to 1
 		}
 		
-		public function publish(data:SWFData, version:uint):void {
-			throw(new Error("TODO: implement publish()"));
+		protected function publishLangCode(data:SWFData):void {
+			// Does nothing here.
+			// Overridden in TagDefineFontInfo2
 		}
 		
 		override public function get type():uint { return TYPE; }

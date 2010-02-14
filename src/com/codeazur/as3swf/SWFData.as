@@ -203,8 +203,6 @@
 				}
 				writeUI8(v & 0x80);
 			}
-import com.codeazur.as3swf.data.SWFButtonRecord;
-
 		}
 
 		/////////////////////////////////////////////////////////

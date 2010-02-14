@@ -31,7 +31,7 @@
 			var glyphBits:uint = data.readUI8();
 			var advanceBits:uint = data.readUI8();
 			var record:SWFTextRecord;
-			while ((record = data.readTEXTRECORD(glyphBits, advanceBits, record)) != null) {
+			while ((record = data.readTEXTRECORD(glyphBits, advanceBits, record, level)) != null) {
 				_records.push(record);
 			}
 		}
@@ -64,7 +64,7 @@
 			// Write text records
 			record = null;
 			for(i = 0; i < recordsLen; i++) {
-				body.writeTEXTRECORD(_records[i], glyphBits, advanceBits, record);
+				body.writeTEXTRECORD(_records[i], glyphBits, advanceBits, record, level);
 				record = _records[i];
 			}
 			body.writeUI8(0);

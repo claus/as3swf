@@ -13,9 +13,14 @@
 			langCodeLength = 1;
 		}
 		
+		override protected function publishLangCode(data:SWFData):void {
+			data.writeUI8(langCode);
+		}
+		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "DefineFontInfo2"; }
 		override public function get version():uint { return 6; }
+		override public function get level():uint { return 2; }
 		
 		override public function toString(indent:uint = 0):String {
 			return toStringMain(indent) +

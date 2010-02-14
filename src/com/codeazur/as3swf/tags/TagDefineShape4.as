@@ -22,7 +22,7 @@
 			usesFillWindingRule = ((flags & 0x04) != 0);
 			usesNonScalingStrokes = ((flags & 0x02) != 0);
 			usesScalingStrokes = ((flags & 0x01) != 0);
-			shapes = data.readSHAPEWITHSTYLE(4);
+			shapes = data.readSHAPEWITHSTYLE(level);
 		}
 		
 		override public function publish(data:SWFData, version:uint):void {
@@ -35,7 +35,7 @@
 			if(usesNonScalingStrokes) { flags |= 0x02; }
 			if(usesScalingStrokes) { flags |= 0x01; }
 			body.writeUI8(flags);
-			body.writeSHAPEWITHSTYLE(shapes, 4);
+			body.writeSHAPEWITHSTYLE(shapes, level);
 			data.writeTagHeader(type, body.length);
 			data.writeBytes(body);
 		}
@@ -43,6 +43,7 @@
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "DefineShape4"; }
 		override public function get version():uint { return 8; }
+		override public function get level():uint { return 4; }
 		
 		override public function toString(indent:uint = 0):String {
 			var str:String = toStringMain(indent) +

@@ -21,12 +21,13 @@
 		
 		public function parse(data:SWFData, length:uint, version:uint):void {
 			_characterId = data.readUI16();
-			// Because the GlyphShapeTable immediately follows the OffsetTable,
+			// Because the glyph shape table immediately follows the offset table,
 			// the number of entries in each table (the number of glyphs in the font) can be inferred by
-			// dividing the first entry in the OffsetTable by two.
+			// dividing the first entry in the offset table by two.
 			var numGlyphs:uint = data.readUI16() >> 1;
 			// Skip offsets. We don't need them here.
 			data.skipBytes((numGlyphs - 1) << 1);
+			// Read glyph shape table
 			for (var i:uint = 0; i < numGlyphs; i++) {
 				_glyphShapeTable.push(data.readSHAPE());
 			}

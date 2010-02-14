@@ -14,6 +14,7 @@
 		public function get type():uint { return _type; }
 		public function get name():String { return "????"; }
 		public function get version():uint { return 0; }
+		public function get level():uint { return 1; }
 		
 		public function get raw():ByteArray { return _raw; }
 		public function set raw(value:ByteArray):void { _raw = value; }

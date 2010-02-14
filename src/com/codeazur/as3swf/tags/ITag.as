@@ -9,6 +9,7 @@
 		function get type():uint;
 		function get name():String;
 		function get version():uint;
+		function get level():uint;
 		
 		function parse(data:SWFData, length:uint, version:uint):void;
 		function publish(data:SWFData, version:uint):void;

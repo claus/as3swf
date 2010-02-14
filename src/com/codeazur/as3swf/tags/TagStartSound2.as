@@ -18,12 +18,17 @@
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
-			throw(new Error("TODO: implement publish()"));
+			var body:SWFData = new SWFData();
+			body.writeString(soundClassName);
+			body.writeSOUNDINFO(soundInfo);
+			data.writeTagHeader(type, body.length);
+			data.writeBytes(body);
 		}
 		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "StartSound2"; }
 		override public function get version():uint { return 9; }
+		override public function get level():uint { return 2; }
 		
 		public function toString(indent:uint = 0):String {
 			var str:String = toStringMain(indent) +

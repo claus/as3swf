@@ -668,8 +668,16 @@
 			return new SWFSoundInfo(this);
 		}
 		
+		public function writeSOUNDINFO(value:SWFSoundInfo):void {
+			value.publish(this);
+		}
+		
 		public function readSOUNDENVELOPE():SWFSoundEnvelope {
 			return new SWFSoundEnvelope(this);
+		}
+		
+		public function writeSOUNDENVELOPE(value:SWFSoundEnvelope):void {
+			value.publish(this);
 		}
 		
 		/////////////////////////////////////////////////////////

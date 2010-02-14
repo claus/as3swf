@@ -20,6 +20,12 @@
 			rightLevel = data.readUI16();
 		}
 		
+		public function publish(data:SWFData):void {
+			data.writeUI32(pos44);
+			data.writeUI16(leftLevel);
+			data.writeUI16(rightLevel);
+		}
+		
 		public function toString():String {
 			return "[SWFSoundEnvelope]";
 		}

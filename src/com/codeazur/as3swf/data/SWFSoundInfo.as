@@ -51,6 +51,33 @@
 			}
 		}
 		
+		public function publish(data:SWFData):void {
+			var flags:uint = 0;
+			if(syncStop) { flags |= 0x20; }
+			if(syncNoMultiple) { flags |= 0x10; }
+			if(hasEnvelope) { flags |= 0x08; }
+			if(hasLoops) { flags |= 0x04; }
+			if(hasOutPoint) { flags |= 0x02; }
+			if(hasInPoint) { flags |= 0x01; }
+			data.writeUI8(flags)
+			if (hasInPoint) {
+				data.writeUI32(inPoint);
+			}
+			if (hasOutPoint) {
+				data.writeUI32(outPoint);
+			}
+			if (hasLoops) {
+				data.writeUI16(loopCount);
+			}
+			if (hasEnvelope) {
+				var envPoints:uint = _envelopeRecords.length;
+				data.writeUI8(envPoints);
+				for (var i:uint = 0; i < envPoints; i++) {
+					data.writeSOUNDENVELOPE(_envelopeRecords[i]);
+				}
+			}
+		}
+		
 		public function toString():String {
 			return "[SWFSoundInfo]";
 		}

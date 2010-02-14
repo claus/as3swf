@@ -43,7 +43,26 @@
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
-			throw(new Error("TODO: implement publish()"));
+			var body:SWFData = new SWFData();
+			body.writeUI16(characterId);
+			body.writeUI16(buttonSoundChar0);
+			if (buttonSoundChar0 != 0) {
+				body.writeSOUNDINFO(buttonSoundInfo0);
+			}
+			body.writeUI16(buttonSoundChar1);
+			if (buttonSoundChar1 != 0) {
+				body.writeSOUNDINFO(buttonSoundInfo1);
+			}
+			body.writeUI16(buttonSoundChar2);
+			if (buttonSoundChar2 != 0) {
+				body.writeSOUNDINFO(buttonSoundInfo2);
+			}
+			body.writeUI16(buttonSoundChar3);
+			if (buttonSoundChar3 != 0) {
+				body.writeSOUNDINFO(buttonSoundInfo3);
+			}
+			data.writeTagHeader(type, body.length);
+			data.writeBytes(body);
 		}
 		
 		override public function get type():uint { return TYPE; }

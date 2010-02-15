@@ -47,6 +47,32 @@
 			}
 		}
 		
+		public function publish(data:SWFData, level:uint = 1):void {
+			data.writeUI8(type);
+			switch(type) {
+				case 0x00:
+					data.writeRGBA(startColor);
+					data.writeRGBA(endColor);
+					break;
+				case 0x10:
+				case 0x12:
+					data.writeMATRIX(startGradientMatrix);
+					data.writeMATRIX(endGradientMatrix);
+					data.writeMORPHGRADIENT(gradient, level);
+					break;
+				case 0x40:
+				case 0x41:
+				case 0x42:
+				case 0x43:
+					data.writeUI16(bitmapId);
+					data.writeMATRIX(startBitmapMatrix);
+					data.writeMATRIX(endBitmapMatrix);
+					break;
+				default:
+					throw(new Error("Unknown fill style type: 0x" + type.toString(16)));
+			}
+		}
+		
 		public function toString():String {
 			var str:String = "[SWFMorphFillStyle] Type: " + type.toString(16);
 			switch(type) {

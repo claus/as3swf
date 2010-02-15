@@ -203,6 +203,8 @@
 				}
 				writeUI8(v | 0x80);
 			}
+import com.codeazur.as3swf.data.SWFMorphFillStyle;
+
 		}
 
 		/////////////////////////////////////////////////////////
@@ -597,20 +599,40 @@
 			return new SWFMorphFillStyle(this, level);
 		}
 		
+		public function writeMORPHFILLSTYLE(value:SWFMorphFillStyle, level:uint = 1):void {
+			value.publish(this, level);
+		}
+		
 		public function readMORPHLINESTYLE(level:uint = 1):SWFMorphLineStyle {
 			return new SWFMorphLineStyle(this, level);
+		}
+		
+		public function writeMORPHLINESTYLE(value:SWFMorphLineStyle, level:uint = 1):void {
+			value.publish(this, level);
 		}
 		
 		public function readMORPHLINESTYLE2(level:uint = 1):SWFMorphLineStyle2 {
 			return new SWFMorphLineStyle2(this, level);
 		}
 		
+		public function writeMORPHLINESTYLE2(value:SWFMorphLineStyle2, level:uint = 1):void {
+			value.publish(this, level);
+		}
+		
 		public function readMORPHGRADIENT(level:uint = 1):SWFMorphGradient {
 			return new SWFMorphGradient(this, level);
 		}
 		
-		public function readMORPHGRADIENTRECORD(level:uint = 1):SWFMorphGradientRecord {
-			return new SWFMorphGradientRecord(this, level);
+		public function writeMORPHGRADIENT(value:SWFMorphGradient, level:uint = 1):void {
+			value.publish(this, level);
+		}
+		
+		public function readMORPHGRADIENTRECORD():SWFMorphGradientRecord {
+			return new SWFMorphGradientRecord(this);
+		}
+		
+		public function writeMORPHGRADIENTRECORD(value:SWFMorphGradientRecord):void {
+			value.publish(this);
 		}
 		
 		/////////////////////////////////////////////////////////

@@ -49,8 +49,8 @@
 			for (i = 0; i < lineStylesLen; i++) {
 				lineStyles[i].publish(data, level);
 			}
-			var fillBits:uint = data.calculateMaxBits(false, [fillStylesLen]);
-			var lineBits:uint = data.calculateMaxBits(false, [lineStylesLen]);
+			var fillBits:uint = data.calculateMaxBits(false, [getMaxFillStyleIndex()]);
+			var lineBits:uint = data.calculateMaxBits(false, [getMaxLineStyleIndex()]);
 			data.writeUB(4, fillBits);
 			data.writeUB(4, lineBits);
 			data.resetBitsPending();

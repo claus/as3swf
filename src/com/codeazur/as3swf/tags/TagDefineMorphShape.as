@@ -5,6 +5,7 @@
 	import com.codeazur.as3swf.data.SWFMorphLineStyle;
 	import com.codeazur.as3swf.data.SWFRectangle;
 	import com.codeazur.as3swf.data.SWFShape;
+	import com.codeazur.utils.StringUtils;
 	
 	public class TagDefineMorphShape extends Tag implements IDefinitionTag
 	{
@@ -55,7 +56,40 @@
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
-			throw(new Error("TODO: implement publish()"));
+			var body:SWFData = new SWFData();
+			body.writeUI16(characterId);
+			body.writeRECT(startBounds);
+			body.writeRECT(endBounds);
+			var startBytes:SWFData = new SWFData();
+			var i:uint;
+			// MorphFillStyleArray
+			var fillStyleCount:uint = _morphFillStyles.length;
+			if (fillStyleCount > 0xfe) {
+				startBytes.writeUI8(0xff);
+				startBytes.writeUI16(fillStyleCount);
+			} else {
+				startBytes.writeUI8(fillStyleCount);
+			}
+			for (i = 0; i < fillStyleCount; i++) {
+				startBytes.writeMORPHFILLSTYLE(_morphFillStyles[i])
+			}
+			// MorphLineStyleArray
+			var lineStyleCount:uint = _morphLineStyles.length;
+			if (lineStyleCount > 0xfe) {
+				startBytes.writeUI8(0xff);
+				startBytes.writeUI16(lineStyleCount);
+			} else {
+				startBytes.writeUI8(lineStyleCount);
+			}
+			for (i = 0; i < lineStyleCount; i++) {
+				startBytes.writeMORPHLINESTYLE(_morphLineStyles[i])
+			}
+			startBytes.writeSHAPE(startEdges);
+			body.writeUI32(startBytes.length);
+			body.writeBytes(startBytes);
+			body.writeSHAPE(endEdges);
+			data.writeTagHeader(type, body.length);
+			data.writeBytes(body);
 		}
 		
 		override public function get type():uint { return TYPE; }
@@ -63,10 +97,25 @@
 		override public function get version():uint { return 3; }
 		
 		public function toString(indent:uint = 0):String {
-			var str:String = toStringMain(indent) +
-				"ID: " + characterId + ", " +
-				"StartBounds: " + startBounds.toString() + ", " +
-				"EndBounds: " + endBounds.toString();
+			var i:uint;
+			var indent2:String = StringUtils.repeat(indent + 2);
+			var indent4:String = StringUtils.repeat(indent + 4);
+			var str:String = toStringMain(indent) + "ID: " + characterId;
+			str += "\n" + indent2 + "Bounds:";
+			str += "\n" + indent4 + "StartBounds: " + startBounds.toString();
+			str += "\n" + indent4 + "EndBounds: " + endBounds.toString();
+			if(_morphFillStyles.length > 0) {
+				str += "\n" + indent2 + "FillStyles:";
+				for(i = 0; i < _morphFillStyles.length; i++) {
+					str += "\n" + indent4 + "[" + (i + 1) + "] " + _morphFillStyles[i].toString();
+				}
+			}
+			if(_morphLineStyles.length > 0) {
+				str += "\n" + indent2 + "LineStyles:";
+				for(i = 0; i < _morphLineStyles.length; i++) {
+					str += "\n" + indent4 + "[" + (i + 1) + "] " + _morphLineStyles[i].toString();
+				}
+			}
 			str += startEdges.toString(indent + 2);
 			str += endEdges.toString(indent + 2);
 			return str;

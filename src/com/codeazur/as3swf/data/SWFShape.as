@@ -37,6 +37,43 @@
 		
 		public function get records():Vector.<SWFShapeRecord> { return _records; }
 
+		public function getMaxFillStyleIndex():uint {
+			var ret:uint = 0;
+			for(var i:uint = 0; i < records.length; i++) {
+				var shapeRecord:SWFShapeRecord = records[i];
+				if(shapeRecord.type == SWFShapeRecord.TYPE_STYLECHANGE) {
+					var shapeRecordStyleChange:SWFShapeRecordStyleChange = shapeRecord as SWFShapeRecordStyleChange;
+					if(shapeRecordStyleChange.fillStyle0 > ret) {
+						ret = shapeRecordStyleChange.fillStyle0;
+					}
+					if(shapeRecordStyleChange.fillStyle1 > ret) {
+						ret = shapeRecordStyleChange.fillStyle1;
+					}
+					if(shapeRecordStyleChange.stateNewStyles) {
+						break;
+					}
+				} 
+			}
+			return ret;
+		}
+		
+		public function getMaxLineStyleIndex():uint {
+			var ret:uint = 0;
+			for(var i:uint = 0; i < records.length; i++) {
+				var shapeRecord:SWFShapeRecord = records[i];
+				if(shapeRecord.type == SWFShapeRecord.TYPE_STYLECHANGE) {
+					var shapeRecordStyleChange:SWFShapeRecordStyleChange = shapeRecord as SWFShapeRecordStyleChange;
+					if(shapeRecordStyleChange.lineStyle > ret) {
+						ret = shapeRecordStyleChange.lineStyle;
+					}
+					if(shapeRecordStyleChange.stateNewStyles) {
+						break;
+					}
+				} 
+			}
+			return ret;
+		}
+		
 		public function parse(data:SWFData, level:uint = 1):void {
 			data.resetBitsPending();
 			var numFillBits:uint = data.readUB(4);
@@ -46,12 +83,11 @@
 		
 		public function publish(data:SWFData, level:uint = 1):void {
 			data.resetBitsPending();
-			// This is a simple SHAPE (used by DefineFont):
-			// fillBits is always 1: one fill, the font color
-			// lineBits is always 0: no edges
-			data.writeUB(4, 1);
-			data.writeUB(4, 0);
-			writeShapeRecords(data, 1, 0);
+			var numFillBits:uint = data.calculateMaxBits(false, [getMaxFillStyleIndex()]);
+			var numLineBits:uint = data.calculateMaxBits(false, [getMaxLineStyleIndex()]);
+			data.writeUB(4, numFillBits);
+			data.writeUB(4, numLineBits);
+			writeShapeRecords(data, numFillBits, numLineBits, level);
 		}
 		
 		protected function readShapeRecords(data:SWFData, fillBits:uint, lineBits:uint, level:uint = 1):void {

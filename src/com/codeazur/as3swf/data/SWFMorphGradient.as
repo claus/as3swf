@@ -22,6 +22,14 @@
 			}
 		}
 		
+		public function publish(data:SWFData, level:uint):void {
+			var numGradients:uint = _records.length;
+			data.writeUI8(numGradients);
+			for (var i:uint = 0; i < numGradients; i++) {
+				data.writeMORPHGRADIENTRECORD(_records[i]);
+			}
+		}
+		
 		public function toString():String {
 			return "(" + _records.join(",") + ")";
 		}

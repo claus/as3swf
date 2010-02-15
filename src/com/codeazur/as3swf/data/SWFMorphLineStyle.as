@@ -36,6 +36,13 @@
 			endColor = data.readRGBA();
 		}
 		
+		public function publish(data:SWFData, level:uint = 1):void {
+			data.writeUI16(startWidth);
+			data.writeUI16(endWidth);
+			data.writeRGBA(startColor);
+			data.writeRGBA(endColor);
+		}
+		
 		public function toString():String {
 			return "[SWFMorphLineStyle] " +
 				"StartWidth: " + startWidth + ", " +

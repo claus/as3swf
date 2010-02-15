@@ -9,17 +9,24 @@
 		public var endRatio:uint;
 		public var endColor:uint;
 		
-		public function SWFMorphGradientRecord(data:SWFData = null, level:uint = 1) {
+		public function SWFMorphGradientRecord(data:SWFData = null) {
 			if (data != null) {
-				parse(data, level);
+				parse(data);
 			}
 		}
 		
-		public function parse(data:SWFData, level:uint):void {
+		public function parse(data:SWFData):void {
 			startRatio = data.readUI8();
 			startColor = data.readRGBA();
 			endRatio = data.readUI8();
 			endColor = data.readRGBA();
+		}
+		
+		public function publish(data:SWFData):void {
+			data.writeUI8(startRatio);
+			data.writeRGBA(startColor);
+			data.writeUI8(endRatio);
+			data.writeRGBA(endColor);
 		}
 		
 		public function toString():String {

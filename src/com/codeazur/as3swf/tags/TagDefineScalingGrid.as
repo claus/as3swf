@@ -24,7 +24,6 @@
 			var body:SWFData = new SWFData();
 			body.writeUI16(characterId);
 			body.writeRECT(splitter);
-			
 			data.writeTagHeader(type, body.length);
 			data.writeBytes(body);
 		}

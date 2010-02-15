@@ -33,7 +33,15 @@
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
-			throw(new Error("TODO: implement publish()"));
+			data.writeTagHeader(type, 10);
+			data.writeUI16(characterId);
+			data.writeUI16(numFrames);
+			data.writeUI16(width);
+			data.writeUI16(height);
+			data.writeUB(4, 0); // Reserved
+			data.writeUB(3, deblocking);
+			data.writeUB(1, smoothing ? 1 : 0);
+			data.writeUI8(codecId);
 		}
 		
 		override public function get type():uint { return TYPE; }

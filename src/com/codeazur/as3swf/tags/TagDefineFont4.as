@@ -37,7 +37,19 @@
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
-			throw(new Error("TODO: implement publish()"));
+			var body:SWFData = new SWFData();
+			body.writeUI16(characterId);
+			var flags:uint = 0;
+			if(hasFontData) { flags |= 0x04; }
+			if(italic) { flags |= 0x02; }
+			if(bold) { flags |= 0x01; }
+			body.writeUI8(flags);
+			body.writeString(fontName);
+			if (hasFontData && _fontData.length > 0) {
+				body.writeBytes(_fontData);
+			}
+			data.writeTagHeader(type, body.length);
+			data.writeBytes(body);
 		}
 		
 		override public function get type():uint { return TYPE; }

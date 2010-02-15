@@ -84,7 +84,64 @@
 		}
 		
 		override public function publish(data:SWFData, version:uint):void {
-			throw(new Error("TODO: implement publish()"));
+			var body:SWFData = new SWFData();
+			var flags1:uint = 0;
+			if (hasClipActions) { flags1 |= 0x80; }
+			if (hasClipDepth) { flags1 |= 0x40; }
+			if (hasName) { flags1 |= 0x20; }
+			if (hasRatio) { flags1 |= 0x10; }
+			if (hasColorTransform) { flags1 |= 0x08; }
+			if (hasMatrix) { flags1 |= 0x04; }
+			if (hasCharacter) { flags1 |= 0x02; }
+			if (hasMove) { flags1 |= 0x01; }
+			body.writeUI8(flags1);
+			var flags2:uint = 0;
+			if (hasImage) { flags2 |= 0x10; }
+			if (hasClassName) { flags2 |= 0x08; }
+			if (hasCacheAsBitmap) { flags2 |= 0x04; }
+			if (hasBlendMode) { flags2 |= 0x02; }
+			if (hasFilterList) { flags2 |= 0x01; }
+			body.writeUI8(flags2);
+			body.writeUI16(depth);
+			if (hasClassName || (hasImage && hasCharacter)) {
+				body.writeString(className);
+			}
+			if (hasCharacter) {
+				body.writeUI16(characterId);
+			}
+			if (hasMatrix) {
+				body.writeMATRIX(matrix);
+			}
+			if (hasColorTransform) {
+				body.writeCXFORM(colorTransform);
+			}
+			if (hasRatio) {
+				body.writeUI16(ratio);
+			}
+			if (hasName) {
+				body.writeString(objName);
+			}
+			if (hasClipDepth) {
+				body.writeUI16(clipDepth);
+			}
+			if (hasFilterList) {
+				var numberOfFilters:uint = _surfaceFilterList.length;
+				body.writeUI8(numberOfFilters);
+				for (var i:uint = 0; i < numberOfFilters; i++) {
+					body.writeFILTER(_surfaceFilterList[i])
+				}
+			}
+			if (hasBlendMode) {
+				body.writeUI8(blendMode);
+			}
+			if (hasCacheAsBitmap) {
+				body.writeUI8(bitmapCache);
+			}
+			if (hasClipActions) {
+				body.writeCLIPACTIONS(clipActions, version);
+			}
+			data.writeTagHeader(type, body.length);
+			data.writeBytes(body);
 		}
 		
 		override public function get type():uint { return TYPE; }

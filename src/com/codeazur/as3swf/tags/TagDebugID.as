@@ -18,12 +18,16 @@
 		public function get uuid():ByteArray { return _uuid; }
 		
 		public function parse(data:SWFData, length:uint, version:uint):void {
-			data.readBytes(_uuid, 0, length);
+			if(length > 0) {
+				data.readBytes(_uuid, 0, length);
+			}
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
 			data.writeTagHeader(type, _uuid.length);
-			data.writeBytes(_uuid);
+			if(_uuid.length > 0) {
+				data.writeBytes(_uuid);
+			}
 		}
 		
 		override public function get type():uint { return TYPE; }

@@ -95,7 +95,57 @@
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
-			throw(new Error("TODO: implement publish()"));
+			var body:SWFData = new SWFData();
+			body.writeUI16(characterId);
+			body.writeRECT(bounds);
+			var flags1:uint = 0;
+			if(hasText) { flags1 |= 0x80; }
+			if(wordWrap) { flags1 |= 0x40; }
+			if(multiline) { flags1 |= 0x20; }
+			if(password) { flags1 |= 0x10; }
+			if(readOnly) { flags1 |= 0x08; }
+			if(hasTextColor) { flags1 |= 0x04; }
+			if(hasMaxLength) { flags1 |= 0x02; }
+			if(hasFont) { flags1 |= 0x01; }
+			body.writeUI8(flags1);
+			var flags2:uint = 0;
+			if(hasFontClass) { flags2 |= 0x80; }
+			if(autoSize) { flags2 |= 0x40; }
+			if(hasLayout) { flags2 |= 0x20; }
+			if(noSelect) { flags2 |= 0x10; }
+			if(border) { flags2 |= 0x08; }
+			if(wasStatic) { flags2 |= 0x04; }
+			if(html) { flags2 |= 0x02; }
+			if(useOutlines) { flags2 |= 0x01; }
+			body.writeUI8(flags2);
+			if (hasFont) {
+				body.writeUI16(fontId);
+			}
+			if (hasFontClass) {
+				body.writeString(fontClass);
+			}
+			if (hasFont) {
+				body.writeUI16(fontHeight);
+			}
+			if (hasTextColor) {
+				body.writeRGBA(textColor);
+			}
+			if (hasMaxLength) {
+				body.writeUI16(maxLength);
+			}
+			if (hasLayout) {
+				body.writeUI8(align);
+				body.writeUI16(leftMargin);
+				body.writeUI16(rightMargin);
+				body.writeUI16(indent);
+				body.writeSI16(leading);
+			}
+			body.writeString(variableName);
+			if (hasText) {
+				body.writeString(initialText);
+			}
+			data.writeTagHeader(type, body.length);
+			data.writeBytes(body);
 		}
 		
 		override public function get type():uint { return TYPE; }

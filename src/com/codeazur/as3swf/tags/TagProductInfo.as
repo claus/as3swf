@@ -29,7 +29,17 @@
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
-			throw(new Error("TODO: implement publish()"));
+			var body:SWFData = new SWFData();
+			body.writeUI32(productId);
+			body.writeUI32(edition);
+			body.writeUI8(majorVersion);
+			body.writeUI8(minorVersion);
+			body.writeUI32(minorBuild);
+			body.writeUI32(majorBuild);
+			body.writeUI32(uint(compileDate.time));
+			body.writeUI32(uint(compileDate.time / 4294967296));
+			data.writeTagHeader(type, body.length);
+			data.writeBytes(body);
 		}
 		
 		override public function get type():uint { return TYPE; }

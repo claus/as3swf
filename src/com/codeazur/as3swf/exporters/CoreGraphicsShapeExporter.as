@@ -13,7 +13,7 @@
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 
-	public class CoreGraphicsShapeExportDocumentHandler extends DefaultShapeExportDocumentHandler
+	public class CoreGraphicsShapeExporter extends DefaultShapeExporter
 	{
 		protected static const DEFAULT_CLASSNAME:String = "DefaultClassName";
 		
@@ -37,7 +37,7 @@
 		
 		protected var active:String = NOT_ACTIVE;
 		
-		public function CoreGraphicsShapeExportDocumentHandler(swf:SWF, aClassName:String, aProjectName:String = "###ProjectName###", aAuthor:String = "###AuthorName###", aCopyright:String = "###Copyright###")
+		public function CoreGraphicsShapeExporter(swf:SWF, aClassName:String, aProjectName:String = "###ProjectName###", aAuthor:String = "###AuthorName###", aCopyright:String = "###Copyright###")
 		{
 			_className = (aClassName != null && aClassName.length > 0) ? aClassName : DEFAULT_CLASSNAME;
 			_projectName = aProjectName;

@@ -10,11 +10,11 @@
 	import flash.display.SpreadMethod;
 	import flash.geom.Matrix;
 	
-	public class ASShapeExportDocumentHandler extends DefaultShapeExportDocumentHandler
+	public class AS3ShapeExporter extends DefaultShapeExporter
 	{
 		protected var _actionScript:String;
 		
-		public function ASShapeExportDocumentHandler(swf:SWF) {
+		public function AS3ShapeExporter(swf:SWF) {
 			super(swf);
 		}
 		

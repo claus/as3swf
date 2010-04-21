@@ -1,6 +1,7 @@
 ﻿package com.codeazur.as3swf.data
 {
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.utils.StringUtils;
 	
 	public class SWFTextRecord
 	{
@@ -104,13 +105,17 @@
 			}
 		}
 		
-		public function toString():String {
+		public function toString(indent:uint = 0):String {
 			var params:Array = ["Glyphs: " + _glyphEntries.length.toString()];
 			if (hasFont) { params.push("FontID: " + fontId); params.push("Height: " + textHeight); }
 			if (hasColor) { params.push("Color: " + textColor.toString(16)); }
 			if (hasXOffset) { params.push("XOffset: " + xOffset); }
 			if (hasYOffset) { params.push("YOffset: " + yOffset); }
-			return params.join(", ");
+			var str:String = params.join(", ");
+			for (var i:uint = 0; i < _glyphEntries.length; i++) {
+				str += "\n" + StringUtils.repeat(indent + 2) + _glyphEntries[i].toString();
+			}
+			return str;
 		}
 	}
 }

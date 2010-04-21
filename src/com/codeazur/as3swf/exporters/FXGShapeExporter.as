@@ -1,55 +1,56 @@
 package com.codeazur.as3swf.exporters
 {
 	import com.codeazur.as3swf.SWF;
+	import com.codeazur.as3swf.utils.ColorUtils;
 	
-	import flash.display.GraphicsEndFill;
-	import flash.display.GraphicsGradientFill;
-	import flash.display.GraphicsPath;
-	import flash.display.GraphicsSolidFill;
-	import flash.display.GraphicsStroke;
-	import flash.display.IGraphicsData;
+	import flash.display.GradientType;
 	import flash.display.InterpolationMethod;
 	import flash.display.LineScaleMode;
 	import flash.display.SpreadMethod;
 	import flash.geom.Matrix;
 	
-	public class ASGraphicsDataShapeExportDocumentHandler extends DefaultShapeExportDocumentHandler
+	public class FXGShapeExporter extends DefaultShapeExporter
 	{
-		protected var _graphicsData:Vector.<IGraphicsData>;
+		protected var _fxg:XML;
 		
-		protected var tmpGraphicsPath:GraphicsPath;
+		protected var tmpPath:String;
+		protected var tmpFill:XML;
+		protected var tmpLine:XML;
 		
-		public function ASGraphicsDataShapeExportDocumentHandler(swf:SWF) {
+		public function FXGShapeExporter(swf:SWF) {
 			super(swf);
 		}
 		
-		public function get graphicsData():Vector.<IGraphicsData> { return _graphicsData; }
+		public function get fxg():XML { return _fxg; }
 		
+		/*
 		override public function beginShape():void {
-			_graphicsData = new Vector.<IGraphicsData>();
+			_fxg = <graphic><group /></graphic>;
 		}
 		
 		override public function beginFills():void {
-			_graphicsData.push(new GraphicsStroke());
+			tmpPath = "";
+			tmpFill = <fill />;
+			tmpLine = null;
 		}
 
 		override public function beginFill(color:uint, alpha:Number = 1.0):void {
 			cleanUpGraphicsPath();
-			_graphicsData.push(new GraphicsSolidFill(color, alpha));
+			tmpFill.appendChild(<SolidColor color={ColorUtils.rgbToString(color)} alpha={alpha} />);
 		}
 		
 		override public function beginGradientFill(type:String, colors:Array, alphas:Array, ratios:Array, matrix:Matrix = null, spreadMethod:String = SpreadMethod.PAD, interpolationMethod:String = InterpolationMethod.RGB, focalPointRatio:Number = 0):void {
 			cleanUpGraphicsPath();
-			_graphicsData.push(new GraphicsGradientFill(
-				type,
-				colors,
-				alphas,
-				ratios,
-				matrix,
-				spreadMethod,
-				interpolationMethod,
-				focalPointRatio
-			));
+			var gradient:XML;
+			if(type == GradientType.LINEAR) {
+				gradient = <LinearGradient />;
+			} else {
+				gradient = <RadialGradient />;
+			}
+			for(var i:uint = 0; i < colors.length; i++) {
+				gradient.appendChild(<GradientEntry color={ColorUtils.rgbToString(colors[i])} alpha={alphas[i]} ratio={ratios[i]} />);
+			}
+			tmpFill.appendChild(gradient);
 		}
 
 		//override public function beginBitmapFill(bitmapId:uint, matrix:Matrix = null, repeat:Boolean = true, smooth:Boolean = false):void {
@@ -59,20 +60,13 @@ package com.codeazur.as3swf.exporters
 		
 		override public function endFill():void {
 			cleanUpGraphicsPath();
-			_graphicsData.push(new GraphicsEndFill());
 		}
 
 		override public function lineStyle(thickness:Number = NaN, color:uint = 0, alpha:Number = 1.0, pixelHinting:Boolean = false, scaleMode:String = LineScaleMode.NORMAL, startCaps:String = null, endCaps:String = null, joints:String = null, miterLimit:Number = 3):void {
 			cleanUpGraphicsPath();
-			_graphicsData.push(new GraphicsStroke(
-				thickness,
-				pixelHinting,
-				scaleMode,
-				startCaps,
-				joints,
-				miterLimit,
-				new GraphicsSolidFill(color, alpha)
-			)); 
+			tmpPath = "";
+			tmpFill = null;
+			tmpLine = <stroke />;
 		}
 		
 		override public function moveTo(x:Number, y:Number):void {
@@ -97,5 +91,6 @@ package com.codeazur.as3swf.exporters
 			}
 			tmpGraphicsPath = new GraphicsPath();
 		}
+		*/
 	}
 }

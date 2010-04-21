@@ -26,7 +26,7 @@
 		}
 		
 		public function toString():String {
-			return index.toString();
+			return "[SWFGlyphEntry] Index: " + index.toString() + ", Advance: " + advance.toString();
 		}
 	}
 }

@@ -8,8 +8,8 @@
 	import com.codeazur.as3swf.data.etc.CurvedEdge;
 	import com.codeazur.as3swf.data.etc.IEdge;
 	import com.codeazur.as3swf.data.etc.StraightEdge;
-	import com.codeazur.as3swf.exporters.DefaultShapeExportDocumentHandler;
-	import com.codeazur.as3swf.exporters.IShapeExportDocumentHandler;
+	import com.codeazur.as3swf.exporters.DefaultShapeExporter;
+	import com.codeazur.as3swf.exporters.IShapeExporter;
 	import com.codeazur.as3swf.utils.ColorUtils;
 	import com.codeazur.utils.StringUtils;
 	
@@ -82,9 +82,9 @@
 		}
 		
 		public function publish(data:SWFData, level:uint = 1):void {
-			data.resetBitsPending();
 			var numFillBits:uint = data.calculateMaxBits(false, [getMaxFillStyleIndex()]);
 			var numLineBits:uint = data.calculateMaxBits(false, [getMaxLineStyleIndex()]);
+			data.resetBitsPending();
 			data.writeUB(4, numFillBits);
 			data.writeUB(4, numLineBits);
 			writeShapeRecords(data, numFillBits, numLineBits, level);
@@ -164,7 +164,7 @@
 			}
 		}
 		
-		public function export(handler:IShapeExportDocumentHandler = null):void {
+		public function export(handler:IShapeExporter = null):void {
 			var xPos:Number = 0;
 			var yPos:Number = 0;
 			var from:Point;
@@ -180,7 +180,7 @@
 			
 			var path:Vector.<IEdge> = new Vector.<IEdge>();
 			var subPath:Vector.<IEdge> = new Vector.<IEdge>();
-			if (handler == null) { handler = new DefaultShapeExportDocumentHandler(null); }
+			if (handler == null) { handler = new DefaultShapeExporter(null); }
 			for (var i:uint = 0; i < _records.length; i++) {
 				var shapeRecord:SWFShapeRecord = _records[i];
 				switch(shapeRecord.type) {
@@ -277,7 +277,7 @@
 			}
 		}
 
-		protected function exportFillPath(fillPath:Vector.<IEdge>, handler:IShapeExportDocumentHandler):void {
+		protected function exportFillPath(fillPath:Vector.<IEdge>, handler:IShapeExporter):void {
 			var path:Vector.<IEdge> = sortFillPath(fillPath);
 			var fillStyleIdx:uint = uint.MAX_VALUE;
 			var pos:Point = new Point(Number.MAX_VALUE, Number.MAX_VALUE);
@@ -379,7 +379,7 @@
 			}
 		}
 		
-		protected function exportLinePath(linePath:Vector.<IEdge>, handler:IShapeExportDocumentHandler):void {
+		protected function exportLinePath(linePath:Vector.<IEdge>, handler:IShapeExporter):void {
 			var path:Vector.<IEdge> = new Vector.<IEdge>();
 			var pos:Point = new Point(Number.MAX_VALUE, Number.MAX_VALUE);
 			var lineStyle:SWFLineStyle;

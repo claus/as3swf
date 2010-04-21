@@ -7,11 +7,11 @@
 	import flash.display.SpreadMethod;
 	import flash.geom.Matrix;
 	
-	public class DefaultShapeExportDocumentHandler implements IShapeExportDocumentHandler
+	public class DefaultShapeExporter implements IShapeExporter
 	{
 		protected var swf:SWF;
 		
-		public function DefaultShapeExportDocumentHandler(swf:SWF) {
+		public function DefaultShapeExporter(swf:SWF) {
 			this.swf = swf;
 		}
 		

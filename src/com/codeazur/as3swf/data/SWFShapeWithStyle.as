@@ -1,7 +1,7 @@
 ﻿package com.codeazur.as3swf.data
 {
 	import com.codeazur.as3swf.SWFData;
-	import com.codeazur.as3swf.exporters.IShapeExportDocumentHandler;
+	import com.codeazur.as3swf.exporters.IShapeExporter;
 	
 	import com.codeazur.utils.StringUtils;
 	
@@ -57,7 +57,7 @@
 			writeShapeRecords(data, fillBits, lineBits, level);
 		}
 				
-		override public function export(handler:IShapeExportDocumentHandler = null):void {
+		override public function export(handler:IShapeExporter = null):void {
 			tmpFillStyles = _fillStyles.concat();
 			tmpLineStyles = _lineStyles.concat();
 			super.export(handler);

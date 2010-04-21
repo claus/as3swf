@@ -84,7 +84,10 @@
 			if (_records.length > 0) {
 				str += "\n" + StringUtils.repeat(indent + 2) + "TextRecords:";
 				for (var i:uint = 0; i < _records.length; i++) {
-					str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + _records[i].toString();
+					str += "\n" +
+						StringUtils.repeat(indent + 4) +
+						"[" + i + "] " +
+						_records[i].toString(indent + 4);
 				}
 			}
 			return str;

@@ -1,6 +1,7 @@
 ﻿package com.codeazur.as3swf.tags
 {
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.SWFTimeline;
 	import com.codeazur.as3swf.data.SWFRecordHeader;
 	import com.codeazur.as3swf.data.SWFRectangle;
 	import com.codeazur.as3swf.factories.SWFTagFactory;
@@ -15,50 +16,26 @@
 		public var frameCount:uint;
 		
 		protected var _characterId:uint;
-		protected var _controlTags:Vector.<ITag>;
+		protected var _timeline:SWFTimeline;
 		
 		public function TagDefineSprite() {
-			_controlTags = new Vector.<ITag>();
+			_timeline = new SWFTimeline();
 		}
 		
 		public function get characterId():uint { return _characterId; }
-		public function get controlTags():Vector.<ITag> { return _controlTags; }
+		public function get timeline():SWFTimeline { return _timeline; }
 		
 		public function parse(data:SWFData, length:uint, version:uint):void {
 			_characterId = data.readUI16();
 			frameCount = data.readUI16();
-			_controlTags.length = 0;
-			while (true) {
-				var raw:ByteArray = data.readRawTag();
-				var header:SWFRecordHeader = data.readTagHeader();
-				var tag:ITag = SWFTagFactory.create(header.type);
-				tag.raw = raw;
-				tag.parse(data, header.length, version);
-				_controlTags.push(tag);
-				if (header.type == 0) {
-					break;
-				}
-			}
+			timeline.parse(data, version);
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
 			var body:SWFData = new SWFData();
 			body.writeUI16(characterId);
 			body.writeUI16(frameCount); // TODO: get the real number of frames from controlTags
-			for (var i:uint = 0; i < _controlTags.length; i++) {
-				try {
-					_controlTags[i].publish(body, version);
-				}
-				catch (e:Error) {
-					var tag:ITag = _controlTags[i];
-					if (tag.raw != null) {
-						body.writeTagHeader(tag.type, tag.raw.length);
-						body.writeBytes(tag.raw);
-					} else {
-						throw(e);
-					}
-				}
-			} 
+			timeline.publish(body, version);
 			data.writeTagHeader(type, body.length);
 			data.writeBytes(body);
 		}
@@ -68,17 +45,10 @@
 		override public function get version():uint { return 3; }
 		
 		public function toString(indent:uint = 0):String {
-			var str:String = toStringMain(indent) +
+			return toStringMain(indent) +
 				"ID: " + characterId + ", " +
-				"FrameCount: " + frameCount + ", " +
-				"Tags: " + _controlTags.length;
-			if (_controlTags.length > 0) {
-				str += "\n" + StringUtils.repeat(indent + 2) + "ControlTags:"
-				for (var i:uint = 0; i < _controlTags.length; i++) {
-					str += "\n" + _controlTags[i].toString(indent + 4);
-				}
-			}
-			return str;
+				"FrameCount: " + frameCount +
+				timeline.toString(indent);
 		}
 	}
 }

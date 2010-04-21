@@ -3,7 +3,7 @@
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.SWFRectangle;
 	import com.codeazur.as3swf.data.SWFShapeWithStyle;
-	import com.codeazur.as3swf.exporters.IShapeExportDocumentHandler;
+	import com.codeazur.as3swf.exporters.IShapeExporter;
 	
 	public class TagDefineShape extends Tag implements IDefinitionTag
 	{
@@ -33,7 +33,7 @@
 			data.writeBytes(body);
 		}
 		
-		public function export(handler:IShapeExportDocumentHandler = null):void {
+		public function export(handler:IShapeExporter = null):void {
 			shapes.export(handler);
 		}
 		

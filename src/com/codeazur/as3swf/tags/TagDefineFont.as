@@ -42,10 +42,10 @@
 			body.writeUI16(characterId);
 			var offsetTableLength:uint = (len << 1);
 			for (i = 0; i < len; i++) {
-				// Serialize the glyph's shape to a separate bytearray
-				shapeTable.writeSHAPE(glyphShapeTable[i]);
 				// Write out the offset table for the current glyph
 				body.writeUI16(shapeTable.position + offsetTableLength);
+				// Serialize the glyph's shape to a separate bytearray
+				shapeTable.writeSHAPE(glyphShapeTable[i]);
 			}
 			// Now concatenate the glyph shape table to the end (after
 			// the offset table that we were previously writing inside

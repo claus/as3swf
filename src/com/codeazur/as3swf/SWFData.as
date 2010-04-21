@@ -203,8 +203,6 @@
 				}
 				writeUI8(v | 0x80);
 			}
-import com.codeazur.as3swf.data.SWFMorphFillStyle;
-
 		}
 
 		/////////////////////////////////////////////////////////
@@ -750,7 +748,6 @@ import com.codeazur.as3swf.data.SWFMorphFillStyle;
 				// Shouldn't it be an unsigned int?
 				tagLength = readSI32();
 			}
-			//trace("tag:" + (tagTypeAndLength >> 6) + " length:" + tagLength);
 			return new SWFRecordHeader(tagTypeAndLength >> 6, tagLength);
 		}
 

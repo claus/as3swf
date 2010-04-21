@@ -6,7 +6,7 @@
 	import flash.display.SpreadMethod;
 	import flash.geom.Matrix;
 	
-	public interface IShapeExportDocumentHandler
+	public interface IShapeExporter
 	{
 		function beginShape():void;
 		function endShape():void;

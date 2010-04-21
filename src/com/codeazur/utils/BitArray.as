@@ -71,9 +71,12 @@
 					vmax = value;
 				}
 			}
-			var bits:uint = b.toString(2).length;
-			if(signed && vmax > 0 && vmax.toString(2).length >= bits) {
-				bits++;
+			var bits:uint = 0;
+			if(b > 0) {
+				bits = b.toString(2).length;
+				if(signed && vmax > 0 && vmax.toString(2).length >= bits) {
+					bits++;
+				}
 			}
 			return bits;
 		}

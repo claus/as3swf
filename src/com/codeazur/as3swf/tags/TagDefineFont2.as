@@ -114,14 +114,14 @@
 			var offset:uint = offsetTableLength + codeTableOffsetLength;
 			var shapeTable:SWFData = new SWFData();
 			for (i = 0; i < numGlyphs; i++) {
-				// Serialize the glyph's shape to a separate bytearray
-				shapeTable.writeSHAPE(glyphShapeTable[i]);
 				// Write out the offset table for the current glyph
 				if(wideOffsets) {
 					body.writeUI32(offset + shapeTable.position);
 				} else {
 					body.writeUI16(offset + shapeTable.position);
 				}
+				// Serialize the glyph's shape to a separate bytearray
+				shapeTable.writeSHAPE(glyphShapeTable[i]);
 			}
 			// Code table offset
 			if(wideOffsets) {

@@ -58,11 +58,10 @@
 				for(i = 0; i < condActions.length; i++) {
 					var condActionBytes:SWFData = new SWFData();
 					condActionBytes.writeBUTTONCONDACTION(condActions[i]);
-					body.writeUI16(condActionBytes.length);
+					body.writeUI16((i < condActions.length - 1) ? condActionBytes.length : 0);
 					body.writeBytes(condActionBytes);
 				}
 			}
-			body.writeUI8(0);
 			data.writeTagHeader(type, body.length);
 			data.writeBytes(body);
 		}

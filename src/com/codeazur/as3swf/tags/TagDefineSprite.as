@@ -2,12 +2,6 @@
 {
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.SWFTimeline;
-	import com.codeazur.as3swf.data.SWFRecordHeader;
-	import com.codeazur.as3swf.data.SWFRectangle;
-	import com.codeazur.as3swf.factories.SWFTagFactory;
-	import com.codeazur.utils.StringUtils;
-	
-	import flash.utils.ByteArray;
 	
 	public class TagDefineSprite extends Tag implements IDefinitionTag
 	{

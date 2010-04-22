@@ -4,6 +4,7 @@
 	import com.codeazur.as3swf.tags.ITag;
 	
 	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
 	
 	public class SWF
 	{
@@ -28,6 +29,11 @@
 		}
 		
 		public function get timeline():SWFTimeline { return _timeline; }
+		
+		public function get tags():Vector.<ITag> { return timeline.tags; }
+		public function get dictionary():Dictionary { return timeline.dictionary; }
+		public function get frames():Vector.<SWFFrame> { return timeline.frames; }
+		public function get layers():Vector.<Array> { return timeline.layers; }
 		
 		public function getTagByCharacterId(characterId:uint):ITag {
 			return timeline.getTagByCharacterId(characterId);

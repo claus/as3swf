@@ -1,7 +1,10 @@
 ﻿package com.codeazur.as3swf.tags
 {
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.SWFFrame;
 	import com.codeazur.as3swf.SWFTimeline;
+	
+	import flash.utils.Dictionary;
 	
 	public class TagDefineSprite extends Tag implements IDefinitionTag
 	{
@@ -18,6 +21,11 @@
 		
 		public function get characterId():uint { return _characterId; }
 		public function get timeline():SWFTimeline { return _timeline; }
+		
+		public function get tags():Vector.<ITag> { return timeline.tags; }
+		public function get dictionary():Dictionary { return timeline.dictionary; }
+		public function get frames():Vector.<SWFFrame> { return timeline.frames; }
+		public function get layers():Vector.<Array> { return timeline.layers; }
 		
 		public function parse(data:SWFData, length:uint, version:uint):void {
 			_characterId = data.readUI16();

@@ -27,6 +27,7 @@ package com.codeazur.as3swf
 			_tags = new Vector.<ITag>();
 			_dictionary = new Dictionary();
 			_frames = new Vector.<SWFFrame>();
+			_layers = new Vector.<Array>();
 		}
 		
 		public function get tags():Vector.<ITag> { return _tags; }
@@ -42,7 +43,9 @@ package com.codeazur.as3swf
 		{
 			tags.length = 0;
 			frames.length = 0;
+			layers.length = 0;
 			_dictionary = new Dictionary();
+			
 			currentFrame = new SWFFrame();
 			
 			var raw:ByteArray;
@@ -159,7 +162,6 @@ package com.codeazur.as3swf
 				}
 			}
 			depthsAvailable.sort(Array.NUMERIC);
-			_layers = new Vector.<Array>();
 			for(i = 0; i < depthsAvailable.length; i++) {
 				_layers.push(depths[depthsAvailable[i]]);
 			}

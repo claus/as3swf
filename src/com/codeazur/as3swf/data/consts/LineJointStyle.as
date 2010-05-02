@@ -13,7 +13,7 @@
 				case ROUND: return JointStyle.ROUND;
 				case BEVEL: return JointStyle.BEVEL;
 				case MITER: return JointStyle.MITER;
-				default: return "unknown";
+				default: return "null";
 			}
 		}
 	}

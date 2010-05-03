@@ -11,6 +11,7 @@ package com.codeazur.as3swf.exporters
 	import flash.display.LineScaleMode;
 	import flash.display.SpreadMethod;
 	import flash.geom.Matrix;
+	import flash.geom.Point;
 	
 	public class FXGShapeExporter extends DefaultShapeExporter
 	{
@@ -49,7 +50,8 @@ package com.codeazur.as3swf.exporters
 			finalizePath();
 			var gradient:XML;
 			var fill:XML = <s:fill xmlns:s={s.uri} />;
-			if(type == GradientType.LINEAR) {
+			var isLinear:Boolean = (type == GradientType.LINEAR);
+			if(isLinear) {
 				gradient = <s:LinearGradient xmlns:s={s.uri} />;
 			} else {
 				gradient = <s:RadialGradient xmlns:s={s.uri} />;
@@ -58,9 +60,27 @@ package com.codeazur.as3swf.exporters
 			if(spreadMethod != SpreadMethod.PAD) { gradient.@spreadMethod = spreadMethod; }
 			if(interpolationMethod != InterpolationMethod.RGB) { gradient.@interpolationMethod = interpolationMethod; }
 			if(matrix) {
-				var mult:Number = 32768 / 20;
+				// The original matrix transforms the SWF gradient rect:
+				// (-16384, -16384), (16384, 16384)
+				// into the target gradient rect.
+				// We need to transform the FXG gradient rect:
+				// (0, 0), (1, 1) for linear gradients
+				// (-0.5, -0.5), (0.5, 0.5) for radial gradients
+				// Scale and rotation of the original matrix is based on twips,
+				// so additionaly we have to divide by 20.
+				var m:Matrix = matrix.clone();
+				// Normalize the original scale and rotation
+				m.scale(32768 / 20, 32768 / 20);
+				// Adjust the translation
+				// For linear gradients, we take the point (-16384, 0)
+				// and scale and rotate it using the original matrix.
+				// What we get is the identity start point of the gradient,
+				// so we add tx/ty to get the real translation for the new rect.
+				// For radial gradients we just stick with the original tx/ty.
+				m.tx = isLinear ? -16384 * matrix.a / 20 + matrix.tx : matrix.tx;
+				m.ty = isLinear ? -16384 * matrix.b / 20 + matrix.ty : matrix.ty;
 				gradient.appendChild(<s:matrix xmlns:s={s.uri}>
-					<s:Matrix tx={matrix.tx/20} ty={matrix.ty/20} a={matrix.a*mult} b={matrix.b*mult} c={matrix.c*mult} d={matrix.d*mult} />
+					<s:Matrix tx={m.tx} ty={m.ty} a={m.a} b={m.b} c={m.c} d={m.d} />
 				</s:matrix>);
 			}
 			for(var i:uint = 0; i < colors.length; i++) {

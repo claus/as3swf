@@ -2,7 +2,7 @@ package com.codeazur.as3swf.exporters
 {
 	import com.codeazur.as3swf.SWF;
 	import com.codeazur.as3swf.utils.ColorUtils;
-	import com.codeazur.as3swf.utils.NumberUtils;
+	import com.codeazur.utils.StringUtils;
 	
 	import flash.display.CapsStyle;
 	import flash.display.GradientType;
@@ -11,19 +11,14 @@ package com.codeazur.as3swf.exporters
 	import flash.display.LineScaleMode;
 	import flash.display.SpreadMethod;
 	import flash.geom.Matrix;
-	import flash.geom.Point;
 	
-	public class FXGShapeExporter extends DefaultShapeExporter
+	import mx.graphics.SolidColorStroke;
+	
+	public class FXGShapeExporter extends DefaultSVGShapeExporter
 	{
-		protected static const DRAW_COMMAND_L:String = "L";
-		protected static const DRAW_COMMAND_Q:String = "Q";
-
 		protected static const s:Namespace = new Namespace("s", "library://ns.adobe.com/flex/spark");
 		
 		protected var _fxg:XML;
-		
-		protected var currentDrawCommand:String = "";
-		protected var pathData:String;
 		protected var path:XML;
 		
 		public function FXGShapeExporter(swf:SWF) {
@@ -48,14 +43,67 @@ package com.codeazur.as3swf.exporters
 		
 		override public function beginGradientFill(type:String, colors:Array, alphas:Array, ratios:Array, matrix:Matrix = null, spreadMethod:String = SpreadMethod.PAD, interpolationMethod:String = InterpolationMethod.RGB, focalPointRatio:Number = 0):void {
 			finalizePath();
-			var gradient:XML;
 			var fill:XML = <s:fill xmlns:s={s.uri} />;
-			var isLinear:Boolean = (type == GradientType.LINEAR);
-			if(isLinear) {
+			var gradient:XML;
+			if(type == GradientType.LINEAR) {
 				gradient = <s:LinearGradient xmlns:s={s.uri} />;
 			} else {
 				gradient = <s:RadialGradient xmlns:s={s.uri} />;
-				if(focalPointRatio != 0) { gradient.@focalPointRatio = focalPointRatio; }
+			}
+			populateGradientElement(gradient, type, colors, alphas, ratios, matrix, spreadMethod, interpolationMethod, focalPointRatio);
+			fill.appendChild(gradient);
+			path.appendChild(fill);
+		}
+
+		override public function beginBitmapFill(bitmapId:uint, matrix:Matrix = null, repeat:Boolean = true, smooth:Boolean = false):void {
+			throw(new Error("Bitmap fills are not yet supported for shape export."));
+		}
+		
+		override public function lineStyle(thickness:Number = NaN, color:uint = 0, alpha:Number = 1.0, pixelHinting:Boolean = false, scaleMode:String = LineScaleMode.NORMAL, startCaps:String = null, endCaps:String = null, joints:String = null, miterLimit:Number = 3):void {
+			finalizePath();
+			var stroke:XML = <s:stroke xmlns:s={s.uri} />;
+			var solidColorStroke:XML = <s:SolidColorStroke xmlns:s={s.uri} />;
+			if(!isNaN(thickness) && thickness != 1) { solidColorStroke.@weight = thickness; }
+			if(color != 0) { solidColorStroke.@color = ColorUtils.rgbToString(color); }
+			if(alpha != 1) { solidColorStroke.@alpha = alpha; }
+			if(pixelHinting) { solidColorStroke.@pixelHinting = "true"; }
+			if(scaleMode != LineScaleMode.NORMAL) { solidColorStroke.@scaleMode = scaleMode; }
+			if(startCaps && startCaps != CapsStyle.ROUND) { solidColorStroke.@caps = startCaps; }
+			if(joints && joints != JointStyle.ROUND) { solidColorStroke.@joints = joints; }
+			if(miterLimit != 3) { solidColorStroke.@miterLimit = miterLimit; }
+			stroke.appendChild(solidColorStroke);
+			path.appendChild(stroke);
+		}
+
+		override public function lineGradientStyle(type:String, colors:Array, alphas:Array, ratios:Array, matrix:Matrix = null, spreadMethod:String = SpreadMethod.PAD, interpolationMethod:String = InterpolationMethod.RGB, focalPointRatio:Number = 0):void {
+			var strokeElement:XML = path..s::SolidColorStroke[0];
+			if(strokeElement) {
+				if(type == GradientType.LINEAR) {
+					strokeElement.setLocalName("LinearGradientStroke");
+				} else {
+					strokeElement.setLocalName("RadialGradientStroke");
+				}
+				delete strokeElement.@color;
+				delete strokeElement.@alpha;
+				populateGradientElement(strokeElement, type, colors, alphas, ratios, matrix, spreadMethod, interpolationMethod, focalPointRatio);
+			}
+		}
+
+		
+		override protected function finalizePath():void {
+			if(path && pathData != "") {
+				path.@data = StringUtils.trim(pathData);
+				fxg.s::Group.appendChild(path);
+			}
+			path = <s:Path xmlns:s={s.uri} />;
+			super.finalizePath();
+		}
+		
+		
+		protected function populateGradientElement(gradient:XML, type:String, colors:Array, alphas:Array, ratios:Array, matrix:Matrix = null, spreadMethod:String = SpreadMethod.PAD, interpolationMethod:String = InterpolationMethod.RGB, focalPointRatio:Number = 0):void {
+			var isLinear:Boolean = (type == GradientType.LINEAR);
+			if(!isLinear && focalPointRatio != 0) {
+				gradient.@focalPointRatio = focalPointRatio;
 			}
 			if(spreadMethod != SpreadMethod.PAD) { gradient.@spreadMethod = spreadMethod; }
 			if(interpolationMethod != InterpolationMethod.RGB) { gradient.@interpolationMethod = interpolationMethod; }
@@ -96,76 +144,6 @@ package com.codeazur.as3swf.exporters
 				if(alphas[i] != 1) { gradientEntry.@alpha = alphas[i]; }
 				gradient.appendChild(gradientEntry);
 			}
-			fill.appendChild(gradient);
-			path.appendChild(fill);
-		}
-
-		override public function beginBitmapFill(bitmapId:uint, matrix:Matrix = null, repeat:Boolean = true, smooth:Boolean = false):void {
-			throw(new Error("Bitmap fills are not yet supported for shape export."));
-		}
-		
-		override public function endFill():void {
-			finalizePath();
-		}
-
-		override public function lineStyle(thickness:Number = NaN, color:uint = 0, alpha:Number = 1.0, pixelHinting:Boolean = false, scaleMode:String = LineScaleMode.NORMAL, startCaps:String = null, endCaps:String = null, joints:String = null, miterLimit:Number = 3):void {
-			finalizePath();
-			var stroke:XML = <s:stroke xmlns:s={s.uri} />;
-			var solidColorStroke:XML = <s:SolidColorStroke xmlns:s={s.uri} />;
-			if(!isNaN(thickness) && thickness != 1) { solidColorStroke.@weight = thickness; }
-			if(color != 0) { solidColorStroke.@color = ColorUtils.rgbToString(color); }
-			if(alpha != 1) { solidColorStroke.@alpha = alpha; }
-			if(pixelHinting) { solidColorStroke.@pixelHinting = "true"; }
-			if(scaleMode != LineScaleMode.NORMAL) { solidColorStroke.@scaleMode = scaleMode; }
-			if(startCaps && startCaps != CapsStyle.ROUND) { solidColorStroke.@caps = startCaps; }
-			if(joints && joints != JointStyle.ROUND) { solidColorStroke.@joints = joints; }
-			if(miterLimit != 3) { solidColorStroke.@miterLimit = miterLimit; }
-			stroke.appendChild(solidColorStroke);
-			path.appendChild(stroke);
-		}
-		
-		override public function moveTo(x:Number, y:Number):void {
-			currentDrawCommand = "";
-			pathData += "M" +
-				NumberUtils.roundPixels20(x) + " " + 
-				NumberUtils.roundPixels20(y) + " ";
-		}
-		
-		override public function lineTo(x:Number, y:Number):void {
-			if(currentDrawCommand != DRAW_COMMAND_L) {
-				currentDrawCommand = DRAW_COMMAND_L;
-				pathData += "L";
-			}
-			pathData += 
-				NumberUtils.roundPixels20(x) + " " + 
-				NumberUtils.roundPixels20(y) + " ";
-		}
-		
-		override public function curveTo(controlX:Number, controlY:Number, anchorX:Number, anchorY:Number):void {
-			if(currentDrawCommand != DRAW_COMMAND_Q) {
-				currentDrawCommand = DRAW_COMMAND_Q;
-				pathData += "Q";
-			}
-			pathData += 
-				NumberUtils.roundPixels20(controlX) + " " + 
-				NumberUtils.roundPixels20(controlY) + " " + 
-				NumberUtils.roundPixels20(anchorX) + " " + 
-				NumberUtils.roundPixels20(anchorY) + " ";
-		}
-		
-		override public function endLines():void {
-			finalizePath();
-		}
-
-		
-		protected function finalizePath():void {
-			if(path && pathData != "") {
-				path.@data = pathData;
-				fxg.s::Group.appendChild(path);
-			}
-			pathData = "";
-			currentDrawCommand = "";
-			path = <s:Path xmlns:s={s.uri} />;
 		}
 	}
 }

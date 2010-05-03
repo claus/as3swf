@@ -419,6 +419,37 @@
 										LineCapsStyle.toString(lineStyle.endCapsStyle),
 										LineJointStyle.toString(lineStyle.jointStyle),
 										lineStyle.miterLimitFactor);
+
+									if(lineStyle.hasFillFlag) {
+										var fillStyle:SWFFillStyle = lineStyle.fillType;
+										switch(fillStyle.type) {
+											case 0x10:
+											case 0x12:
+											case 0x13:
+												// Gradient fill
+												var colors:Array = [];
+												var alphas:Array = [];
+												var ratios:Array = [];
+												var gradientRecord:SWFGradientRecord;
+												var matrix:Matrix = fillStyle.gradientMatrix.matrix.clone();
+												matrix.tx /= 20;
+												matrix.ty /= 20;
+												for (var gri:uint = 0; gri < fillStyle.gradient.records.length; gri++) {
+													gradientRecord = fillStyle.gradient.records[gri];
+													colors.push(ColorUtils.rgb(gradientRecord.color));
+													alphas.push(ColorUtils.alpha(gradientRecord.color));
+													ratios.push(gradientRecord.ratio);
+												}
+												handler.lineGradientStyle(
+													(fillStyle.type == 0x10) ? GradientType.LINEAR : GradientType.RADIAL,
+													colors, alphas, ratios, matrix,
+													GradientSpreadMode.toString(fillStyle.gradient.spreadMode),
+													GradientInterpolationMode.toString(fillStyle.gradient.interpolationMode),
+													fillStyle.gradient.focalPoint
+												);
+												break;
+										}
+									}
 								} else {
 									// We should never get here
 									handler.lineStyle(0);

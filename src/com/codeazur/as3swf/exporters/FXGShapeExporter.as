@@ -79,12 +79,22 @@ package com.codeazur.as3swf.exporters
 				// For radial gradients we just stick with the original tx/ty.
 				m.tx = isLinear ? -16384 * matrix.a / 20 + matrix.tx : matrix.tx;
 				m.ty = isLinear ? -16384 * matrix.b / 20 + matrix.ty : matrix.ty;
-				gradient.appendChild(<s:matrix xmlns:s={s.uri}>
-					<s:Matrix tx={m.tx} ty={m.ty} a={m.a} b={m.b} c={m.c} d={m.d} />
-				</s:matrix>);
+				var matrixContainer:XML = <s:matrix xmlns:s={s.uri} /> 
+				var matrixChild:XML = <s:Matrix xmlns:s={s.uri} />
+				if(m.tx != 0) { matrixChild.@tx = m.tx; }
+				if(m.ty != 0) { matrixChild.@ty = m.ty; }
+				if(m.a != 1) { matrixChild.@a = m.a; }
+				if(m.b != 0) { matrixChild.@b = m.b; }
+				if(m.c != 0) { matrixChild.@c = m.c; }
+				if(m.d != 1) { matrixChild.@d = m.d; }
+				matrixContainer.appendChild(matrixChild);
+				gradient.appendChild(matrixContainer);
 			}
 			for(var i:uint = 0; i < colors.length; i++) {
-				gradient.appendChild(<s:GradientEntry xmlns:s={s.uri} color={ColorUtils.rgbToString(colors[i])} alpha={alphas[i]} ratio={ratios[i]/255} />);
+				var gradientEntry:XML = <s:GradientEntry xmlns:s={s.uri} ratio={ratios[i] / 255} />
+				if(colors[i] != 0) { gradientEntry.@color = ColorUtils.rgbToString(colors[i]); }
+				if(alphas[i] != 1) { gradientEntry.@alpha = alphas[i]; }
+				gradient.appendChild(gradientEntry);
 			}
 			fill.appendChild(gradient);
 			path.appendChild(fill);

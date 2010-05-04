@@ -1,18 +1,19 @@
-package com.codeazur.as3swf
+package com.codeazur.as3swf.timeline
 {
 	import com.codeazur.utils.StringUtils;
 	
 	import flash.utils.Dictionary;
 
-	public class SWFFrame
+	public class Frame
 	{
 		public var frameNumber:uint = 0;
 		public var tagIndexStart:uint = 0;
 		public var tagIndexEnd:uint = 0;
+		public var label:String;
 		
 		protected var _objects:Dictionary;
 		
-		public function SWFFrame(frameNumber:uint = 0, tagIndexStart:uint = 0)
+		public function Frame(frameNumber:uint = 0, tagIndexStart:uint = 0)
 		{
 			this.frameNumber = frameNumber;
 			this.tagIndexStart = tagIndexStart;
@@ -26,7 +27,7 @@ package com.codeazur.as3swf
 		}
 		
 		public function placeObject(tagIndex:uint, depth:uint, characterId:uint = 0):void {
-			var frameObject:SWFFrameObject = _objects[depth] as SWFFrameObject; 
+			var frameObject:FrameObject = _objects[depth] as FrameObject; 
 			if(frameObject) {
 				// A character is already available at the specified depth
 				if(characterId == 0) {
@@ -50,7 +51,7 @@ package com.codeazur.as3swf
 				}
 			} else {
 				// No character defined at specified depth. Create one.
-				_objects[depth] = new SWFFrameObject(depth, characterId, tagIndex, 0, true);
+				_objects[depth] = new FrameObject(depth, characterId, tagIndex, 0, true);
 			}
 		}
 		
@@ -58,10 +59,10 @@ package com.codeazur.as3swf
 			delete _objects[depth];
 		}
 		
-		public function clone():SWFFrame {
-			var frame:SWFFrame = new SWFFrame();
+		public function clone():Frame {
+			var frame:Frame = new Frame();
 			for(var depth:String in _objects) {
-				frame._objects[depth] = SWFFrameObject(_objects[depth]).clone();
+				frame._objects[depth] = FrameObject(_objects[depth]).clone();
 			}
 			return frame;
 		}
@@ -70,8 +71,9 @@ package com.codeazur.as3swf
 			var str:String = StringUtils.repeat(indent) + "[" + frameNumber + "] " +
 				"Start: " + tagIndexStart + ", " +
 				"Length: " + tagCount;
+			if(label != null && label != "") { str += ", Label: " + label; }
 			for(var depth:String in _objects) {
-				str += SWFFrameObject(_objects[depth]).toString(indent);
+				str += FrameObject(_objects[depth]).toString(indent);
 			}
 			return str;
 		}

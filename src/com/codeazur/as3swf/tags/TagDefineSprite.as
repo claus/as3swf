@@ -1,30 +1,34 @@
 ﻿package com.codeazur.as3swf.tags
 {
+	import com.codeazur.as3swf.timeline.ITimeline;
 	import com.codeazur.as3swf.SWFData;
-	import com.codeazur.as3swf.SWFFrame;
-	import com.codeazur.as3swf.SWFTimeline;
+	import com.codeazur.as3swf.timeline.Frame;
+	import com.codeazur.as3swf.timeline.Timeline;
+	import com.codeazur.as3swf.timeline.Scene;
+	import com.codeazur.as3swf.tags.IDefinitionTag;
 	
 	import flash.utils.Dictionary;
 	
-	public class TagDefineSprite extends Tag implements IDefinitionTag
+	public class TagDefineSprite extends Tag implements IDefinitionTag, ITimeline
 	{
 		public static const TYPE:uint = 39;
 		
 		public var frameCount:uint;
 		
 		protected var _characterId:uint;
-		protected var _timeline:SWFTimeline;
+		protected var _timeline:Timeline;
 		
 		public function TagDefineSprite() {
-			_timeline = new SWFTimeline();
+			_timeline = new Timeline();
 		}
 		
 		public function get characterId():uint { return _characterId; }
-		public function get timeline():SWFTimeline { return _timeline; }
+		public function get timeline():Timeline { return _timeline; }
 		
 		public function get tags():Vector.<ITag> { return timeline.tags; }
 		public function get dictionary():Dictionary { return timeline.dictionary; }
-		public function get frames():Vector.<SWFFrame> { return timeline.frames; }
+		public function get scenes():Vector.<Scene> { return timeline.scenes; }
+		public function get frames():Vector.<Frame> { return timeline.frames; }
 		public function get layers():Vector.<Array> { return timeline.layers; }
 		
 		public function parse(data:SWFData, length:uint, version:uint):void {

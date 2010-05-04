@@ -1,38 +1,48 @@
-package com.codeazur.as3swf
+package com.codeazur.as3swf.timeline
 {
+	import com.codeazur.as3swf.data.SWFFrameLabel;
 	import com.codeazur.as3swf.data.SWFRecordHeader;
+	import com.codeazur.as3swf.data.SWFScene;
 	import com.codeazur.as3swf.factories.SWFTagFactory;
 	import com.codeazur.as3swf.tags.IDefinitionTag;
 	import com.codeazur.as3swf.tags.IDisplayListTag;
 	import com.codeazur.as3swf.tags.ITag;
+	import com.codeazur.as3swf.tags.TagDefineSceneAndFrameLabelData;
+	import com.codeazur.as3swf.tags.TagDefineSprite;
 	import com.codeazur.as3swf.tags.TagEnd;
+	import com.codeazur.as3swf.tags.TagFrameLabel;
 	import com.codeazur.as3swf.tags.TagPlaceObject;
 	import com.codeazur.as3swf.tags.TagRemoveObject;
 	import com.codeazur.utils.StringUtils;
 	
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
+	import com.codeazur.as3swf.SWFData;
 
-	public class SWFTimeline
+	public class Timeline
 	{
 		protected var _tags:Vector.<ITag>;
 		protected var _dictionary:Dictionary;
-		protected var _frames:Vector.<SWFFrame>;
+		protected var _scenes:Vector.<Scene>;
+		protected var _frames:Vector.<Frame>;
 		protected var _layers:Vector.<Array>;
 		
-		protected var currentFrame:SWFFrame;
+		protected var currentFrame:Frame;
+		protected var frameLabels:Dictionary;
 		
-		public function SWFTimeline()
+		public function Timeline()
 		{
 			_tags = new Vector.<ITag>();
 			_dictionary = new Dictionary();
-			_frames = new Vector.<SWFFrame>();
+			_scenes = new Vector.<Scene>();
+			_frames = new Vector.<Frame>();
 			_layers = new Vector.<Array>();
 		}
 		
 		public function get tags():Vector.<ITag> { return _tags; }
 		public function get dictionary():Dictionary { return _dictionary; }
-		public function get frames():Vector.<SWFFrame> { return _frames; }
+		public function get scenes():Vector.<Scene> { return _scenes; }
+		public function get frames():Vector.<Frame> { return _frames; }
 		public function get layers():Vector.<Array> { return _layers; }
 		
 		public function getTagByCharacterId(characterId:uint):ITag {
@@ -46,7 +56,8 @@ package com.codeazur.as3swf
 			layers.length = 0;
 			_dictionary = new Dictionary();
 			
-			currentFrame = new SWFFrame();
+			currentFrame = new Frame();
+			frameLabels = new Dictionary();
 			
 			var raw:ByteArray;
 			var header:SWFRecordHeader;
@@ -123,6 +134,9 @@ package com.codeazur.as3swf
 				switch(tag.name) {
 					case "ShowFrame":
 						currentFrame.tagIndexEnd = currentTagIndex;
+						if(currentFrame.label == null && frameLabels[currentFrame.frameNumber]) {
+							currentFrame.label = frameLabels[currentFrame.frameNumber];
+						}
 						frames.push(currentFrame);
 						currentFrame = currentFrame.clone();
 						currentFrame.frameNumber = frames.length;
@@ -140,6 +154,20 @@ package com.codeazur.as3swf
 						currentFrame.removeObject(removeObject.depth, removeObject.characterId);
 						break;
 				}
+			} else if(tag is TagDefineSceneAndFrameLabelData) {
+				var tagSceneAndFrameLabelData:TagDefineSceneAndFrameLabelData = tag as TagDefineSceneAndFrameLabelData;
+				var i:uint;
+				for(i = 0; i < tagSceneAndFrameLabelData.frameLabels.length; i++) {
+					var frameLabel:SWFFrameLabel = tagSceneAndFrameLabelData.frameLabels[i] as SWFFrameLabel;
+					frameLabels[frameLabel.frameNumber] = frameLabel.name;
+				}
+				for(i = 0; i < tagSceneAndFrameLabelData.scenes.length; i++) {
+					var scene:SWFScene = tagSceneAndFrameLabelData.scenes[i] as SWFScene;
+					scenes.push(new Scene(scene.offset, scene.name));
+				}
+			} else if(tag is TagFrameLabel) {
+				var tagFrameLabel:TagFrameLabel = tag as TagFrameLabel;
+				currentFrame.label = tagFrameLabel.frameName;
 			}
 		}
 		
@@ -150,7 +178,7 @@ package com.codeazur.as3swf
 			var depths:Dictionary = new Dictionary();
 			var depthsAvailable:Array = [];
 			for(i = 0; i < frames.length; i++) {
-				var frame:SWFFrame = frames[i];
+				var frame:Frame = frames[i];
 				for(depth in frame.objects) {
 					depthInt = parseInt(depth);
 					if(depthsAvailable.indexOf(depthInt) > -1) {
@@ -168,7 +196,7 @@ package com.codeazur.as3swf
 			for(i = 0; i < frames.length; i++) {
 				var frameObjs:Dictionary = frames[i].objects;
 				for(depth in frameObjs) {
-					SWFFrameObject(frameObjs[depth]).layer = depthsAvailable.indexOf(parseInt(depth));
+					FrameObject(frameObjs[depth]).layer = depthsAvailable.indexOf(parseInt(depth));
 				}
 			}	
 		}
@@ -180,6 +208,12 @@ package com.codeazur.as3swf
 				str += "\n" + StringUtils.repeat(indent + 2) + "Tags:";
 				for (i = 0; i < tags.length; i++) {
 					str += "\n" + tags[i].toString(indent + 4);
+				}
+			}
+			if (scenes.length > 0) {
+				str += "\n" + StringUtils.repeat(indent + 2) + "Scenes:";
+				for (i = 0; i < scenes.length; i++) {
+					str += "\n" + scenes[i].toString(indent + 4);
 				}
 			}
 			if (frames.length > 0) {

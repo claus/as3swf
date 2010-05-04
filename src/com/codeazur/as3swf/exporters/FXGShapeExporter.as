@@ -100,7 +100,7 @@ package com.codeazur.as3swf.exporters
 		}
 		
 		
-		protected function populateGradientElement(gradient:XML, type:String, colors:Array, alphas:Array, ratios:Array, matrix:Matrix = null, spreadMethod:String = SpreadMethod.PAD, interpolationMethod:String = InterpolationMethod.RGB, focalPointRatio:Number = 0):void {
+		protected function populateGradientElement(gradient:XML, type:String, colors:Array, alphas:Array, ratios:Array, matrix:Matrix, spreadMethod:String, interpolationMethod:String, focalPointRatio:Number):void {
 			var isLinear:Boolean = (type == GradientType.LINEAR);
 			if(!isLinear && focalPointRatio != 0) {
 				gradient.@focalPointRatio = focalPointRatio;
@@ -122,7 +122,7 @@ package com.codeazur.as3swf.exporters
 				// Adjust the translation
 				// For linear gradients, we take the point (-16384, 0)
 				// and scale and rotate it using the original matrix.
-				// What we get is the identity start point of the gradient,
+				// What we get is the start point of the gradient,
 				// so we add tx/ty to get the real translation for the new rect.
 				// For radial gradients we just stick with the original tx/ty.
 				m.tx = isLinear ? -16384 * matrix.a / 20 + matrix.tx : matrix.tx;

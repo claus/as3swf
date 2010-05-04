@@ -1,8 +1,8 @@
-package com.codeazur.as3swf
+package com.codeazur.as3swf.timeline
 {
 	import com.codeazur.utils.StringUtils;
 
-	public class SWFFrameObject
+	public class FrameObject
 	{
 		// The depth of this display object
 		public var depth:uint;
@@ -18,7 +18,7 @@ package com.codeazur.as3swf
 		// The index of the layer this object resides on 
 		public var layer:int = -1;
 		
-		public function SWFFrameObject(depth:uint, characterId:uint, placedAtIndex:uint, lastModifiedAtIndex:uint = 0, isKeyframe:Boolean = false)
+		public function FrameObject(depth:uint, characterId:uint, placedAtIndex:uint, lastModifiedAtIndex:uint = 0, isKeyframe:Boolean = false)
 		{
 			this.depth = depth;
 			this.characterId = characterId;
@@ -28,8 +28,8 @@ package com.codeazur.as3swf
 			this.layer = -1;
 		}
 		
-		public function clone():SWFFrameObject {
-			return new SWFFrameObject(depth, characterId, placedAtIndex, lastModifiedAtIndex, false);
+		public function clone():FrameObject {
+			return new FrameObject(depth, characterId, placedAtIndex, lastModifiedAtIndex, false);
 		}
 		
 		public function toString(indent:uint = 0):String {

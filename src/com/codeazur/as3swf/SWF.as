@@ -5,6 +5,8 @@
 	
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
+	import com.codeazur.as3swf.timeline.Frame;
+	import com.codeazur.as3swf.timeline.Timeline;
 	
 	public class SWF
 	{
@@ -17,10 +19,10 @@
 
 		public var compressed:Boolean;
 		
-		protected var _timeline:SWFTimeline;
+		protected var _timeline:Timeline;
 		
 		public function SWF(data:ByteArray = null) {
-			_timeline = new SWFTimeline();
+			_timeline = new Timeline();
 			if (data != null) {
 				loadBytes(data);
 			} else {
@@ -28,11 +30,11 @@
 			}
 		}
 		
-		public function get timeline():SWFTimeline { return _timeline; }
+		public function get timeline():Timeline { return _timeline; }
 		
 		public function get tags():Vector.<ITag> { return timeline.tags; }
 		public function get dictionary():Dictionary { return timeline.dictionary; }
-		public function get frames():Vector.<SWFFrame> { return timeline.frames; }
+		public function get frames():Vector.<Frame> { return timeline.frames; }
 		public function get layers():Vector.<Array> { return timeline.layers; }
 		
 		public function getTagByCharacterId(characterId:uint):ITag {

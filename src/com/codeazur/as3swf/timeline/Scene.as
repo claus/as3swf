@@ -14,9 +14,9 @@ package com.codeazur.as3swf.timeline
 		}
 		
 		public function toString(indent:uint = 0):String {
-			return StringUtils.repeat(indent) + "[Scene] " +
-				"Frame: " + frameNumber + ", " +
-				"Name: " + name;
+			return StringUtils.repeat(indent) + 
+				"Name: " + name + ", " +
+				"Frame: " + frameNumber;
 		}
 	}
 }

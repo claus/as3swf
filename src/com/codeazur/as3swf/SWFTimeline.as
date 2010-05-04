@@ -1,4 +1,4 @@
-package com.codeazur.as3swf.timeline
+package com.codeazur.as3swf
 {
 	import com.codeazur.as3swf.data.SWFFrameLabel;
 	import com.codeazur.as3swf.data.SWFRecordHeader;
@@ -17,9 +17,11 @@ package com.codeazur.as3swf.timeline
 	
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
-	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.timeline.Frame;
+	import com.codeazur.as3swf.timeline.FrameObject;
+	import com.codeazur.as3swf.timeline.Scene;
 
-	public class Timeline
+	public class SWFTimeline
 	{
 		protected var _tags:Vector.<ITag>;
 		protected var _dictionary:Dictionary;
@@ -30,7 +32,7 @@ package com.codeazur.as3swf.timeline
 		protected var currentFrame:Frame;
 		protected var frameLabels:Dictionary;
 		
-		public function Timeline()
+		public function SWFTimeline()
 		{
 			_tags = new Vector.<ITag>();
 			_dictionary = new Dictionary();

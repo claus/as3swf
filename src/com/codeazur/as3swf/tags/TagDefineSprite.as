@@ -1,9 +1,9 @@
 ﻿package com.codeazur.as3swf.tags
 {
-	import com.codeazur.as3swf.timeline.ITimeline;
+	import com.codeazur.as3swf.ITimeline;
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.timeline.Frame;
-	import com.codeazur.as3swf.timeline.Timeline;
+	import com.codeazur.as3swf.SWFTimeline;
 	import com.codeazur.as3swf.timeline.Scene;
 	import com.codeazur.as3swf.tags.IDefinitionTag;
 	
@@ -16,14 +16,14 @@
 		public var frameCount:uint;
 		
 		protected var _characterId:uint;
-		protected var _timeline:Timeline;
+		protected var _timeline:SWFTimeline;
 		
 		public function TagDefineSprite() {
-			_timeline = new Timeline();
+			_timeline = new SWFTimeline();
 		}
 		
 		public function get characterId():uint { return _characterId; }
-		public function get timeline():Timeline { return _timeline; }
+		public function get timeline():SWFTimeline { return _timeline; }
 		
 		public function get tags():Vector.<ITag> { return timeline.tags; }
 		public function get dictionary():Dictionary { return timeline.dictionary; }

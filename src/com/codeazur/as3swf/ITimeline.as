@@ -1,5 +1,7 @@
-package com.codeazur.as3swf.timeline
+package com.codeazur.as3swf
 {
+	import com.codeazur.as3swf.timeline.Frame;
+	import com.codeazur.as3swf.timeline.Scene;
 
 	public interface ITimeline
 	{
@@ -7,7 +9,7 @@ package com.codeazur.as3swf.timeline
 		
 		import flash.utils.Dictionary;
 		
-		function get timeline():Timeline;
+		function get timeline():SWFTimeline;
 		function get tags():Vector.<ITag>;
 		function get dictionary():Dictionary;
 		function get scenes():Vector.<Scene>;

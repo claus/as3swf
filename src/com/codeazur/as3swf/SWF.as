@@ -4,12 +4,11 @@
 	import com.codeazur.as3swf.tags.ITag;
 	import com.codeazur.as3swf.timeline.Frame;
 	import com.codeazur.as3swf.timeline.Scene;
-	import com.codeazur.as3swf.timeline.Timeline;
 	
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	
-	public class SWF
+	public class SWF implements ITimeline
 	{
 		public var version:int = 10;
 		public var fileLength:uint = 0;
@@ -20,10 +19,10 @@
 
 		public var compressed:Boolean;
 		
-		protected var _timeline:Timeline;
+		protected var _timeline:SWFTimeline;
 		
 		public function SWF(data:ByteArray = null) {
-			_timeline = new Timeline();
+			_timeline = new SWFTimeline();
 			if (data != null) {
 				loadBytes(data);
 			} else {
@@ -31,7 +30,7 @@
 			}
 		}
 		
-		public function get timeline():Timeline { return _timeline; }
+		public function get timeline():SWFTimeline { return _timeline; }
 		
 		public function get tags():Vector.<ITag> { return timeline.tags; }
 		public function get dictionary():Dictionary { return timeline.dictionary; }

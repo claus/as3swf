@@ -2,11 +2,12 @@
 {
 	import com.codeazur.as3swf.data.SWFRectangle;
 	import com.codeazur.as3swf.tags.ITag;
+	import com.codeazur.as3swf.timeline.Frame;
+	import com.codeazur.as3swf.timeline.Scene;
+	import com.codeazur.as3swf.timeline.Timeline;
 	
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
-	import com.codeazur.as3swf.timeline.Frame;
-	import com.codeazur.as3swf.timeline.Timeline;
 	
 	public class SWF
 	{
@@ -34,6 +35,7 @@
 		
 		public function get tags():Vector.<ITag> { return timeline.tags; }
 		public function get dictionary():Dictionary { return timeline.dictionary; }
+		public function get scenes():Vector.<Scene> { return timeline.scenes; }
 		public function get frames():Vector.<Frame> { return timeline.frames; }
 		public function get layers():Vector.<Array> { return timeline.layers; }
 		

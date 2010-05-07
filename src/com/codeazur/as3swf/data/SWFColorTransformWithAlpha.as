@@ -42,7 +42,7 @@
 			var values:Array = [];
 			if (hasMultTerms) { values.push(rMult, gMult, bMult, aMult); }
 			if (hasAddTerms) { values.push(rAdd, gAdd, bAdd, aAdd); }
-			var bits:uint = data.calculateMaxBits(true, values);
+			var bits:uint = (hasMultTerms || hasAddTerms) ? data.calculateMaxBits(true, values) : 1;
 			data.writeUB(4, bits);
 			if (hasMultTerms) {
 				data.writeSB(bits, rMult);

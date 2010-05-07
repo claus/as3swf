@@ -38,12 +38,12 @@
 			fontName = fontNameRaw.readUTFBytes(fontNameLen);
 			
 			var flags:uint = data.readUI8();
-			smallText = ((flags & 0x20) == 1);
-			shiftJIS = ((flags & 0x10) == 1);
-			ansi = ((flags & 0x08) == 1);
-			italic = ((flags & 0x04) == 1);
-			bold = ((flags & 0x02) == 1);
-			wideCodes = ((flags & 0x01) == 1);
+			smallText = ((flags & 0x20) != 0);
+			shiftJIS = ((flags & 0x10) != 0);
+			ansi = ((flags & 0x08) != 0);
+			italic = ((flags & 0x04) != 0);
+			bold = ((flags & 0x02) != 0);
+			wideCodes = ((flags & 0x01) != 0);
 			
 			parseLangCode(data);
 			

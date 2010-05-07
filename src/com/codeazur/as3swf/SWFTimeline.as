@@ -3,23 +3,34 @@ package com.codeazur.as3swf
 	import com.codeazur.as3swf.data.SWFFrameLabel;
 	import com.codeazur.as3swf.data.SWFRecordHeader;
 	import com.codeazur.as3swf.data.SWFScene;
+	import com.codeazur.as3swf.data.consts.SoundCompression;
 	import com.codeazur.as3swf.factories.SWFTagFactory;
 	import com.codeazur.as3swf.tags.IDefinitionTag;
 	import com.codeazur.as3swf.tags.IDisplayListTag;
 	import com.codeazur.as3swf.tags.ITag;
+	import com.codeazur.as3swf.tags.Tag;
 	import com.codeazur.as3swf.tags.TagDefineSceneAndFrameLabelData;
 	import com.codeazur.as3swf.tags.TagDefineSprite;
 	import com.codeazur.as3swf.tags.TagEnd;
 	import com.codeazur.as3swf.tags.TagFrameLabel;
 	import com.codeazur.as3swf.tags.TagPlaceObject;
+	import com.codeazur.as3swf.tags.TagPlaceObject2;
+	import com.codeazur.as3swf.tags.TagPlaceObject3;
 	import com.codeazur.as3swf.tags.TagRemoveObject;
+	import com.codeazur.as3swf.tags.TagRemoveObject2;
+	import com.codeazur.as3swf.tags.TagShowFrame;
+	import com.codeazur.as3swf.tags.TagSoundStreamBlock;
+	import com.codeazur.as3swf.tags.TagSoundStreamHead;
+	import com.codeazur.as3swf.tags.TagSoundStreamHead2;
+	import com.codeazur.as3swf.timeline.Frame;
+	import com.codeazur.as3swf.timeline.FrameObject;
+	import com.codeazur.as3swf.timeline.Scene;
+	import com.codeazur.as3swf.timeline.SoundStream;
 	import com.codeazur.utils.StringUtils;
 	
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
-	import com.codeazur.as3swf.timeline.Frame;
-	import com.codeazur.as3swf.timeline.FrameObject;
-	import com.codeazur.as3swf.timeline.Scene;
+	import flash.utils.Endian;
 
 	public class SWFTimeline
 	{
@@ -28,9 +39,11 @@ package com.codeazur.as3swf
 		protected var _scenes:Vector.<Scene>;
 		protected var _frames:Vector.<Frame>;
 		protected var _layers:Vector.<Array>;
-		
+		protected var _soundStream:SoundStream;
+
 		protected var currentFrame:Frame;
 		protected var frameLabels:Dictionary;
+		protected var hasSoundStream:Boolean = false;
 		
 		public function SWFTimeline()
 		{
@@ -46,6 +59,7 @@ package com.codeazur.as3swf
 		public function get scenes():Vector.<Scene> { return _scenes; }
 		public function get frames():Vector.<Frame> { return _frames; }
 		public function get layers():Vector.<Array> { return _layers; }
+		public function get soundStream():SoundStream { return _soundStream; }
 		
 		public function getTagByCharacterId(characterId:uint):ITag {
 			return tags[dictionary[characterId]];
@@ -60,6 +74,7 @@ package com.codeazur.as3swf
 			
 			currentFrame = new Frame();
 			frameLabels = new Dictionary();
+			hasSoundStream = false;
 			
 			var raw:ByteArray;
 			var header:SWFRecordHeader;
@@ -97,6 +112,10 @@ package com.codeazur.as3swf
 				}
 			}
 			
+			if(soundStream && soundStream.data.length == 0) {
+				_soundStream = null;
+			}
+			
 			buildLayers();
 		}
 		
@@ -131,45 +150,87 @@ package com.codeazur.as3swf
 					dictionary[definitionTag.characterId] = currentTagIndex;
 				}
 			}
-			// Register display list tag  
-			if(tag is IDisplayListTag) {
-				switch(tag.name) {
-					case "ShowFrame":
-						currentFrame.tagIndexEnd = currentTagIndex;
-						if(currentFrame.label == null && frameLabels[currentFrame.frameNumber]) {
-							currentFrame.label = frameLabels[currentFrame.frameNumber];
+			switch(tag.type)
+			{
+				// Register display list tags
+				case TagShowFrame.TYPE:
+					currentFrame.tagIndexEnd = currentTagIndex;
+					if(currentFrame.label == null && frameLabels[currentFrame.frameNumber]) {
+						currentFrame.label = frameLabels[currentFrame.frameNumber];
+					}
+					frames.push(currentFrame);
+					currentFrame = currentFrame.clone();
+					currentFrame.frameNumber = frames.length;
+					currentFrame.tagIndexStart = currentTagIndex + 1; 
+					break;
+				case TagPlaceObject.TYPE:
+				case TagPlaceObject2.TYPE:
+				case TagPlaceObject3.TYPE:
+					var tagPlaceObject:TagPlaceObject = tag as TagPlaceObject;
+					currentFrame.placeObject(currentTagIndex, tagPlaceObject.depth, tagPlaceObject.characterId);
+					break;
+				case TagRemoveObject.TYPE:
+				case TagRemoveObject2.TYPE:
+					var tagRemoveObject:TagRemoveObject = tag as TagRemoveObject;
+					currentFrame.removeObject(tagRemoveObject.depth, tagRemoveObject.characterId);
+					break;
+
+				// Register frame labels and scenes
+				case TagDefineSceneAndFrameLabelData.TYPE:
+					var tagSceneAndFrameLabelData:TagDefineSceneAndFrameLabelData = tag as TagDefineSceneAndFrameLabelData;
+					var i:uint;
+					for(i = 0; i < tagSceneAndFrameLabelData.frameLabels.length; i++) {
+						var frameLabel:SWFFrameLabel = tagSceneAndFrameLabelData.frameLabels[i] as SWFFrameLabel;
+						frameLabels[frameLabel.frameNumber] = frameLabel.name;
+					}
+					for(i = 0; i < tagSceneAndFrameLabelData.scenes.length; i++) {
+						var scene:SWFScene = tagSceneAndFrameLabelData.scenes[i] as SWFScene;
+						scenes.push(new Scene(scene.offset, scene.name));
+					}
+					break;
+				case TagFrameLabel.TYPE:
+					var tagFrameLabel:TagFrameLabel = tag as TagFrameLabel;
+					currentFrame.label = tagFrameLabel.frameName;
+					break;
+
+				// Register sound stream
+				case TagSoundStreamHead.TYPE:
+				case TagSoundStreamHead2.TYPE:
+					var tagSoundStreamHead:TagSoundStreamHead = tag as TagSoundStreamHead;
+					_soundStream = new SoundStream();
+					soundStream.compression = tagSoundStreamHead.streamSoundCompression;
+					soundStream.rate = tagSoundStreamHead.streamSoundRate;
+					soundStream.size = tagSoundStreamHead.streamSoundSize;
+					soundStream.type = tagSoundStreamHead.streamSoundType;
+					soundStream.numFrames = 0;
+					soundStream.numSamples = 0;
+					break;
+				case TagSoundStreamBlock.TYPE:
+					if(soundStream != null) {
+						if(!hasSoundStream) {
+							hasSoundStream = true;
+							soundStream.startFrame = currentFrame.frameNumber;
 						}
-						frames.push(currentFrame);
-						currentFrame = currentFrame.clone();
-						currentFrame.frameNumber = frames.length;
-						currentFrame.tagIndexStart = currentTagIndex + 1; 
-						break;
-					case "PlaceObject":
-					case "PlaceObject2":
-					case "PlaceObject3":
-						var placeObject:TagPlaceObject = tag as TagPlaceObject;
-						currentFrame.placeObject(currentTagIndex, placeObject.depth, placeObject.characterId);
-						break;
-					case "RemoveObject":
-					case "RemoveObject2":
-						var removeObject:TagRemoveObject = tag as TagRemoveObject;
-						currentFrame.removeObject(removeObject.depth, removeObject.characterId);
-						break;
-				}
-			} else if(tag is TagDefineSceneAndFrameLabelData) {
-				var tagSceneAndFrameLabelData:TagDefineSceneAndFrameLabelData = tag as TagDefineSceneAndFrameLabelData;
-				var i:uint;
-				for(i = 0; i < tagSceneAndFrameLabelData.frameLabels.length; i++) {
-					var frameLabel:SWFFrameLabel = tagSceneAndFrameLabelData.frameLabels[i] as SWFFrameLabel;
-					frameLabels[frameLabel.frameNumber] = frameLabel.name;
-				}
-				for(i = 0; i < tagSceneAndFrameLabelData.scenes.length; i++) {
-					var scene:SWFScene = tagSceneAndFrameLabelData.scenes[i] as SWFScene;
-					scenes.push(new Scene(scene.offset, scene.name));
-				}
-			} else if(tag is TagFrameLabel) {
-				var tagFrameLabel:TagFrameLabel = tag as TagFrameLabel;
-				currentFrame.label = tagFrameLabel.frameName;
+						var tagSoundStreamBlock:TagSoundStreamBlock = tag as TagSoundStreamBlock;
+						var soundData:ByteArray = tagSoundStreamBlock.soundData;
+						soundData.endian = Endian.LITTLE_ENDIAN;
+						soundData.position = 0;
+						switch(soundStream.compression) {
+							case SoundCompression.ADPCM: // ADPCM
+								// TODO
+								break;
+							case SoundCompression.MP3: // MP3
+								var numSamples:uint = soundData.readUnsignedShort();
+								var seekSamples:int = soundData.readShort();
+								if(numSamples > 0) {
+									soundStream.numSamples += numSamples;
+									soundStream.data.writeBytes(soundData, 4);
+								}
+								break;
+						}
+						soundStream.numFrames++;
+					}
+					break;
 			}
 		}
 		
@@ -224,7 +285,6 @@ package com.codeazur.as3swf
 					str += "\n" + frames[i].toString(indent + 4);
 				}
 			}
-			/*
 			if (layers.length > 0) {
 				str += "\n" + StringUtils.repeat(indent + 2) + "Layers:";
 				for (i = 0; i < layers.length; i++) {
@@ -233,7 +293,6 @@ package com.codeazur.as3swf
 						layers[i].join(", ");
 				}
 			}
-			*/
 			return str;
 		}
 	}

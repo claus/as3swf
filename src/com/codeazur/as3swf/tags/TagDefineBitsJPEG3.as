@@ -35,7 +35,7 @@
 		}
 		
 		override public function publish(data:SWFData, version:uint):void {
-			data.writeTagHeader(type, _bitmapData.length + _bitmapAlphaData.length + 6);
+			data.writeTagHeader(type, _bitmapData.length + _bitmapAlphaData.length + 6, true);
 			data.writeUI16(characterId);
 			data.writeUI32(_bitmapData.length);
 			if (_bitmapData.length > 0) {

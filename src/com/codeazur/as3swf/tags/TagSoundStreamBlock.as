@@ -21,7 +21,7 @@
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
-			data.writeTagHeader(type, _soundData.length);
+			data.writeTagHeader(type, _soundData.length, true);
 			if (_soundData.length > 0) {
 				data.writeBytes(_soundData);
 			}

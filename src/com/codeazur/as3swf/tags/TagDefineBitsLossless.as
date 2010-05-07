@@ -47,7 +47,7 @@
 			if (_zlibBitmapData.length > 0) {
 				body.writeBytes(_zlibBitmapData);
 			}
-			data.writeTagHeader(type, body.length);
+			data.writeTagHeader(type, body.length, true);
 			data.writeBytes(body);
 		}
 		

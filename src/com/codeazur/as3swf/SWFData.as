@@ -751,8 +751,8 @@
 			return new SWFRecordHeader(tagTypeAndLength >> 6, tagLength);
 		}
 
-		public function writeTagHeader(type:uint, length:uint):void {
-			if (length < 0x3f) {
+		public function writeTagHeader(type:uint, length:uint, forceLongHeader:Boolean = false):void {
+			if (length < 0x3f && !forceLongHeader) {
 				writeUI16((type << 6) | length);
 			} else {
 				writeUI16((type << 6) | 0x3f);

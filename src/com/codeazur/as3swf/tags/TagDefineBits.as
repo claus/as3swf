@@ -32,7 +32,7 @@
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
-			data.writeTagHeader(type, _bitmapData.length + 2);
+			data.writeTagHeader(type, _bitmapData.length + 2, true);
 			data.writeUI16(_characterId);
 			if (_bitmapData.length > 0) {
 				data.writeBytes(_bitmapData);

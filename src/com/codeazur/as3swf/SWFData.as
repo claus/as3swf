@@ -337,32 +337,32 @@
 		
 		public function writeMATRIX(value:SWFMatrix):void {
 			this.resetBitsPending();
+
+			var hasScale:Boolean = (value.scaleX != 1) || (value.scaleY != 1);
+			var hasRotate:Boolean = (value.rotateSkew0 != 0) || (value.rotateSkew1 != 0);
 			
-			var hasScale :uint = value.scaleX != 1 || value.scaleY != 1 ? 1 : 0;
-			var hasRotate :uint = value.rotateSkew0 != 0 || value.rotateSkew1 != 0 ? 1 : 0;
-			
-			writeBits(1, hasScale);
-			
+			writeBits(1, hasScale ? 1 : 0);
 			if (hasScale) {
-				var scaleBits:uint = calculateMaxBits(true, [value.scaleX * 65536, value.scaleY * 65536]);
-				//var scaleBits:uint = getMinFBits([value.scaleX, value.scaleY]);
+				var scaleBits:uint;
+				if(value.scaleX == 0 && value.scaleY == 0) {
+					scaleBits = 1;
+				} else {
+					scaleBits = calculateMaxBits(true, [value.scaleX * 65536, value.scaleY * 65536]);
+				}
 				writeUB(5, scaleBits);
 				writeFB(scaleBits, value.scaleX);
 				writeFB(scaleBits, value.scaleY);
 			}
 			
-			writeBits(1, hasRotate);
-			
+			writeBits(1, hasRotate ? 1 : 0);
 			if (hasRotate) {
 				var rotateBits:uint = calculateMaxBits(true, [value.rotateSkew0 * 65536, value.rotateSkew1 * 65536]);
-				//var rotateBits:uint = getMinFBits([value.rotateSkew0, value.rotateSkew1]);
 				writeUB(5, rotateBits);
 				writeFB(rotateBits, value.rotateSkew0);
 				writeFB(rotateBits, value.rotateSkew1);
 			}
 			
 			var translateBits:uint = calculateMaxBits(true, [value.translateX, value.translateY]);
-			//var translateBits:uint = getMinSBits([value.translateX, value.translateY]);
 			writeUB(5, translateBits);
 			writeSB(translateBits, value.translateX);
 			writeSB(translateBits, value.translateY);

@@ -61,14 +61,20 @@
 		public function calculateMaxBits(signed:Boolean, values:Array):uint {
 			var b:uint = 0;
 			var vmax:int = int.MIN_VALUE;
-			for each(var value:int in values) {
-				if(value >= 0) {
-					b |= value;
-				} else {
-					b |= ~value << 1;
+			if(!signed) {
+				for each(var usvalue:uint in values) {
+					b |= usvalue;
 				}
-				if(signed && (vmax < value)) {
-					vmax = value;
+			} else {
+				for each(var svalue:int in values) {
+					if(svalue >= 0) {
+						b |= svalue;
+					} else {
+						b |= ~svalue << 1;
+					}
+					if(vmax < svalue) {
+						vmax = svalue;
+					}
 				}
 			}
 			var bits:uint = 0;

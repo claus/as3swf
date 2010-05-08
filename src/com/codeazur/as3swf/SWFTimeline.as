@@ -24,6 +24,7 @@ package com.codeazur.as3swf
 	import com.codeazur.as3swf.tags.TagSoundStreamHead2;
 	import com.codeazur.as3swf.timeline.Frame;
 	import com.codeazur.as3swf.timeline.FrameObject;
+	import com.codeazur.as3swf.timeline.LayerObject;
 	import com.codeazur.as3swf.timeline.Scene;
 	import com.codeazur.as3swf.timeline.SoundStream;
 	import com.codeazur.utils.StringUtils;
@@ -34,6 +35,8 @@ package com.codeazur.as3swf
 
 	public class SWFTimeline
 	{
+		public var parent:ITimeline;
+		
 		protected var _tags:Vector.<ITag>;
 		protected var _dictionary:Dictionary;
 		protected var _scenes:Vector.<Scene>;
@@ -45,8 +48,10 @@ package com.codeazur.as3swf
 		protected var frameLabels:Dictionary;
 		protected var hasSoundStream:Boolean = false;
 		
-		public function SWFTimeline()
+		public function SWFTimeline(parent:ITimeline)
 		{
+			this.parent = parent;
+			
 			_tags = new Vector.<ITag>();
 			_dictionary = new Dictionary();
 			_scenes = new Vector.<Scene>();
@@ -81,18 +86,21 @@ package com.codeazur.as3swf
 			var tag:ITag;
 			var pos:uint;
 			
-			while (true)
+			while (!header || header.type != TagEnd.TYPE)
 			{
-				raw = data.readRawTag();
+				pos = data.position;
+				// Bail out if eof
+				if(pos > data.length) {
+					trace("WARNING: end of file encountered, no end tag.");
+					break;
+				}
 				header = data.readTagHeader();
 				tag = SWFTagFactory.create(header.type);
-				pos = data.position;
-				// We currently persist the raw tag to be able to publish  
-				// tags that don't have publish() implemented yet.
-				// This will probably go away once feature complete.
-				tag.raw = raw;
+				tag.parent = this;
+				tag.rawIndex = pos;
+				tag.rawLength = header.tagLength;
 				try {
-					tag.parse(data, header.length, version);
+					tag.parse(data, header.contentLength, version);
 				} catch(e:Error) {
 					// If we get here there was a problem parsing this particular tag.
 					// Possible SWF exploit, or obfuscated SWF.
@@ -101,14 +109,10 @@ package com.codeazur.as3swf
 				}
 				// Register parsed tag, build dictionary and display list etc
 				processTag(tag);
-				// Check for End tag, bail out if found.
-				if (header.type == TagEnd.TYPE) {
-					break;
-				}
 				// Adjust position (just in case the parser under- or overflows)
-				if(data.position != header.length + pos) {
-					trace("WARNING: excess bytes: " + (data.position - (header.length + pos)));
-					data.position = header.length + pos;
+				if(data.position != pos + header.tagLength) {
+					trace("WARNING: excess bytes: " + (data.position - (pos + header.tagLength)));
+					data.position = pos + header.tagLength;
 				}
 			}
 			
@@ -129,9 +133,8 @@ package com.codeazur.as3swf
 				catch (e:Error) {
 					var tag:ITag = tags[i];
 					trace("WARNING: publish error: " + e.message + " (tag: " + tag.name + ", index: " + i + ")");
-					if (tag.raw != null) {
-						data.writeTagHeader(tag.type, tag.raw.length);
-						data.writeBytes(tag.raw);
+					if (tag.rawLength > 0) {
+						data.writeBytes(parent.bytes, tag.rawIndex, tag.rawLength);
 					} else {
 						throw(e);
 					}
@@ -244,10 +247,11 @@ package com.codeazur.as3swf
 				var frame:Frame = frames[i];
 				for(depth in frame.objects) {
 					depthInt = parseInt(depth);
+					var layerObject:LayerObject = new LayerObject(frame.frameNumber, depthInt);
 					if(depthsAvailable.indexOf(depthInt) > -1) {
-						(depths[depth] as Array).push(frame.frameNumber);
+						(depths[depth] as Array).push(layerObject);
 					} else {
-						depths[depth] = [frame.frameNumber];
+						depths[depth] = [layerObject];
 						depthsAvailable.push(depthInt);
 					}
 				}

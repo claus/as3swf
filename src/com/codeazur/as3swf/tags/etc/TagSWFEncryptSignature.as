@@ -1,33 +1,15 @@
 package com.codeazur.as3swf.tags.etc
 {
-	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.tags.ITag;
-	import com.codeazur.as3swf.tags.Tag;
+	import com.codeazur.as3swf.tags.TagUnknown;
 	
-	public class TagSWFEncryptSignature extends Tag implements ITag
+	public class TagSWFEncryptSignature extends TagUnknown implements ITag
 	{
 		public static const TYPE:uint = 255;
 		
-		public function TagSWFEncryptSignature() {}
-		
-		public function parse(data:SWFData, length:uint, version:uint):void {
-			data.skipBytes(length);
-		}
-		
-		public function publish(data:SWFData, version:uint):void {
-			if (raw != null) {
-				data.writeBytes(raw);
-			} else {
-				throw(new Error("No raw tag data available."));
-			}
-		}
+		public function TagSWFEncryptSignature(type:uint = 0) {}
 		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "SWFEncryptSignature"; }
-		
-		public function toString(indent:uint = 0):String {
-			return toStringMain(indent) + 
-				"Length: " + ((raw != null) ? raw.length : "unknown");
-		}
 	}
 }

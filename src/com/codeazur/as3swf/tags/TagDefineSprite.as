@@ -2,10 +2,10 @@
 {
 	import com.codeazur.as3swf.ITimeline;
 	import com.codeazur.as3swf.SWFData;
-	import com.codeazur.as3swf.timeline.Frame;
 	import com.codeazur.as3swf.SWFTimeline;
-	import com.codeazur.as3swf.timeline.Scene;
 	import com.codeazur.as3swf.tags.IDefinitionTag;
+	import com.codeazur.as3swf.timeline.Frame;
+	import com.codeazur.as3swf.timeline.Scene;
 	
 	import flash.utils.Dictionary;
 	
@@ -19,7 +19,7 @@
 		protected var _timeline:SWFTimeline;
 		
 		public function TagDefineSprite() {
-			_timeline = new SWFTimeline();
+			_timeline = new SWFTimeline(this);
 		}
 		
 		public function get characterId():uint { return _characterId; }
@@ -30,6 +30,9 @@
 		public function get scenes():Vector.<Scene> { return timeline.scenes; }
 		public function get frames():Vector.<Frame> { return timeline.frames; }
 		public function get layers():Vector.<Array> { return timeline.layers; }
+		
+		public function get bytes():SWFData { return this.parent.parent.bytes; }
+		public function set bytes(value:SWFData):void {}
 		
 		public function parse(data:SWFData, length:uint, version:uint):void {
 			_characterId = data.readUI16();

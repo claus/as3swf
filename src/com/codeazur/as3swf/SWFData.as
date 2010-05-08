@@ -741,6 +741,7 @@
 		/////////////////////////////////////////////////////////
 		
 		public function readTagHeader():SWFRecordHeader {
+			var pos:uint = position;
  			var tagTypeAndLength:uint = readUI16();
 			var tagLength:uint = tagTypeAndLength & 0x003f;
 			if (tagLength == 0x3f) {
@@ -748,7 +749,7 @@
 				// Shouldn't it be an unsigned int?
 				tagLength = readSI32();
 			}
-			return new SWFRecordHeader(tagTypeAndLength >> 6, tagLength);
+			return new SWFRecordHeader(tagTypeAndLength >> 6, tagLength, position - pos);
 		}
 
 		public function writeTagHeader(type:uint, length:uint, forceLongHeader:Boolean = false):void {
@@ -796,9 +797,9 @@
 			var pos:uint = position;
 
 			var header:SWFRecordHeader = readTagHeader();
-			if (header.length > 0) {
+			if (header.contentLength > 0) {
 				raw = new ByteArray();
-				readBytes(raw, 0, header.length);
+				readBytes(raw, 0, header.contentLength);
 			}
 
 			position = pos;

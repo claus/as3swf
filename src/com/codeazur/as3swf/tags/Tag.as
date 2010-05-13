@@ -24,6 +24,15 @@
 		public function get parent():SWFTimeline { return _parent; }
 		public function set parent(value:SWFTimeline):void { _parent = value; }
 
+		public function get raw():ByteArray {
+			var ba:ByteArray = new ByteArray();
+			if(rawLength > 0 && parent && parent.parent) {
+				ba.writeBytes(parent.parent.bytes, rawIndex, rawLength);
+				ba.position = 0;
+			}
+			return ba;
+		}
+		
 		public function get rawIndex():uint { return _rawIndex; }
 		public function set rawIndex(value:uint):void { _rawIndex = value; }
 		

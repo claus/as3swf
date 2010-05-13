@@ -103,7 +103,7 @@ package com.codeazur.as3swf
 					tag.parse(data, header.contentLength, version);
 				} catch(e:Error) {
 					// If we get here there was a problem parsing this particular tag.
-					// Possible SWF exploit, or obfuscated SWF.
+					// Corrupted SWF, possible SWF exploit, or obfuscated SWF.
 					// TODO: register errors and warnings
 					trace("WARNING: parse error: " + e.message + " (tag: " + tag.name + ", index: " + tags.length + ")");
 				}
@@ -134,7 +134,7 @@ package com.codeazur.as3swf
 					var tag:ITag = tags[i];
 					trace("WARNING: publish error: " + e.message + " (tag: " + tag.name + ", index: " + i + ")");
 					if (tag.rawLength > 0) {
-						data.writeBytes(parent.bytes, tag.rawIndex, tag.rawLength);
+						data.writeBytes(tag.raw);
 					} else {
 						throw(e);
 					}
@@ -151,6 +151,7 @@ package com.codeazur.as3swf
 				var definitionTag:IDefinitionTag = tag as IDefinitionTag;
 				if(definitionTag.characterId > 0) {
 					dictionary[definitionTag.characterId] = currentTagIndex;
+					currentFrame.characters.push(definitionTag.characterId);
 				}
 			}
 			switch(tag.type)

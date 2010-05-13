@@ -19,8 +19,8 @@
 		
 		public var compressed:Boolean;
 		
-		protected var _bytes:SWFData;
 		protected var _timeline:SWFTimeline;
+		protected var _bytes:SWFData;
 		
 		public function SWF(ba:ByteArray = null) {
 			_timeline = new SWFTimeline(this);
@@ -32,15 +32,17 @@
 			}
 		}
 		
-		public function get bytes():SWFData { return _bytes; }
 		public function get timeline():SWFTimeline { return _timeline; }
 
-		// Convenience
+		// Convenience getters
 		public function get tags():Vector.<ITag> { return timeline.tags; }
 		public function get dictionary():Dictionary { return timeline.dictionary; }
 		public function get scenes():Vector.<Scene> { return timeline.scenes; }
 		public function get frames():Vector.<Frame> { return timeline.frames; }
 		public function get layers():Vector.<Array> { return timeline.layers; }
+		
+		// This shouldn't be public
+		public function get bytes():SWFData { return _bytes; }
 		
 		public function getTagByCharacterId(characterId:uint):ITag {
 			return timeline.getTagByCharacterId(characterId);

@@ -12,15 +12,18 @@ package com.codeazur.as3swf.timeline
 		public var label:String;
 		
 		protected var _objects:Dictionary;
+		protected var _characters:Array;
 		
 		public function Frame(frameNumber:uint = 0, tagIndexStart:uint = 0)
 		{
 			this.frameNumber = frameNumber;
 			this.tagIndexStart = tagIndexStart;
 			_objects = new Dictionary();
+			_characters = [];
 		}
 		
 		public function get objects():Dictionary { return _objects; }
+		public function get characters():Array { return _characters; }
 		
 		public function get tagCount():uint {
 			return tagIndexEnd - tagIndexStart + 1;
@@ -72,6 +75,9 @@ package com.codeazur.as3swf.timeline
 				"Start: " + tagIndexStart + ", " +
 				"Length: " + tagCount;
 			if(label != null && label != "") { str += ", Label: " + label; }
+			if(characters.length > 0) {
+				str += "\n" + StringUtils.repeat(indent + 2) + "Defined CharacterIDs: " + characters.join(", ");
+			}
 			for(var depth:String in _objects) {
 				str += FrameObject(_objects[depth]).toString(indent);
 			}

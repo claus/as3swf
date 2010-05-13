@@ -20,6 +20,8 @@
 		function get parent():SWFTimeline;
 		function set parent(value:SWFTimeline):void;
 		
+		function get raw():ByteArray;
+		
 		function get rawIndex():uint;
 		function set rawIndex(value:uint):void;
 		

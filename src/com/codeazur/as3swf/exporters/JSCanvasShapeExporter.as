@@ -23,15 +23,23 @@ package com.codeazur.as3swf.exporters
 		
 		protected var fills:Vector.<String>;
 		protected var strokes:Vector.<String>;
-		protected var geometry:String = "";
-		protected var prefix:String = "";
-		protected var suffix:String = "";
+		
+		protected var geometry:Array;
+		protected var prefix:Array;
+		protected var suffix:Array;
 		
 		protected var active:String = NOT_ACTIVE;
 		
-		public function JSCanvasShapeExporter(swf:SWF)
+		protected var condensed:Boolean;
+		protected var lineSep:String = "";
+		
+		public function JSCanvasShapeExporter(swf:SWF, condensed:Boolean = true)
 		{
 			super(swf);
+			this.condensed = condensed;
+			if(!condensed) {
+				lineSep = "\r";
+			}
 		}
 		
 		public function get js():String { return _js; }
@@ -62,10 +70,10 @@ package com.codeazur.as3swf.exporters
 		override public function endShape():void {
 			var i:uint;
 			if (fills != null) {
-				_js += fills.join("");
+				_js += fills.join(lineSep);
 			}
 			if (strokes != null) {
-				_js += strokes.join("");
+				_js += strokes.join(lineSep);
 			}
 			fills = null;
 			strokes = null;
@@ -75,16 +83,16 @@ package com.codeazur.as3swf.exporters
 		override public function beginFill(color:uint, alpha:Number = 1.0):void {
 			processPreviousFill();
 			active = FILL_ACTIVE;
-			prefix = "c.save();";
-			geometry = "c.beginPath();";
-			suffix = "c.fillStyle=\"rgba(" + 
+			prefix = ["c.save();"];
+			geometry = ["c.beginPath();"];
+			suffix = ["c.fillStyle=\"rgba(" + 
 				ColorUtils.r(color) * 255 + "," +
 				ColorUtils.g(color) * 255 + "," +
 				ColorUtils.b(color) * 255 + "," +
 				alpha +
-				")\";" +
-				"c.fill();" + 
-				"c.restore();";
+				")\";",
+				"c.fill();", 
+				"c.restore();"];
 		}
 		
 		override public function beginGradientFill(type:String, colors:Array, alphas:Array, ratios:Array, matrix:Matrix = null, spreadMethod:String = SpreadMethod.PAD, interpolationMethod:String = InterpolationMethod.RGB, focalPointRatio:Number = 0):void {
@@ -142,9 +150,9 @@ package com.codeazur.as3swf.exporters
 		override public function beginBitmapFill(bitmapId:uint, matrix:Matrix = null, repeat:Boolean = true, smooth:Boolean = false):void {
 			processPreviousFill();
 			active = BITMAP_FILL_ACTIVE;
-			prefix = "c.save();";
-			geometry = "";
-			suffix = "var i=swf.ia[swf.ca[" + bitmapId + "].i].i;" +
+			prefix = ["c.save();"];
+			geometry = [];
+			suffix = ["var i=swf.ia[swf.ca[" + bitmapId + "].i].i;",
 				"c.drawImage(i," + 
 				"0," +
 				"0," +
@@ -154,8 +162,8 @@ package com.codeazur.as3swf.exporters
 				matrix.ty + "," +
 				(matrix.a/20) + "*i.width," +
 				(matrix.d/20) + "*i.height" +
-				");" + 
-				"c.restore();";
+				");",
+				"c.restore();"]
 		}
 		
 		override public function endFill():void {
@@ -166,55 +174,55 @@ package com.codeazur.as3swf.exporters
 		override public function lineStyle(thickness:Number = NaN, color:uint = 0, alpha:Number = 1.0, pixelHinting:Boolean = false, scaleMode:String = LineScaleMode.NORMAL, startCaps:String = null, endCaps:String = null, joints:String = null, miterLimit:Number = 3):void {
 			processPreviousStroke();
 			active = STROKE_ACTIVE;
-			prefix = "c.save();";
+			prefix = ["c.save();"];
 			if (startCaps == null || startCaps == CapsStyle.ROUND) {
-				prefix += "c.lineCap=\"round\";";
+				prefix.push("c.lineCap=\"round\";");
 			} else if (startCaps == CapsStyle.SQUARE) {
-				prefix += "c.lineCap=\"square\";";
+				prefix.push("c.lineCap=\"square\";");
 			}
 			if (joints == null || joints == JointStyle.ROUND) {
-				prefix += "c.lineJoin=\"round\";";
+				prefix.push("c.lineJoin=\"round\";");
 			} else if (joints == JointStyle.BEVEL) {
-				prefix += "c.lineJoin=\"miter\";";
-				prefix += "c.miterLimit=" + miterLimit + ";";
+				prefix.push("c.lineJoin=\"miter\";");
+				prefix.push("c.miterLimit=" + miterLimit + ";");
 			} else {
-				prefix += "c.miterLimit=" + miterLimit + ";";
+				prefix.push("c.miterLimit=" + miterLimit + ";");
 			}
-			geometry = "c.beginPath();";
-			suffix = "c.strokeStyle=\"rgba(" + 
+			geometry = ["c.beginPath();"];
+			suffix = ["c.strokeStyle=\"rgba(" + 
 				ColorUtils.r(color) * 255 + "," +
 				ColorUtils.g(color) * 255 + "," +
 				ColorUtils.b(color) * 255 + "," +
 				alpha +
-				")\";" +
-				"c.lineWidth=" + thickness + ";" +
-				"c.stroke();" +
-				"c.restore();";
+				")\";",
+				"c.lineWidth=" + thickness + ";",
+				"c.stroke();",
+				"c.restore();"];
 		}
 		
 		override public function moveTo(x:Number, y:Number):void {
 			if (active != NOT_ACTIVE && active != BITMAP_FILL_ACTIVE) {
-				geometry += "c.moveTo(" + 
+				geometry.push("c.moveTo(" + 
 					NumberUtils.roundPixels20(x) + "," + 
-					NumberUtils.roundPixels20(y) + ");";
+					NumberUtils.roundPixels20(y) + ");");
 			}
 		}
 		
 		override public function lineTo(x:Number, y:Number):void {
 			if (active != NOT_ACTIVE && active != BITMAP_FILL_ACTIVE) {
-				geometry += "c.lineTo(" + 
+				geometry.push("c.lineTo(" + 
 					NumberUtils.roundPixels20(x) + "," + 
-					NumberUtils.roundPixels20(y) + ");";
+					NumberUtils.roundPixels20(y) + ");");
 			}
 		}
 		
 		override public function curveTo(controlX:Number, controlY:Number, anchorX:Number, anchorY:Number):void {
 			if (active != NOT_ACTIVE && active != BITMAP_FILL_ACTIVE) {
-				geometry += "c.quadraticCurveTo(" + 
+				geometry.push("c.quadraticCurveTo(" + 
 					NumberUtils.roundPixels20(controlX) + "," + 
 					NumberUtils.roundPixels20(controlY) + "," + 
 					NumberUtils.roundPixels20(anchorX) + "," + 
-					NumberUtils.roundPixels20(anchorY) + ");";
+					NumberUtils.roundPixels20(anchorY) + ");");
 			}
 		}
 
@@ -222,26 +230,29 @@ package com.codeazur.as3swf.exporters
 		protected function processPreviousFill():void {
 			if (active == FILL_ACTIVE) {
 				active = NOT_ACTIVE;
-				fills.push(prefix + geometry + "c.closePath();" + suffix);
-				geometry = "";
-				prefix = "";
-				suffix = "";
+				geometry.push("c.closePath();");
+				fills.push(
+					prefix.join(lineSep),
+					geometry.join(lineSep),
+					suffix.join(lineSep)
+				);
 			} else if(active == BITMAP_FILL_ACTIVE) {
 				active = NOT_ACTIVE;
-				fills.push(prefix + suffix);
-				geometry = "";
-				prefix = "";
-				suffix = "";
+				fills.push(
+					prefix.join(lineSep), 
+					suffix.join(lineSep)
+				);
 			}
 		}
 		
 		protected function processPreviousStroke():void {
 			if (active == STROKE_ACTIVE) {
 				active = NOT_ACTIVE;
-				strokes.push(prefix + geometry + "c.closePath();" + suffix);
-				geometry = "";
-				prefix = "";
-				suffix = "";
+				strokes.push(
+					prefix.join(lineSep),
+					geometry.join(lineSep),
+					suffix.join(lineSep)
+				);
 			}
 		}
 	}

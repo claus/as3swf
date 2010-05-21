@@ -28,7 +28,7 @@
 			bias = data.readFLOAT();
 			var len:uint = matrixX * matrixY;
 			for (var i:uint = 0; i < len; i++) {
-				matrix.push(data.readFLOAT);
+				matrix.push(data.readFLOAT());
 			}
 			defaultColor = data.readRGBA();
 			var flags:uint = data.readUI8();

@@ -151,13 +151,21 @@
 		override public function toString(indent:uint = 0):String {
 			var str:String = toStringMain(indent) +
 				"Depth: " + depth;
+			if (hasClassName || (hasImage && hasCharacter)) { str += ", ClassName: " + className; }
 			if (hasCharacter) { str += ", CharacterID: " + characterId; }
 			if (hasMatrix) { str += ", Matrix: " + matrix.toString(); }
 			if (hasColorTransform) { str += ", ColorTransform: " + colorTransform; }
 			if (hasRatio) { str += ", Ratio: " + ratio; }
 			if (hasName) { str += ", Name: " + objName; }
+			if (hasClipDepth) { str += ", ClipDepth: " + clipDepth; }
 			if (hasBlendMode) { str += ", BlendMode: " + BlendMode.toString(blendMode); }
 			if (hasCacheAsBitmap) { str += ", CacheAsBitmap: " + bitmapCache; }
+			if (hasFilterList) {
+				str += "\n" + StringUtils.repeat(indent + 2) + "Filters:"
+				for(var i:uint = 0; i < surfaceFilterList.length; i++) {
+					str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + surfaceFilterList[i];
+				}
+			}
 			if (hasClipActions) {
 				str += "\n" + StringUtils.repeat(indent + 2) + clipActions.toString(indent + 2);
 			}

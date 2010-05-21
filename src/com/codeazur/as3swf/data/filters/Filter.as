@@ -19,5 +19,9 @@
 		public function publish(data:SWFData):void {
 			throw(new Error("Implement in subclasses!"));
 		}
+		
+		public function toString():String {
+			return "[Filter]";
+		}
 	}
 }

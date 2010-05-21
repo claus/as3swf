@@ -6,11 +6,8 @@ package com.codeazur.as3swf
 	import com.codeazur.as3swf.data.consts.SoundCompression;
 	import com.codeazur.as3swf.factories.SWFTagFactory;
 	import com.codeazur.as3swf.tags.IDefinitionTag;
-	import com.codeazur.as3swf.tags.IDisplayListTag;
 	import com.codeazur.as3swf.tags.ITag;
-	import com.codeazur.as3swf.tags.Tag;
 	import com.codeazur.as3swf.tags.TagDefineSceneAndFrameLabelData;
-	import com.codeazur.as3swf.tags.TagDefineSprite;
 	import com.codeazur.as3swf.tags.TagEnd;
 	import com.codeazur.as3swf.tags.TagFrameLabel;
 	import com.codeazur.as3swf.tags.TagPlaceObject;
@@ -105,13 +102,17 @@ package com.codeazur.as3swf
 					// If we get here there was a problem parsing this particular tag.
 					// Corrupted SWF, possible SWF exploit, or obfuscated SWF.
 					// TODO: register errors and warnings
-					trace("WARNING: parse error: " + e.message + " (tag: " + tag.name + ", index: " + tags.length + ")");
+					trace("WARNING: parse error: " + e.message + ", Tag: " + tag.name + ", Index: " + tags.length);
 				}
 				// Register parsed tag, build dictionary and display list etc
 				processTag(tag);
 				// Adjust position (just in case the parser under- or overflows)
 				if(data.position != pos + header.tagLength) {
-					trace("WARNING: excess bytes: " + (data.position - (pos + header.tagLength)));
+					trace("WARNING: excess bytes: " + 
+						(data.position - (pos + header.tagLength)) + ", " +
+						"Tag: " + tag.name + ", " +
+						"Index: " + (tags.length - 1)
+					);
 					data.position = pos + header.tagLength;
 				}
 			}

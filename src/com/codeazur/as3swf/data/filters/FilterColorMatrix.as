@@ -15,7 +15,7 @@
 
 		override public function parse(data:SWFData):void {
 			for (var i:uint = 0; i < 20; i++) {
-				colorMatrix.push(data.readFLOAT);
+				colorMatrix.push(data.readFLOAT());
 			}
 		}
 		
@@ -23,6 +23,10 @@
 			for (var i:uint = 0; i < 20; i++) {
 				data.writeFLOAT(colorMatrix[i]);
 			}
+		}
+		
+		override public function toString():String {
+			return "[ColorMatrixFilter] " + colorMatrix.join(", ");
 		}
 	}
 }

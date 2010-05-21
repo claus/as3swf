@@ -5,5 +5,7 @@
 		public function FilterGradientBevel(id:uint) {
 			super(id);
 		}
+		
+		override protected function get filterName():String { return "GradientBevelFilter"; }
 	}
 }

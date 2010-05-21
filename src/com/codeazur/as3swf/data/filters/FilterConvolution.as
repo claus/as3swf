@@ -1,6 +1,8 @@
 ﻿package com.codeazur.as3swf.data.filters
 {
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.utils.ColorUtils;
+	import com.codeazur.utils.StringUtils;
 	
 	public class FilterConvolution extends Filter implements IFilter
 	{
@@ -50,6 +52,29 @@
 			if(clamp) { flags |= 0x02; }
 			if(preserveAlpha) { flags |= 0x01; }
 			data.writeUI8(flags);
+		}
+		
+		override public function toString(indent:uint = 0):String {
+			var str:String = "[ConvolutionFilter] " +
+				"DefaultColor: " + ColorUtils.rgbToString(defaultColor) + ", " +
+				"Divisor: " + divisor + ", " +
+				"Bias: " + bias;
+			var flags:Array = [];
+			if(clamp) { flags.push("Clamp"); }
+			if(preserveAlpha) { flags.push("PreserveAlpha"); }
+			if(flags.length > 0) {
+				str += ", Flags: " + flags.join(", ");
+			}
+			if(matrix.length > 0) {
+				str += "\n" + StringUtils.repeat(indent + 2) + "Matrix:";
+				for(var y:uint = 0; y < matrixY; y++) {
+					str += "\n" + StringUtils.repeat(indent + 4) + "[" + y + "]";
+					for(var x:uint = 0; x < matrixX; x++) {
+						str += ((x > 0) ? ", " : " ") + matrix[matrixX * y + x];
+					}
+				}
+			}
+			return str;
 		}
 	}
 }

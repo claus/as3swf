@@ -20,7 +20,7 @@
 			throw(new Error("Implement in subclasses!"));
 		}
 		
-		public function toString():String {
+		public function toString(indent:uint = 0):String {
 			return "[Filter]";
 		}
 	}

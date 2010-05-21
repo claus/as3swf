@@ -17,15 +17,12 @@
 		
 		override public function toString(indent:uint = 0):String {
 			var str:String = toStringMain(indent);
-			str += "Playback: (";
-			str += SoundRate.toString(playbackSoundRate) + ",";
-			str += SoundSize.toString(playbackSoundSize) + ",";
-			str += SoundType.toString(playbackSoundType) + "), ";
-			str += "Streaming: (";
-			str += SoundCompression.toString(streamSoundCompression) + ",";
-			str += SoundRate.toString(streamSoundRate) + ",";
-			str += SoundSize.toString(streamSoundSize) + ",";
-			str += SoundType.toString(streamSoundType) + "), ";
+			if(streamSoundSampleCount > 0) {
+				str += "Format: " + SoundCompression.toString(streamSoundCompression) + ", " +
+					"Rate: " + SoundRate.toString(streamSoundRate) + ", " +
+					"Size: " + SoundSize.toString(streamSoundSize) + ", " +
+					"Type: " + SoundType.toString(streamSoundType) + ", ";
+			}
 			str += "Samples: " + streamSoundSampleCount;
 			return str;
 		}

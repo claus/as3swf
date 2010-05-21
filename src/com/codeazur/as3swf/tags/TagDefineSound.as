@@ -86,7 +86,7 @@
 		public function toString(indent:uint = 0):String {
 			var str:String = toStringMain(indent) +
 				"SoundID: " + characterId + ", " +
-				"Format: " + soundFormat + ", " +
+				"Format: " + SoundCompression.toString(soundFormat) + ", " +
 				"Rate: " + SoundRate.toString(soundRate) + ", " +
 				"Size: " + SoundSize.toString(soundSize) + ", " +
 				"Type: " + SoundType.toString(soundType) + ", " +

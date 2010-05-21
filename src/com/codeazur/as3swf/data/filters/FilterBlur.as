@@ -23,5 +23,12 @@
 			data.writeFIXED(blurY);
 			data.writeUI8(passes << 3);
 		}
+		
+		override public function toString(indent:uint = 0):String {
+			return "[BlurFilter] " +
+				"BlurX: " + blurX + ", " +
+				"BlurY: " + blurY + ", " +
+				"Passes: " + passes;
+		}
 	}
 }

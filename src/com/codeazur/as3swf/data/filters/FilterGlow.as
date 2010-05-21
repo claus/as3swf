@@ -1,6 +1,7 @@
 ﻿package com.codeazur.as3swf.data.filters
 {
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.utils.ColorUtils;
 	
 	public class FilterGlow extends Filter implements IFilter
 	{
@@ -39,6 +40,23 @@
 			if(knockout) { flags |= 0x40; }
 			if(compositeSource) { flags |= 0x20; }
 			data.writeUI8(flags);
+		}
+		
+		override public function toString(indent:uint = 0):String {
+			var str:String = "[GlowFilter] " +
+				"GlowColor: " + ColorUtils.rgbToString(glowColor) + ", " +
+				"BlurX: " + blurX + ", " +
+				"BlurY: " + blurY + ", " +
+				"Strength: " + strength + ", " +
+				"Passes: " + passes;
+			var flags:Array = [];
+			if(innerGlow) { flags.push("InnerGlow"); }
+			if(knockout) { flags.push("Knockout"); }
+			if(compositeSource) { flags.push("CompositeSource"); }
+			if(flags.length > 0) {
+				str += ", Flags: " + flags.join(", ");
+			}
+			return str;
 		}
 	}
 }

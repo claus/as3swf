@@ -128,7 +128,7 @@
 				var numberOfFilters:uint = _surfaceFilterList.length;
 				body.writeUI8(numberOfFilters);
 				for (var i:uint = 0; i < numberOfFilters; i++) {
-					body.writeFILTER(_surfaceFilterList[i])
+					body.writeFILTER(_surfaceFilterList[i]);
 				}
 			}
 			if (hasBlendMode) {
@@ -163,7 +163,7 @@
 			if (hasFilterList) {
 				str += "\n" + StringUtils.repeat(indent + 2) + "Filters:"
 				for(var i:uint = 0; i < surfaceFilterList.length; i++) {
-					str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + surfaceFilterList[i];
+					str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + surfaceFilterList[i].toString(indent + 4);
 				}
 			}
 			if (hasClipActions) {

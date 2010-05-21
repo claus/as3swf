@@ -1,6 +1,8 @@
 ﻿package com.codeazur.as3swf.data.filters
 {
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.utils.ColorUtils;
+	import com.codeazur.utils.StringUtils;
 	
 	public class FilterBevel extends Filter implements IFilter
 	{
@@ -51,6 +53,27 @@
 			if(compositeSource) { flags |= 0x20; }
 			if(onTop) { flags |= 0x10; }
 			data.writeUI8(flags);
+		}
+		
+		override public function toString(indent:uint = 0):String {
+			var str:String = "[BevelFilter] " +
+				"ShadowColor: " + ColorUtils.rgbToString(shadowColor) + ", " +
+				"HighlightColor: " + ColorUtils.rgbToString(highlightColor) + ", " +
+				"BlurX: " + blurX + ", " +
+				"BlurY: " + blurY + ", " +
+				"Angle: " + angle + ", " +
+				"Distance: " + distance + ", " +
+				"Strength: " + strength + ", " +
+				"Passes: " + passes;
+			var flags:Array = [];
+			if(innerShadow) { flags.push("InnerShadow"); }
+			if(knockout) { flags.push("Knockout"); }
+			if(compositeSource) { flags.push("CompositeSource"); }
+			if(onTop) { flags.push("OnTop"); }
+			if(flags.length > 0) {
+				str += ", Flags: " + flags.join(", ");
+			}
+			return str;
 		}
 	}
 }

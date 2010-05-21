@@ -1,11 +1,12 @@
 ﻿package com.codeazur.as3swf.data.filters
 {
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.utils.ColorUtils;
+	import com.codeazur.utils.StringUtils;
 	
 	public class FilterGradientGlow extends Filter implements IFilter
 	{
 		public var numColors:uint;
-		public var glowColor:uint;
 		public var blurX:Number;
 		public var blurY:Number;
 		public var strength:Number;
@@ -67,5 +68,37 @@
 			if(onTop) { flags |= 0x10; }
 			data.writeUI8(flags);
 		}
+		
+		override public function toString(indent:uint = 0):String {
+			var i:uint;
+			var str:String = "[" + filterName + "] " +
+				"BlurX: " + blurX + ", " +
+				"BlurY: " + blurY + ", " +
+				"Strength: " + strength + ", " +
+				"Passes: " + passes;
+			var flags:Array = [];
+			if(innerShadow) { flags.push("InnerShadow"); }
+			if(knockout) { flags.push("Knockout"); }
+			if(compositeSource) { flags.push("CompositeSource"); }
+			if(onTop) { flags.push("OnTop"); }
+			if(flags.length > 0) {
+				str += ", Flags: " + flags.join(", ");
+			}
+			if(gradientColors.length > 0) {
+				str += "\n" + StringUtils.repeat(indent + 2) + "GradientColors:";
+				for(i = 0; i < gradientColors.length; i++) {
+					str += ((i > 0) ? ", " : " ") + ColorUtils.rgbToString(gradientColors[i]);
+				}
+			}
+			if(gradientRatios.length > 0) {
+				str += "\n" + StringUtils.repeat(indent + 2) + "GradientRatios:";
+				for(i = 0; i < gradientRatios.length; i++) {
+					str += ((i > 0) ? ", " : " ") + gradientRatios[i];
+				}
+			}
+			return str;
+		}
+		
+		protected function get filterName():String { return "GradientGlowFilter"; }
 	}
 }

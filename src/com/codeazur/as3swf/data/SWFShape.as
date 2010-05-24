@@ -11,6 +11,7 @@
 	import com.codeazur.as3swf.exporters.DefaultShapeExporter;
 	import com.codeazur.as3swf.exporters.IShapeExporter;
 	import com.codeazur.as3swf.utils.ColorUtils;
+	import com.codeazur.as3swf.utils.NumberUtils;
 	import com.codeazur.utils.StringUtils;
 	
 	import flash.display.GradientType;
@@ -25,8 +26,8 @@
 
 		protected var tmpFillStyles:Vector.<SWFFillStyle>;
 		protected var tmpLineStyles:Vector.<SWFLineStyle>;
-		protected var tmpFillEdgeMaps:Vector.<Dictionary>;
-		protected var tmpLineEdgeMaps:Vector.<Dictionary>;
+		protected var tmpFillEdgeMap:Dictionary;
+		protected var tmpLineEdgeMap:Dictionary;
 
 		public function SWFShape(data:SWFData = null, level:uint = 1) {
 			_records = new Vector.<SWFShapeRecord>();
@@ -175,11 +176,9 @@
 			var currentFillStyleIdx0:uint = 0;
 			var currentFillStyleIdx1:uint = 0;
 			var currentLineStyleIdx:uint = 0;
-			tmpFillEdgeMaps = new Vector.<Dictionary>();
-			tmpLineEdgeMaps = new Vector.<Dictionary>();
-			
-			var path:Vector.<IEdge> = new Vector.<IEdge>();
 			var subPath:Vector.<IEdge> = new Vector.<IEdge>();
+			tmpFillEdgeMap = new Dictionary();
+			tmpLineEdgeMap = new Dictionary();
 			if (handler == null) { handler = new DefaultShapeExporter(null); }
 			for (var i:uint = 0; i < _records.length; i++) {
 				var shapeRecord:SWFShapeRecord = _records[i];
@@ -187,7 +186,7 @@
 					case SWFShapeRecord.TYPE_STYLECHANGE:
 						var styleChangeRecord:SWFShapeRecordStyleChange = shapeRecord as SWFShapeRecordStyleChange;
 						if (styleChangeRecord.stateFillStyle0 || styleChangeRecord.stateFillStyle1) {
-							processSubPath(path, subPath, currentFillStyleIdx0, currentFillStyleIdx1);
+							processSubPath(subPath, currentLineStyleIdx, currentFillStyleIdx0, currentFillStyleIdx1);
 							subPath = new Vector.<IEdge>();
 						}
 						if (styleChangeRecord.stateNewStyles) {
@@ -221,7 +220,7 @@
 						break;
 					case SWFShapeRecord.TYPE_STRAIGHTEDGE:
 						var straightEdgeRecord:SWFShapeRecordStraightEdge = shapeRecord as SWFShapeRecordStraightEdge;
-						from = new Point(xPos, yPos);
+						from = new Point(NumberUtils.roundPixels20(xPos), NumberUtils.roundPixels20(yPos));
 						if (straightEdgeRecord.generalLineFlag) {
 							xPos += straightEdgeRecord.deltaX / 20;
 							yPos += straightEdgeRecord.deltaY / 20;
@@ -232,53 +231,38 @@
 								xPos += straightEdgeRecord.deltaX / 20;
 							}
 						}
-						to = new Point(xPos, yPos);
+						to = new Point(NumberUtils.roundPixels20(xPos), NumberUtils.roundPixels20(yPos));
 						subPath.push(new StraightEdge(from, to, currentLineStyleIdx, currentFillStyleIdx1));
 						break;
 					case SWFShapeRecord.TYPE_CURVEDEDGE:
 						var curvedEdgeRecord:SWFShapeRecordCurvedEdge = shapeRecord as SWFShapeRecordCurvedEdge;
-						from = new Point(xPos, yPos);
+						from = new Point(NumberUtils.roundPixels20(xPos), NumberUtils.roundPixels20(yPos));
 						var xPosControl:Number = xPos + curvedEdgeRecord.controlDeltaX / 20;
 						var yPosControl:Number = yPos + curvedEdgeRecord.controlDeltaY / 20;
 						xPos = xPosControl + curvedEdgeRecord.anchorDeltaX / 20;
 						yPos = yPosControl + curvedEdgeRecord.anchorDeltaY / 20;
 						control = new Point(xPosControl, yPosControl);
-						to = new Point(xPos, yPos);
+						to = new Point(NumberUtils.roundPixels20(xPos), NumberUtils.roundPixels20(yPos));
 						subPath.push(new CurvedEdge(from, control, to, currentLineStyleIdx, currentFillStyleIdx1));
 						break; 
 					case SWFShapeRecord.TYPE_END:
 						// We're done. Process the last subpath, if any
-						processSubPath(path, subPath, currentFillStyleIdx0, currentFillStyleIdx1);
-						/*
-						for(var ii:uint = 0; ii < path.length; ii++) {
-							var e:IEdge = path[ii];
-							//if(e.fillStyleIdx == 3) {
-								trace(
-									Math.round(e.from.x*20), 
-									Math.round(e.from.y*20),
-									Math.round(e.to.x*20), 
-									Math.round(e.to.y*20),
-									(e.isDuplicate ? "   ###DUPE###   " : "   "),
-									e.fillStyleIdx
-								);
-							//}
-						}
-						*/
+						processSubPath(subPath, currentLineStyleIdx, currentFillStyleIdx0, currentFillStyleIdx1);
 						// Let the doc handler know that a shape export starts
 						handler.beginShape();
 						// Export fills first
-						exportFillPath(path, handler);
+						exportFillPath(handler);
 						// Export strokes last
-						exportLinePath(path, handler);
+						exportLinePath(handler);
 						// Let the doc handler know that we're done exporting a shape
 						handler.endShape();
 						break;
 				}
 			}
 		}
-
-		protected function exportFillPath(fillPath:Vector.<IEdge>, handler:IShapeExporter):void {
-			var path:Vector.<IEdge> = sortFillPath(fillPath);
+		
+		protected function exportFillPath(handler:IShapeExporter):void {
+			var path:Vector.<IEdge> = createPathFromEdgeMap(tmpFillEdgeMap);
 			var fillStyleIdx:uint = uint.MAX_VALUE;
 			var pos:Point = new Point(Number.MAX_VALUE, Number.MAX_VALUE);
 			var hasFills:Boolean = false;
@@ -379,95 +363,92 @@
 			}
 		}
 		
-		protected function exportLinePath(linePath:Vector.<IEdge>, handler:IShapeExporter):void {
-			var path:Vector.<IEdge> = new Vector.<IEdge>();
+		protected function exportLinePath(handler:IShapeExporter):void {
+			var path:Vector.<IEdge> = createPathFromEdgeMap(tmpLineEdgeMap);
 			var pos:Point = new Point(Number.MAX_VALUE, Number.MAX_VALUE);
+			var lineStyleIdx:uint = uint.MAX_VALUE;
 			var lineStyle:SWFLineStyle;
 			var hasLines:Boolean = false;
-			for (var lineStyleIdx:uint = 1; lineStyleIdx <= tmpLineStyles.length; lineStyleIdx++) {
-				var newLineStyle:Boolean = true;
-				try {
-					lineStyle = tmpLineStyles[lineStyleIdx - 1];
-				} catch (e:Error) {
-					lineStyle = null;
-				}
-				for (var i:uint = 0; i < linePath.length; i++) {
-					var e:IEdge = linePath[i];
-					if (!e.isDuplicate) {
-						if (e.lineStyleIdx == lineStyleIdx) {
-							if (!hasLines) {
-								handler.beginLines();
-								hasLines = true;
+			var newLineStyle:Boolean = true;
+			for (var i:uint = 0; i < path.length; i++) {
+				var e:IEdge = path[i];
+				if (!e.isDuplicate) {
+					if (!hasLines) {
+						handler.beginLines();
+						hasLines = true;
+					}
+					if (lineStyleIdx != e.lineStyleIdx) {
+						lineStyleIdx = e.lineStyleIdx;
+						try {
+							lineStyle = tmpLineStyles[lineStyleIdx - 1];
+						} catch (e:Error) {
+							lineStyle = null;
+						}
+						if (lineStyle != null) {
+							var scaleMode:String = LineScaleMode.NORMAL;
+							if (lineStyle.noHScaleFlag && lineStyle.noVScaleFlag) {
+								scaleMode = LineScaleMode.NONE;
+							} else if (lineStyle.noHScaleFlag) {
+								scaleMode = LineScaleMode.HORIZONTAL;
+							} else if (lineStyle.noVScaleFlag) {
+								scaleMode = LineScaleMode.VERTICAL;
 							}
-							if (newLineStyle) {
-								if (lineStyle != null) {
-									var scaleMode:String = LineScaleMode.NORMAL;
-									if (lineStyle.noHScaleFlag && lineStyle.noVScaleFlag) {
-										scaleMode = LineScaleMode.NONE;
-									} else if (lineStyle.noHScaleFlag) {
-										scaleMode = LineScaleMode.HORIZONTAL;
-									} else if (lineStyle.noVScaleFlag) {
-										scaleMode = LineScaleMode.VERTICAL;
-									}
-									handler.lineStyle(
-										lineStyle.width / 20, 
-										ColorUtils.rgb(lineStyle.color), 
-										ColorUtils.alpha(lineStyle.color), 
-										lineStyle.pixelHintingFlag,
-										scaleMode,
-										LineCapsStyle.toString(lineStyle.startCapsStyle),
-										LineCapsStyle.toString(lineStyle.endCapsStyle),
-										LineJointStyle.toString(lineStyle.jointStyle),
-										lineStyle.miterLimitFactor);
+							handler.lineStyle(
+								lineStyle.width / 20, 
+								ColorUtils.rgb(lineStyle.color), 
+								ColorUtils.alpha(lineStyle.color), 
+								lineStyle.pixelHintingFlag,
+								scaleMode,
+								LineCapsStyle.toString(lineStyle.startCapsStyle),
+								LineCapsStyle.toString(lineStyle.endCapsStyle),
+								LineJointStyle.toString(lineStyle.jointStyle),
+								lineStyle.miterLimitFactor);
 
-									if(lineStyle.hasFillFlag) {
-										var fillStyle:SWFFillStyle = lineStyle.fillType;
-										switch(fillStyle.type) {
-											case 0x10:
-											case 0x12:
-											case 0x13:
-												// Gradient fill
-												var colors:Array = [];
-												var alphas:Array = [];
-												var ratios:Array = [];
-												var gradientRecord:SWFGradientRecord;
-												var matrix:Matrix = fillStyle.gradientMatrix.matrix.clone();
-												matrix.tx /= 20;
-												matrix.ty /= 20;
-												for (var gri:uint = 0; gri < fillStyle.gradient.records.length; gri++) {
-													gradientRecord = fillStyle.gradient.records[gri];
-													colors.push(ColorUtils.rgb(gradientRecord.color));
-													alphas.push(ColorUtils.alpha(gradientRecord.color));
-													ratios.push(gradientRecord.ratio);
-												}
-												handler.lineGradientStyle(
-													(fillStyle.type == 0x10) ? GradientType.LINEAR : GradientType.RADIAL,
-													colors, alphas, ratios, matrix,
-													GradientSpreadMode.toString(fillStyle.gradient.spreadMode),
-													GradientInterpolationMode.toString(fillStyle.gradient.interpolationMode),
-													fillStyle.gradient.focalPoint
-												);
-												break;
+							if(lineStyle.hasFillFlag) {
+								var fillStyle:SWFFillStyle = lineStyle.fillType;
+								switch(fillStyle.type) {
+									case 0x10:
+									case 0x12:
+									case 0x13:
+										// Gradient fill
+										var colors:Array = [];
+										var alphas:Array = [];
+										var ratios:Array = [];
+										var gradientRecord:SWFGradientRecord;
+										var matrix:Matrix = fillStyle.gradientMatrix.matrix.clone();
+										matrix.tx /= 20;
+										matrix.ty /= 20;
+										for (var gri:uint = 0; gri < fillStyle.gradient.records.length; gri++) {
+											gradientRecord = fillStyle.gradient.records[gri];
+											colors.push(ColorUtils.rgb(gradientRecord.color));
+											alphas.push(ColorUtils.alpha(gradientRecord.color));
+											ratios.push(gradientRecord.ratio);
 										}
-									}
-								} else {
-									// We should never get here
-									handler.lineStyle(0);
+										handler.lineGradientStyle(
+											(fillStyle.type == 0x10) ? GradientType.LINEAR : GradientType.RADIAL,
+											colors, alphas, ratios, matrix,
+											GradientSpreadMode.toString(fillStyle.gradient.spreadMode),
+											GradientInterpolationMode.toString(fillStyle.gradient.interpolationMode),
+											fillStyle.gradient.focalPoint
+										);
+										break;
 								}
-								newLineStyle = false;
 							}
-							if (!e.from.equals(pos)) {
-								handler.moveTo(e.from.x, e.from.y);
-							}
-							if (e is CurvedEdge) {
-								var c:CurvedEdge = CurvedEdge(e);
-								handler.curveTo(c.control.x, c.control.y, c.to.x, c.to.y);
-							} else {
-								handler.lineTo(e.to.x, e.to.y);
-							}
-							pos = e.to;
+						} else {
+							// We should never get here
+							handler.lineStyle(0);
 						}
 					}
+					if (!e.from.equals(pos)) {
+						handler.moveTo(e.from.x, e.from.y);
+					}
+					if (e is CurvedEdge) {
+						var c:CurvedEdge = CurvedEdge(e);
+						handler.curveTo(c.control.x, c.control.y, c.to.x, c.to.y);
+					} else {
+						handler.lineTo(e.to.x, e.to.y);
+					}
+					pos = e.to;
 				}
 			}
 			if (hasLines) {
@@ -475,58 +456,79 @@
 			}
 		}
 		
-		protected function sortFillPath(path:Vector.<IEdge>):Vector.<IEdge> {
-			var oldPath:Vector.<IEdge> = path.concat();
+		protected function createPathFromEdgeMap(edgeMap:Dictionary):Vector.<IEdge> {
+			cleanEdgeMap(edgeMap);
 			var newPath:Vector.<IEdge> = new Vector.<IEdge>();
-			var fillStyleIdx:uint;
-			var posStart:Point;
-			var i:uint;
-			while (oldPath.length > 0) {
-				i = 0;
-				posStart = oldPath[0].from;
-				fillStyleIdx = oldPath[0].fillStyleIdx;
-				do {
-					var e:IEdge = oldPath[i];
-					if (fillStyleIdx == e.fillStyleIdx) {
-						newPath.push(e);
-						oldPath.splice(i, 1);
-						if (posStart.equals(e.to)) {
-							// The end point of the current edge matches the start point of the subshape
-							// That means that the subshape is closed and complete.
-							// Bail out of the inner loop, continue with next subshape.
-							break;
-						}
-					} else {
-						i++;
-					}
-				}
-				while (i < oldPath.length);
+			var styleIdxArray:Array = [];
+			for(var styleIdx:String in edgeMap) {
+				styleIdxArray.push(parseInt(styleIdx));
+			}
+			styleIdxArray.sort(Array.NUMERIC);
+			for(var i:uint = 0; i < styleIdxArray.length; i++) {
+				appendEdges(newPath, edgeMap[styleIdxArray[i]] as Vector.<IEdge>);
 			}
 			return newPath;
 		}
 
-		protected function processSubPath(path:Vector.<IEdge>, subPath:Vector.<IEdge>, fillStyleIdx0:uint, fillStyleIdx1:uint):void {
+		protected function processSubPath(subPath:Vector.<IEdge>, lineStyleIdx:uint, fillStyleIdx0:uint, fillStyleIdx1:uint):void {
 			var j:int;
 			var hasDuplicates:Boolean = (fillStyleIdx0 != 0 && fillStyleIdx1 != 0);
-			var hasFill:Boolean = !(fillStyleIdx0 == 0 && fillStyleIdx1 == 0);
-			if (fillStyleIdx1 != 0 || !hasFill) {
-				for (j = 0; j < subPath.length; j++) {
-					if(hasFill) {
-						//registerEdgeInMap(tmpFillEdgeMaps, subPath[j]);
-					}
-					
-					path.push(subPath[j]);
-				}
-			}
+			var hasFill:Boolean = (fillStyleIdx0 != 0 || fillStyleIdx1 != 0);
+			var path:Vector.<IEdge>;
 			if (fillStyleIdx0 != 0) {
+				path = tmpFillEdgeMap[fillStyleIdx0] as Vector.<IEdge>;
+				if(path == null) { path = tmpFillEdgeMap[fillStyleIdx0] = new Vector.<IEdge>(); }
 				for (j = subPath.length - 1; j >= 0; j--) {
 					var e:IEdge = subPath[j].reverseWithNewFillStyle(fillStyleIdx0);
 					e.isDuplicate = hasDuplicates;
 					path.push(e);
 				}
 			}
+			if (fillStyleIdx1 != 0) {
+				path = tmpFillEdgeMap[fillStyleIdx1] as Vector.<IEdge>;
+				if(path == null) { path = tmpFillEdgeMap[fillStyleIdx1] = new Vector.<IEdge>(); }
+				for (j = 0; j < subPath.length; j++) {
+					path.push(subPath[j]);
+				}
+			}
+			if (lineStyleIdx != 0) {
+				path = tmpLineEdgeMap[lineStyleIdx] as Vector.<IEdge>;
+				if(path == null) { path = tmpLineEdgeMap[lineStyleIdx] = new Vector.<IEdge>(); }
+				for (j = 0; j < subPath.length; j++) {
+					path.push(subPath[j]);
+				}
+			}
 		}
-		
+
+		protected function cleanEdgeMap(edgeMap:Dictionary):void {
+			for(var styleIdx:String in edgeMap) {
+				var subPath:Vector.<IEdge> = edgeMap[styleIdx] as Vector.<IEdge>;
+				if(subPath && subPath.length > 0) {
+					var i:uint;
+					var from:Point;
+					var coordMap:Dictionary = new Dictionary();
+					for(i = 0; i < subPath.length; i++) {
+						from = subPath[i].from;
+						coordMap[from.x + "_" + from.y] = subPath[i];
+					}
+					var tmpPath:Vector.<IEdge> = new Vector.<IEdge>();
+					while(subPath.length > 0) {
+						var edge:IEdge = subPath[0];
+						while(edge) {
+							tmpPath.push(edge);
+							delete coordMap[edge.from.x + "_" + edge.from.y];
+							var idx:int = subPath.indexOf(edge);
+							if(idx >= 0) {
+								subPath.splice(idx, 1);
+							}
+							edge = coordMap[edge.to.x + "_" + edge.to.y] as IEdge;
+						}
+					}
+					edgeMap[styleIdx] = tmpPath;
+				}
+			}
+		}
+
 		protected function appendFillStyles(v1:Vector.<SWFFillStyle>, v2:Vector.<SWFFillStyle>):void {
 			for (var i:uint = 0; i < v2.length; i++) {
 				v1.push(v2[i]);
@@ -539,6 +541,12 @@
 			}
 		}
 
+		protected function appendEdges(v1:Vector.<IEdge>, v2:Vector.<IEdge>):void {
+			for (var i:uint = 0; i < v2.length; i++) {
+				v1.push(v2[i]);
+			}
+		}
+		
 		public function toString(indent:uint = 0):String {
 			var str:String = "\n" + StringUtils.repeat(indent) + "ShapeRecords:";
 			for (var i:uint = 0; i < _records.length; i++) {

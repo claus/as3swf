@@ -185,7 +185,7 @@
 				switch(shapeRecord.type) {
 					case SWFShapeRecord.TYPE_STYLECHANGE:
 						var styleChangeRecord:SWFShapeRecordStyleChange = shapeRecord as SWFShapeRecordStyleChange;
-						if (styleChangeRecord.stateFillStyle0 || styleChangeRecord.stateFillStyle1) {
+						if (styleChangeRecord.stateLineStyle || styleChangeRecord.stateFillStyle0 || styleChangeRecord.stateFillStyle1) {
 							processSubPath(subPath, currentLineStyleIdx, currentFillStyleIdx0, currentFillStyleIdx1);
 							subPath = new Vector.<IEdge>();
 						}
@@ -369,7 +369,6 @@
 			var lineStyleIdx:uint = uint.MAX_VALUE;
 			var lineStyle:SWFLineStyle;
 			var hasLines:Boolean = false;
-			var newLineStyle:Boolean = true;
 			for (var i:uint = 0; i < path.length; i++) {
 				var e:IEdge = path[i];
 				if (!e.isDuplicate) {
@@ -464,6 +463,7 @@
 				styleIdxArray.push(parseInt(styleIdx));
 			}
 			styleIdxArray.sort(Array.NUMERIC);
+			trace(styleIdxArray);
 			for(var i:uint = 0; i < styleIdxArray.length; i++) {
 				appendEdges(newPath, edgeMap[styleIdxArray[i]] as Vector.<IEdge>);
 			}

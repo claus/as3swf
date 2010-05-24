@@ -261,10 +261,34 @@
 			}
 		}
 		
+		protected function processSubPath(subPath:Vector.<IEdge>, lineStyleIdx:uint, fillStyleIdx0:uint, fillStyleIdx1:uint):void {
+			var path:Vector.<IEdge>;
+			var hasDuplicates:Boolean = (fillStyleIdx0 != 0 && fillStyleIdx1 != 0);
+			if (fillStyleIdx0 != 0) {
+				path = tmpFillEdgeMap[fillStyleIdx0] as Vector.<IEdge>;
+				if(path == null) { path = tmpFillEdgeMap[fillStyleIdx0] = new Vector.<IEdge>(); }
+				for (var j:int = subPath.length - 1; j >= 0; j--) {
+					var e:IEdge = subPath[j].reverseWithNewFillStyle(fillStyleIdx0);
+					e.isDuplicate = hasDuplicates;
+					path.push(e);
+				}
+			}
+			if (fillStyleIdx1 != 0) {
+				path = tmpFillEdgeMap[fillStyleIdx1] as Vector.<IEdge>;
+				if(path == null) { path = tmpFillEdgeMap[fillStyleIdx1] = new Vector.<IEdge>(); }
+				appendEdges(path, subPath);
+			}
+			if (lineStyleIdx != 0) {
+				path = tmpLineEdgeMap[lineStyleIdx] as Vector.<IEdge>;
+				if(path == null) { path = tmpLineEdgeMap[lineStyleIdx] = new Vector.<IEdge>(); }
+				appendEdges(path, subPath);
+			}
+		}
+		
 		protected function exportFillPath(handler:IShapeExporter):void {
 			var path:Vector.<IEdge> = createPathFromEdgeMap(tmpFillEdgeMap);
-			var fillStyleIdx:uint = uint.MAX_VALUE;
 			var pos:Point = new Point(Number.MAX_VALUE, Number.MAX_VALUE);
+			var fillStyleIdx:uint = uint.MAX_VALUE;
 			var hasFills:Boolean = false;
 			var hasOpenFill:Boolean = false;
 			for (var i:uint = 0; i < path.length; i++) {
@@ -368,14 +392,10 @@
 			var pos:Point = new Point(Number.MAX_VALUE, Number.MAX_VALUE);
 			var lineStyleIdx:uint = uint.MAX_VALUE;
 			var lineStyle:SWFLineStyle;
-			var hasLines:Boolean = false;
-			for (var i:uint = 0; i < path.length; i++) {
-				var e:IEdge = path[i];
-				if (!e.isDuplicate) {
-					if (!hasLines) {
-						handler.beginLines();
-						hasLines = true;
-					}
+			if(path.length > 0) {
+				handler.beginLines();
+				for (var i:uint = 0; i < path.length; i++) {
+					var e:IEdge = path[i];
 					if (lineStyleIdx != e.lineStyleIdx) {
 						lineStyleIdx = e.lineStyleIdx;
 						try {
@@ -402,7 +422,7 @@
 								LineCapsStyle.toString(lineStyle.endCapsStyle),
 								LineJointStyle.toString(lineStyle.jointStyle),
 								lineStyle.miterLimitFactor);
-
+							
 							if(lineStyle.hasFillFlag) {
 								var fillStyle:SWFFillStyle = lineStyle.fillType;
 								switch(fillStyle.type) {
@@ -449,8 +469,6 @@
 					}
 					pos = e.to;
 				}
-			}
-			if (hasLines) {
 				handler.endLines();
 			}
 		}
@@ -463,41 +481,10 @@
 				styleIdxArray.push(parseInt(styleIdx));
 			}
 			styleIdxArray.sort(Array.NUMERIC);
-			trace(styleIdxArray);
 			for(var i:uint = 0; i < styleIdxArray.length; i++) {
 				appendEdges(newPath, edgeMap[styleIdxArray[i]] as Vector.<IEdge>);
 			}
 			return newPath;
-		}
-
-		protected function processSubPath(subPath:Vector.<IEdge>, lineStyleIdx:uint, fillStyleIdx0:uint, fillStyleIdx1:uint):void {
-			var j:int;
-			var hasDuplicates:Boolean = (fillStyleIdx0 != 0 && fillStyleIdx1 != 0);
-			var hasFill:Boolean = (fillStyleIdx0 != 0 || fillStyleIdx1 != 0);
-			var path:Vector.<IEdge>;
-			if (fillStyleIdx0 != 0) {
-				path = tmpFillEdgeMap[fillStyleIdx0] as Vector.<IEdge>;
-				if(path == null) { path = tmpFillEdgeMap[fillStyleIdx0] = new Vector.<IEdge>(); }
-				for (j = subPath.length - 1; j >= 0; j--) {
-					var e:IEdge = subPath[j].reverseWithNewFillStyle(fillStyleIdx0);
-					e.isDuplicate = hasDuplicates;
-					path.push(e);
-				}
-			}
-			if (fillStyleIdx1 != 0) {
-				path = tmpFillEdgeMap[fillStyleIdx1] as Vector.<IEdge>;
-				if(path == null) { path = tmpFillEdgeMap[fillStyleIdx1] = new Vector.<IEdge>(); }
-				for (j = 0; j < subPath.length; j++) {
-					path.push(subPath[j]);
-				}
-			}
-			if (lineStyleIdx != 0) {
-				path = tmpLineEdgeMap[lineStyleIdx] as Vector.<IEdge>;
-				if(path == null) { path = tmpLineEdgeMap[lineStyleIdx] = new Vector.<IEdge>(); }
-				for (j = 0; j < subPath.length; j++) {
-					path.push(subPath[j]);
-				}
-			}
 		}
 
 		protected function cleanEdgeMap(edgeMap:Dictionary):void {

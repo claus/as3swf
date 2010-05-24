@@ -77,7 +77,7 @@
 			if (_characters.length > 0) {
 				str += "\n" + StringUtils.repeat(indent + 2) + "Characters:";
 				for (i = 0; i < _characters.length; i++) {
-					str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + _characters[i].toString();
+					str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + _characters[i].toString(indent + 4);
 				}
 			}
 			if (_condActions.length > 0) {

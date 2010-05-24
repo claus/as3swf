@@ -1,12 +1,14 @@
 ﻿package com.codeazur.as3swf.data
 {
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.data.consts.BlendMode;
 	import com.codeazur.as3swf.data.filters.IFilter;
+	import com.codeazur.utils.StringUtils;
 	
 	public class SWFButtonRecord
 	{
-		public var hasBlendMode:Boolean;
-		public var hasFilterList:Boolean;
+		public var hasBlendMode:Boolean = false;
+		public var hasFilterList:Boolean = false;
 		public var stateHitTest:Boolean;
 		public var stateDown:Boolean;
 		public var stateOver:Boolean;
@@ -31,8 +33,6 @@
 
 		public function parse(data:SWFData, level:uint = 1):void {
 			var flags:uint = data.readUI8();
-			hasBlendMode = ((flags & 0x20) != 0);
-			hasFilterList = ((flags & 0x10) != 0);
 			stateHitTest = ((flags & 0x08) != 0);
 			stateDown = ((flags & 0x04) != 0);
 			stateOver = ((flags & 0x02) != 0);
@@ -42,12 +42,14 @@
 			placeMatrix = data.readMATRIX();
 			if (level >= 2) {
 				colorTransform = data.readCXFORMWITHALPHA();
+				hasFilterList = ((flags & 0x10) != 0);
 				if (hasFilterList) {
 					var numberOfFilters:uint = data.readUI8();
 					for (var i:uint = 0; i < numberOfFilters; i++) {
 						_filterList.push(data.readFILTER());
 					}
 				}
+				hasBlendMode = ((flags & 0x20) != 0);
 				if (hasBlendMode) {
 					blendMode = data.readUI8();
 				}
@@ -56,8 +58,8 @@
 		
 		public function publish(data:SWFData, level:uint = 1):void {
 			var flags:uint = 0;
-			if(hasBlendMode) { flags |= 0x20; }
-			if(hasFilterList) { flags |= 0x10; }
+			if(level >= 2 && hasBlendMode) { flags |= 0x20; }
+			if(level >= 2 && hasFilterList) { flags |= 0x10; }
 			if(stateHitTest) { flags |= 0x08; }
 			if(stateDown) { flags |= 0x04; }
 			if(stateOver) { flags |= 0x02; }
@@ -81,7 +83,7 @@
 			}
 		}
 		
-		public function toString():String {
+		public function toString(indent:uint = 0):String {
 			var str:String = "Depth: " + placeDepth + ", CharacterID: " + characterId + ", States: ";
 			var states:Array = [];
 			if (stateUp) { states.push("up"); }
@@ -89,6 +91,19 @@
 			if (stateDown) { states.push("down"); }
 			if (stateHitTest) { states.push("hit"); }
 			str += states.join(",");
+			if (hasBlendMode) { str += ", BlendMode: " + BlendMode.toString(blendMode); }
+			if (placeMatrix && !placeMatrix.isIdentity()) {
+				str += "\n" + StringUtils.repeat(indent + 2) + "Matrix: " + placeMatrix;
+			}
+			if (colorTransform && !colorTransform.isIdentity()) {
+				str += "\n" + StringUtils.repeat(indent + 2) + "ColorTransform: " + colorTransform;
+			}
+			if (hasFilterList) {
+				str += "\n" + StringUtils.repeat(indent + 2) + "Filters:"
+				for(var i:uint = 0; i < filterList.length; i++) {
+					str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + filterList[i].toString(indent + 4);
+				}
+			}
 			return str;
 		}
 	}

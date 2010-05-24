@@ -44,6 +44,10 @@
 			translateY = data.readSB(translateBits);
 		}
 		
+		public function isIdentity():Boolean {
+			return (scaleX == 1 && scaleY == 1 && rotateSkew0 == 0 && rotateSkew1 == 0 && translateX == 0 && translateY == 0);
+		}
+		
 		public function toString():String {
 			return "(" + scaleX + "," + scaleY + "," + rotateSkew0 + "," + rotateSkew1 + "," + translateX + "," + translateY + ")";
 		}

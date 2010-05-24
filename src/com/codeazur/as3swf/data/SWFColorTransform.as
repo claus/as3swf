@@ -67,6 +67,11 @@
 			}
 		}
 		
+		public function isIdentity():Boolean {
+			return (rMult == 1 && gMult == 1 && bMult == 1 && aMult == 1)
+				&& (rAdd == 0 && gAdd == 0 && bAdd == 0 && aAdd == 0);
+		}
+		
 		public function toString():String {
 			return rMult + "," + gMult + "," + bMult + "," + rAdd + "," + gAdd + "," + bAdd;
 		}

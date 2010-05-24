@@ -2,6 +2,7 @@ package com.codeazur.as3swf.exporters
 {
 	import com.codeazur.as3swf.SWF;
 	
+	import flash.display.CapsStyle;
 	import flash.display.GraphicsEndFill;
 	import flash.display.GraphicsGradientFill;
 	import flash.display.GraphicsPath;
@@ -9,6 +10,7 @@ package com.codeazur.as3swf.exporters
 	import flash.display.GraphicsStroke;
 	import flash.display.IGraphicsData;
 	import flash.display.InterpolationMethod;
+	import flash.display.JointStyle;
 	import flash.display.LineScaleMode;
 	import flash.display.SpreadMethod;
 	import flash.geom.Matrix;
@@ -52,17 +54,17 @@ package com.codeazur.as3swf.exporters
 			));
 		}
 
-		//override public function beginBitmapFill(bitmapId:uint, matrix:Matrix = null, repeat:Boolean = true, smooth:Boolean = false):void {
-		//	cleanUpGraphicsPath();
-		//	_graphicsData.push(new GraphicsBitmapFill(
-		//}
+		override public function beginBitmapFill(bitmapId:uint, matrix:Matrix = null, repeat:Boolean = true, smooth:Boolean = false):void {
+			cleanUpGraphicsPath();
+			// TODO
+		}
 		
 		override public function endFill():void {
 			cleanUpGraphicsPath();
 			_graphicsData.push(new GraphicsEndFill());
 		}
 
-		override public function lineStyle(thickness:Number = NaN, color:uint = 0, alpha:Number = 1.0, pixelHinting:Boolean = false, scaleMode:String = LineScaleMode.NORMAL, startCaps:String = null, endCaps:String = null, joints:String = null, miterLimit:Number = 3):void {
+		override public function lineStyle(thickness:Number = NaN, color:uint = 0, alpha:Number = 1.0, pixelHinting:Boolean = false, scaleMode:String = LineScaleMode.NORMAL, startCaps:String = CapsStyle.ROUND, endCaps:String = CapsStyle.ROUND, joints:String = JointStyle.ROUND, miterLimit:Number = 3):void {
 			cleanUpGraphicsPath();
 			_graphicsData.push(new GraphicsStroke(
 				thickness,

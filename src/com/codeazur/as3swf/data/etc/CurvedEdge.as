@@ -19,7 +19,7 @@
 		}
 		
 		override public function toString():String {
-			return "stroke:" + lineStyleIdx + ", fill:" + fillStyleIdx + ", start:" + from.toString() + ", control:" + control.toString() + ", end:" + to.toString() + (isDuplicate ? " (DUPE)" : "");;
+			return "stroke:" + lineStyleIdx + ", fill:" + fillStyleIdx + ", start:" + from.toString() + ", control:" + control.toString() + ", end:" + to.toString();
 		}
 	}
 }

@@ -28,7 +28,8 @@
 		protected var tmpLineStyles:Vector.<SWFLineStyle>;
 		protected var tmpFillEdgeMap:Dictionary;
 		protected var tmpLineEdgeMap:Dictionary;
-
+		protected var coordMap:Dictionary;
+		
 		public function SWFShape(data:SWFData = null, level:uint = 1) {
 			_records = new Vector.<SWFShapeRecord>();
 			if (data != null) {
@@ -268,9 +269,7 @@
 				path = tmpFillEdgeMap[fillStyleIdx0] as Vector.<IEdge>;
 				if(path == null) { path = tmpFillEdgeMap[fillStyleIdx0] = new Vector.<IEdge>(); }
 				for (var j:int = subPath.length - 1; j >= 0; j--) {
-					var e:IEdge = subPath[j].reverseWithNewFillStyle(fillStyleIdx0);
-					e.isDuplicate = hasDuplicates;
-					path.push(e);
+					path.push(subPath[j].reverseWithNewFillStyle(fillStyleIdx0));
 				}
 			}
 			if (fillStyleIdx1 != 0) {
@@ -491,31 +490,72 @@
 			for(var styleIdx:String in edgeMap) {
 				var subPath:Vector.<IEdge> = edgeMap[styleIdx] as Vector.<IEdge>;
 				if(subPath && subPath.length > 0) {
-					var i:uint;
-					var from:Point;
-					var coordMap:Dictionary = new Dictionary();
-					for(i = 0; i < subPath.length; i++) {
-						from = subPath[i].from;
-						coordMap[from.x + "_" + from.y] = subPath[i];
-					}
+					var idx:uint;
+					var prevEdge:IEdge;
 					var tmpPath:Vector.<IEdge> = new Vector.<IEdge>();
+					createCoordMap(subPath);
 					while(subPath.length > 0) {
-						var edge:IEdge = subPath[0];
-						while(edge) {
-							tmpPath.push(edge);
-							delete coordMap[edge.from.x + "_" + edge.from.y];
-							var idx:int = subPath.indexOf(edge);
-							if(idx >= 0) {
-								subPath.splice(idx, 1);
+						idx = 0;
+						while(idx < subPath.length) {
+							if(prevEdge == null || prevEdge.to.equals(subPath[idx].from)) {
+								var edge:IEdge = subPath.splice(idx, 1)[0];
+								tmpPath.push(edge);
+								removeEdgeFromCoordMap(edge);
+								prevEdge = edge;
+							} else {
+								edge = findNextEdgeInCoordMap(prevEdge);
+								if(edge == null) {
+									idx = 0;
+									prevEdge = null;
+								} else {
+									idx = subPath.indexOf(edge);
+								}
 							}
-							edge = coordMap[edge.to.x + "_" + edge.to.y] as IEdge;
 						}
 					}
 					edgeMap[styleIdx] = tmpPath;
 				}
 			}
 		}
-
+		
+		protected function createCoordMap(path:Vector.<IEdge>):void {
+			coordMap = new Dictionary();
+			for(var i:uint = 0; i < path.length; i++) {
+				var from:Point = path[i].from;
+				var key:String = from.x + "_" + from.y;
+				var coordMapArray:Array = coordMap[key] as Array;
+				if(coordMapArray == null) {
+					coordMap[key] = [path[i]];
+				} else {
+					coordMapArray.push(path[i]);
+				}
+			}
+		}
+		
+		protected function removeEdgeFromCoordMap(edge:IEdge):void {
+			var key:String = edge.from.x + "_" + edge.from.y;
+			var coordMapArray:Array = coordMap[key] as Array;
+			if(coordMapArray) {
+				if(coordMapArray.length == 1) {
+					delete coordMap[key];
+				} else {
+					var coordMapArrayIndex:int = coordMapArray.indexOf(edge);
+					if(coordMapArrayIndex > -1) {
+						coordMapArray.splice(coordMapArrayIndex, 1);
+					}
+				}
+			}
+		}
+		
+		protected function findNextEdgeInCoordMap(edge:IEdge):IEdge {
+			var key:String = edge.to.x + "_" + edge.to.y;
+			var coordMapArray:Array = coordMap[key] as Array;
+			if(coordMapArray && coordMapArray.length > 0) {
+				return coordMapArray[0] as IEdge;
+			}
+			return null;
+		}
+		
 		protected function appendFillStyles(v1:Vector.<SWFFillStyle>, v2:Vector.<SWFFillStyle>):void {
 			for (var i:uint = 0; i < v2.length; i++) {
 				v1.push(v2[i]);

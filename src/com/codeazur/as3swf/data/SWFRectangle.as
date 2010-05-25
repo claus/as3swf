@@ -1,6 +1,9 @@
 ﻿package com.codeazur.as3swf.data
 {
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.utils.NumberUtils;
+	
+	import flash.geom.Rectangle;
 	
 	public class SWFRectangle
 	{
@@ -9,7 +12,10 @@
 		public var ymin:int = 0;
 		public var ymax:int = 8000;
 		
+		protected var _rectangle:Rectangle;
+		
 		public function SWFRectangle(data:SWFData = null) {
+			_rectangle = new Rectangle();
 			if (data != null) {
 				parse(data);
 			}
@@ -32,6 +38,14 @@
 			data.writeSB(numBits, xmax);
 			data.writeSB(numBits, ymin);
 			data.writeSB(numBits, ymax);
+		}
+		
+		public function get rect():Rectangle {
+			_rectangle.left = NumberUtils.roundPixels20(xmin / 20);
+			_rectangle.right = NumberUtils.roundPixels20(xmax / 20);
+			_rectangle.top = NumberUtils.roundPixels20(ymin / 20);
+			_rectangle.bottom = NumberUtils.roundPixels20(ymax / 20);
+			return _rectangle;
 		}
 		
 		public function toString():String {

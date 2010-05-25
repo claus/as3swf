@@ -504,11 +504,11 @@
 								prevEdge = edge;
 							} else {
 								edge = findNextEdgeInCoordMap(prevEdge);
-								if(edge == null) {
+								if(edge) {
+									idx = subPath.indexOf(edge);
+								} else {
 									idx = 0;
 									prevEdge = null;
-								} else {
-									idx = subPath.indexOf(edge);
 								}
 							}
 						}
@@ -539,9 +539,9 @@
 				if(coordMapArray.length == 1) {
 					delete coordMap[key];
 				} else {
-					var coordMapArrayIndex:int = coordMapArray.indexOf(edge);
-					if(coordMapArrayIndex > -1) {
-						coordMapArray.splice(coordMapArrayIndex, 1);
+					var i:int = coordMapArray.indexOf(edge);
+					if(i > -1) {
+						coordMapArray.splice(i, 1);
 					}
 				}
 			}

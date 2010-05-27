@@ -32,9 +32,9 @@
 		
 		public function toString(indent:uint = 0):String {
 			return "[ActionGetURL2] " +
-				"SendVarsMethod: " + sendVarsMethod + " (" + sendVarsMethodToString() + "), ",
-				"Reserved: " + reserved + ", ",
-				"LoadTargetFlag: " + loadTargetFlag + ", ",
+				"SendVarsMethod: " + sendVarsMethod + " (" + sendVarsMethodToString() + "), " +
+				"Reserved: " + reserved + ", " +
+				"LoadTargetFlag: " + loadTargetFlag + ", " +
 				"LoadVariablesFlag: " + loadVariablesFlag;
 		}
 		

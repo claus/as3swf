@@ -5,17 +5,27 @@
 	import com.codeazur.as3swf.data.actions.IAction;
 	import com.codeazur.utils.StringUtils;
 	
+	import flash.utils.Dictionary;
+	
 	public class TagDefineButton extends Tag implements IDefinitionTag
 	{
 		public static const TYPE:uint = 7;
+		
+		public static const STATE_UP:String = "up"; 
+		public static const STATE_OVER:String = "over"; 
+		public static const STATE_DOWN:String = "down"; 
+		public static const STATE_HIT:String = "hit"; 
 		
 		protected var _characterId:uint;
 		protected var _characters:Vector.<SWFButtonRecord>;
 		protected var _actions:Vector.<IAction>;
 		
+		protected var _frames:Dictionary;
+		
 		public function TagDefineButton() {
 			_characters = new Vector.<SWFButtonRecord>();
 			_actions = new Vector.<IAction>();
+			_frames = new Dictionary();
 		}
 		
 		public function get characterId():uint { return _characterId; }
@@ -32,6 +42,7 @@
 			while ((action = data.readACTIONRECORD()) != null) {
 				_actions.push(action);
 			}
+			processRecords();
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
@@ -50,9 +61,41 @@
 			data.writeBytes(body);
 		}
 		
+		public function getRecordsByState(state:String):Vector.<SWFButtonRecord> {
+			return _frames[state] as Vector.<SWFButtonRecord>;
+		}
+		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "DefineButton"; }
 		override public function get version():uint { return 1; }
+		
+		protected function processRecords():void {
+			var upState:Vector.<SWFButtonRecord> = new Vector.<SWFButtonRecord>();
+			var overState:Vector.<SWFButtonRecord> = new Vector.<SWFButtonRecord>();
+			var downState:Vector.<SWFButtonRecord> = new Vector.<SWFButtonRecord>();
+			var hitState:Vector.<SWFButtonRecord> = new Vector.<SWFButtonRecord>();
+			for(var i:uint = 0; i < characters.length; i++) {
+				var record:SWFButtonRecord = characters[i];
+				if(record.stateUp) { upState.push(record); }
+				if(record.stateOver) { overState.push(record); }
+				if(record.stateDown) { downState.push(record); }
+				if(record.stateHitTest) { hitState.push(record); }
+			}
+			_frames[STATE_UP] = upState.sort(sortByDepthCompareFunction);
+			_frames[STATE_OVER] = overState.sort(sortByDepthCompareFunction);
+			_frames[STATE_DOWN] = downState.sort(sortByDepthCompareFunction);
+			_frames[STATE_HIT] = hitState.sort(sortByDepthCompareFunction);
+		}
+		
+		protected function sortByDepthCompareFunction(a:SWFButtonRecord, b:SWFButtonRecord):Number {
+			if(a.placeDepth < b.placeDepth) {
+				return -1;
+			} else if(a.placeDepth > b.placeDepth) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
 		
 		public function toString(indent:uint = 0):String {
 			var str:String = toStringMain(indent) +

@@ -362,6 +362,7 @@
 							// Font shapes define no fillstyles per se, but do reference fillstyle index 1,
 							// which represents the font color. We just report solid black in this case.
 							handler.beginFill(0);
+							trace(e);
 						}
 					}
 				}

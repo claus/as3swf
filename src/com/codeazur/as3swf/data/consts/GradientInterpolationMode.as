@@ -11,7 +11,7 @@
 			switch(interpolationMode) {
 				case NORMAL: return InterpolationMethod.RGB; break;
 				case LINEAR: return InterpolationMethod.LINEAR_RGB; break;
-				default: return "unknown"; break;
+				default: return InterpolationMethod.RGB; break;
 			}
 		}
 	}

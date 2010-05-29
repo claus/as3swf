@@ -3,6 +3,7 @@
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.consts.LineCapsStyle;
 	import com.codeazur.as3swf.data.consts.LineJointStyle;
+	import com.codeazur.as3swf.utils.ColorUtils;
 	
 	public class SWFMorphLineStyle
 	{
@@ -41,6 +42,26 @@
 			data.writeUI16(endWidth);
 			data.writeRGBA(startColor);
 			data.writeRGBA(endColor);
+		}
+		
+		public function getMorphedLineStyle(ratio:Number = 0):SWFLineStyle {
+			var lineStyle:SWFLineStyle = new SWFLineStyle();
+			if(hasFillFlag) {
+				lineStyle.fillType = fillType.getMorphedFillStyle(ratio);
+			} else {
+				lineStyle.color = ColorUtils.interpolate(startColor, endColor, ratio);
+				lineStyle.width = startWidth + (endWidth - startWidth) * ratio;
+			}
+			lineStyle.startCapsStyle = startCapsStyle;
+			lineStyle.endCapsStyle = endCapsStyle;
+			lineStyle.jointStyle = jointStyle;
+			lineStyle.hasFillFlag = hasFillFlag;
+			lineStyle.noHScaleFlag = noHScaleFlag;
+			lineStyle.noVScaleFlag = noVScaleFlag;
+			lineStyle.pixelHintingFlag = pixelHintingFlag;
+			lineStyle.noClose = noClose;
+			lineStyle.miterLimitFactor = miterLimitFactor;
+			return lineStyle;
 		}
 		
 		public function toString():String {

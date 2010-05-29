@@ -33,6 +33,16 @@
 			data.writeSB(numBits, anchorDeltaY);
 		}
 		
+		override public function clone():SWFShapeRecord {
+			var record:SWFShapeRecordCurvedEdge = new SWFShapeRecordCurvedEdge();
+			record.anchorDeltaX = anchorDeltaX;
+			record.anchorDeltaY = anchorDeltaY;
+			record.controlDeltaX = controlDeltaX;
+			record.controlDeltaY = controlDeltaY;
+			record.numBits = numBits;
+			return record;
+		}
+		
 		override public function get type():uint { return SWFShapeRecord.TYPE_CURVEDEDGE; }
 		
 		override public function toString(indent:uint = 0):String {

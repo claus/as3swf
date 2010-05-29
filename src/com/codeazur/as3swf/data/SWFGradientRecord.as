@@ -27,6 +27,13 @@
 			}
 		}
 		
+		public function clone():SWFGradientRecord {
+			var gradientRecord:SWFGradientRecord = new SWFGradientRecord();
+			gradientRecord.ratio = ratio;
+			gradientRecord.color = color;
+			return gradientRecord;
+		}
+		
 		public function toString():String {
 			return "[" + ratio + "," + color.toString(16) + "]";
 		}

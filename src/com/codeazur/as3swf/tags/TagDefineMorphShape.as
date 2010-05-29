@@ -1,10 +1,17 @@
 ﻿package com.codeazur.as3swf.tags
 {
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.data.SWFFillStyle;
+	import com.codeazur.as3swf.data.SWFLineStyle;
 	import com.codeazur.as3swf.data.SWFMorphFillStyle;
 	import com.codeazur.as3swf.data.SWFMorphLineStyle;
 	import com.codeazur.as3swf.data.SWFRectangle;
 	import com.codeazur.as3swf.data.SWFShape;
+	import com.codeazur.as3swf.data.SWFShapeRecord;
+	import com.codeazur.as3swf.data.SWFShapeRecordCurvedEdge;
+	import com.codeazur.as3swf.data.SWFShapeRecordStraightEdge;
+	import com.codeazur.as3swf.data.SWFShapeRecordStyleChange;
+	import com.codeazur.as3swf.exporters.IShapeExporter;
 	import com.codeazur.utils.StringUtils;
 	
 	public class TagDefineMorphShape extends Tag implements IDefinitionTag
@@ -90,6 +97,94 @@
 			body.writeSHAPE(endEdges);
 			data.writeTagHeader(type, body.length);
 			data.writeBytes(body);
+		}
+		
+		public function export(handler:IShapeExporter = null, ratio:Number = 0):void {
+			var numEdges:uint = startEdges.records.length;
+			var shape:SWFShape = new SWFShape();
+			var j:uint = 0;
+			for(var i:uint = 0; i < numEdges; i++) {
+				var startRecord:SWFShapeRecord = startEdges.records[i];
+				// Ignore this record if it's a style change and doesn't have moveto
+				if(startRecord.type == SWFShapeRecord.TYPE_STYLECHANGE && !SWFShapeRecordStyleChange(startRecord).stateMoveTo) {
+					shape.records.push(startRecord);
+					continue;
+				}
+				var endRecord:SWFShapeRecord = endEdges.records[j];
+				var interpolatedRecord:SWFShapeRecord;
+				// It is possible for an edge to change type over the course of a morph sequence. 
+				// A straight edge can become a curved edge and vice versa
+				// Convert straight edge to curved edge, if needed:
+				if(startRecord.type == SWFShapeRecord.TYPE_CURVEDEDGE && endRecord.type == SWFShapeRecord.TYPE_STRAIGHTEDGE) {
+					endRecord = convertToCurvedEdge(endRecord as SWFShapeRecordStraightEdge);
+				} else if(startRecord.type == SWFShapeRecord.TYPE_STRAIGHTEDGE && endRecord.type == SWFShapeRecord.TYPE_CURVEDEDGE) {
+					startRecord = convertToCurvedEdge(startRecord as SWFShapeRecordStraightEdge);
+				}
+				switch(startRecord.type) {
+					case SWFShapeRecord.TYPE_STYLECHANGE:
+						var startStyleChange:SWFShapeRecordStyleChange = startRecord.clone() as SWFShapeRecordStyleChange;
+						var endStyleChange:SWFShapeRecordStyleChange = endRecord as SWFShapeRecordStyleChange;
+						startStyleChange.moveDeltaX += (endStyleChange.moveDeltaX - startStyleChange.moveDeltaX) * ratio;
+						startStyleChange.moveDeltaY += (endStyleChange.moveDeltaY - startStyleChange.moveDeltaY) * ratio;
+						interpolatedRecord = startStyleChange;
+						break;
+					case SWFShapeRecord.TYPE_STRAIGHTEDGE:
+						var startStraightEdge:SWFShapeRecordStraightEdge = startRecord.clone() as SWFShapeRecordStraightEdge;
+						var endStraightEdge:SWFShapeRecordStraightEdge = endRecord as SWFShapeRecordStraightEdge;
+						startStraightEdge.deltaX += (endStraightEdge.deltaX - startStraightEdge.deltaX) * ratio;
+						startStraightEdge.deltaY += (endStraightEdge.deltaY - startStraightEdge.deltaY) * ratio;
+						if(startStraightEdge.deltaX != 0 && startStraightEdge.deltaY != 0) {
+							startStraightEdge.generalLineFlag = true;
+							startStraightEdge.vertLineFlag = false;
+						} else {
+							startStraightEdge.generalLineFlag = false;
+							startStraightEdge.vertLineFlag = (startStraightEdge.deltaX == 0);
+						}
+						interpolatedRecord = startStraightEdge;
+						break;
+					case SWFShapeRecord.TYPE_CURVEDEDGE:
+						var startCurvedEdge:SWFShapeRecordCurvedEdge = startRecord.clone() as SWFShapeRecordCurvedEdge;
+						var endCurvedEdge:SWFShapeRecordCurvedEdge = endRecord as SWFShapeRecordCurvedEdge;
+						startCurvedEdge.controlDeltaX += (endCurvedEdge.controlDeltaX - startCurvedEdge.controlDeltaX) * ratio;
+						startCurvedEdge.controlDeltaY += (endCurvedEdge.controlDeltaY - startCurvedEdge.controlDeltaY) * ratio;
+						startCurvedEdge.anchorDeltaX += (endCurvedEdge.anchorDeltaX - startCurvedEdge.anchorDeltaX) * ratio;
+						startCurvedEdge.anchorDeltaY += (endCurvedEdge.anchorDeltaY - startCurvedEdge.anchorDeltaY) * ratio;
+						interpolatedRecord = startCurvedEdge;
+						break;
+					default:
+						interpolatedRecord = startRecord.clone();
+						break;
+				}
+				shape.records.push(interpolatedRecord);
+				j++;
+			}
+			shape.export(handler, getMorphedFillStyles(ratio), getMorphedLineStyles(ratio));
+		}
+		
+		protected function getMorphedFillStyles(ratio:Number = 0):Vector.<SWFFillStyle> {
+			var fillStyles:Vector.<SWFFillStyle> = new Vector.<SWFFillStyle>();
+			for(var i:uint = 0; i < morphFillStyles.length; i++) {
+				fillStyles.push(morphFillStyles[i].getMorphedFillStyle(ratio));
+			}
+			trace(fillStyles.join("\r"));
+			return fillStyles;
+		}
+
+		protected function getMorphedLineStyles(ratio:Number = 0):Vector.<SWFLineStyle> {
+			var lineStyles:Vector.<SWFLineStyle> = new Vector.<SWFLineStyle>();
+			for(var i:uint = 0; i < morphLineStyles.length; i++) {
+				lineStyles.push(morphLineStyles[i].getMorphedLineStyle(ratio));
+			}
+			return lineStyles;
+		}
+		
+		protected function convertToCurvedEdge(straightEdge:SWFShapeRecordStraightEdge):SWFShapeRecordCurvedEdge {
+			var curvedEdge:SWFShapeRecordCurvedEdge = new SWFShapeRecordCurvedEdge();
+			curvedEdge.controlDeltaX = straightEdge.deltaX / 2;
+			curvedEdge.controlDeltaY = straightEdge.deltaY / 2;
+			curvedEdge.anchorDeltaX = straightEdge.deltaX;
+			curvedEdge.anchorDeltaY = straightEdge.deltaY;
+			return curvedEdge;
 		}
 		
 		override public function get type():uint { return TYPE; }

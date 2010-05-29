@@ -57,12 +57,14 @@
 			writeShapeRecords(data, fillBits, lineBits, level);
 		}
 				
-		override public function export(handler:IShapeExporter = null):void {
-			tmpFillStyles = _fillStyles.concat();
-			tmpLineStyles = _lineStyles.concat();
-			super.export(handler);
-			tmpFillStyles = null;
-			tmpLineStyles = null;
+		override public function export(handler:IShapeExporter = null, initFillStyles:Vector.<SWFFillStyle> = null, initLineStyles:Vector.<SWFLineStyle> = null):void {
+			if(initFillStyles == null) { initFillStyles = new Vector.<SWFFillStyle>(); }
+			if(initLineStyles == null) { initLineStyles = new Vector.<SWFLineStyle>(); }
+			super.export(
+				handler, 
+				initFillStyles.concat(_fillStyles.concat()),
+				initLineStyles.concat(_lineStyles.concat())
+			);
 		}
 
 		override public function toString(indent:uint = 0):String {

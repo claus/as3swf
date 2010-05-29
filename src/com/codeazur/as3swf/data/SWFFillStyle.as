@@ -73,6 +73,17 @@
 			}
 		}
 		
+		public function clone():SWFFillStyle {
+			var fillStyle:SWFFillStyle = new SWFFillStyle();
+			fillStyle.type = type;
+			fillStyle.rgb = rgb;
+			fillStyle.gradient = gradient.clone();
+			fillStyle.gradientMatrix = gradientMatrix.clone();
+			fillStyle.bitmapId = bitmapId;
+			fillStyle.bitmapMatrix = bitmapMatrix.clone();
+			return fillStyle;
+		}
+		
 		public function toString():String {
 			var str:String = "[SWFFillStyle] Type: " + type.toString(16);
 			switch(type) {

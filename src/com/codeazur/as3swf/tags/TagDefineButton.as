@@ -20,12 +20,12 @@
 		protected var _characters:Vector.<SWFButtonRecord>;
 		protected var _actions:Vector.<IAction>;
 		
-		protected var _frames:Dictionary;
+		protected var frames:Dictionary;
 		
 		public function TagDefineButton() {
 			_characters = new Vector.<SWFButtonRecord>();
 			_actions = new Vector.<IAction>();
-			_frames = new Dictionary();
+			frames = new Dictionary();
 		}
 		
 		public function get characterId():uint { return _characterId; }
@@ -62,7 +62,7 @@
 		}
 		
 		public function getRecordsByState(state:String):Vector.<SWFButtonRecord> {
-			return _frames[state] as Vector.<SWFButtonRecord>;
+			return frames[state] as Vector.<SWFButtonRecord>;
 		}
 		
 		override public function get type():uint { return TYPE; }
@@ -81,10 +81,10 @@
 				if(record.stateDown) { downState.push(record); }
 				if(record.stateHitTest) { hitState.push(record); }
 			}
-			_frames[STATE_UP] = upState.sort(sortByDepthCompareFunction);
-			_frames[STATE_OVER] = overState.sort(sortByDepthCompareFunction);
-			_frames[STATE_DOWN] = downState.sort(sortByDepthCompareFunction);
-			_frames[STATE_HIT] = hitState.sort(sortByDepthCompareFunction);
+			frames[STATE_UP] = upState.sort(sortByDepthCompareFunction);
+			frames[STATE_OVER] = overState.sort(sortByDepthCompareFunction);
+			frames[STATE_DOWN] = downState.sort(sortByDepthCompareFunction);
+			frames[STATE_HIT] = hitState.sort(sortByDepthCompareFunction);
 		}
 		
 		protected function sortByDepthCompareFunction(a:SWFButtonRecord, b:SWFButtonRecord):Number {

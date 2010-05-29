@@ -41,6 +41,23 @@
 			}
 		}
 		
+		public function clone():SWFLineStyle {
+			var lineStyle:SWFLineStyle = new SWFLineStyle();
+			lineStyle.width = width;
+			lineStyle.color = color;
+			lineStyle.startCapsStyle = startCapsStyle;
+			lineStyle.endCapsStyle = endCapsStyle;
+			lineStyle.jointStyle = jointStyle;
+			lineStyle.hasFillFlag = hasFillFlag;
+			lineStyle.noHScaleFlag = noHScaleFlag;
+			lineStyle.noVScaleFlag = noVScaleFlag;
+			lineStyle.pixelHintingFlag = pixelHintingFlag;
+			lineStyle.noClose = noClose;
+			lineStyle.miterLimitFactor = miterLimitFactor;
+			lineStyle.fillType = fillType.clone();
+			return lineStyle;
+		}
+		
 		public function toString():String {
 			return "[SWFLineStyle] Width: " + width + " Color: " + color.toString(16);
 		}

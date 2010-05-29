@@ -113,6 +113,30 @@
 			}
 		}
 		
+		override public function clone():SWFShapeRecord {
+			var record:SWFShapeRecordStyleChange = new SWFShapeRecordStyleChange();
+			record.stateNewStyles = stateNewStyles;
+			record.stateLineStyle = stateLineStyle;
+			record.stateFillStyle1 = stateFillStyle1;
+			record.stateFillStyle0 = stateFillStyle0;
+			record.stateMoveTo = stateMoveTo;
+			record.moveDeltaX = moveDeltaX;
+			record.moveDeltaY = moveDeltaY;
+			record.fillStyle0 = fillStyle0;
+			record.fillStyle1 = fillStyle1;
+			record.lineStyle = lineStyle;
+			record.numFillBits = numFillBits;
+			record.numLineBits = numLineBits;
+			var i:uint;
+			for(i = 0; i < fillStyles.length; i++) {
+				record.fillStyles.push(fillStyles[i].clone());
+			}
+			for(i = 0; i < lineStyles.length; i++) {
+				record.lineStyles.push(lineStyles[i].clone());
+			}
+			return record;
+		}
+		
 		override public function toString(indent:uint = 0):String {
 			var str:String = "[SWFShapeRecordStyleChange] ";
 			var cmds:Array = [];

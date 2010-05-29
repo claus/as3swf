@@ -26,6 +26,8 @@
 
 		public function publish(data:SWFData = null, level:uint = 1):void {}
 		
+		public function clone():SWFShapeRecord { return null; }
+		
 		public function toString(indent:uint = 0):String {
 			return "[SWFShapeRecord]";
 		}

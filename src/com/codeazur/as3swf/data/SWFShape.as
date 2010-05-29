@@ -166,7 +166,7 @@
 			}
 		}
 		
-		public function export(handler:IShapeExporter = null):void {
+		public function export(handler:IShapeExporter = null, initFillStyles:Vector.<SWFFillStyle> = null, initLineStyles:Vector.<SWFLineStyle> = null):void {
 			var xPos:Number = 0;
 			var yPos:Number = 0;
 			var from:Point;
@@ -178,6 +178,8 @@
 			var currentFillStyleIdx1:uint = 0;
 			var currentLineStyleIdx:uint = 0;
 			var subPath:Vector.<IEdge> = new Vector.<IEdge>();
+			tmpFillStyles = initFillStyles;
+			tmpLineStyles = initLineStyles;
 			tmpFillEdgeMap = new Dictionary();
 			tmpLineEdgeMap = new Dictionary();
 			if (handler == null) { handler = new DefaultShapeExporter(null); }
@@ -260,6 +262,8 @@
 						break;
 				}
 			}
+			tmpFillStyles = null;
+			tmpLineStyles = null;
 		}
 		
 		protected function processSubPath(subPath:Vector.<IEdge>, lineStyleIdx:uint, fillStyleIdx0:uint, fillStyleIdx1:uint):void {

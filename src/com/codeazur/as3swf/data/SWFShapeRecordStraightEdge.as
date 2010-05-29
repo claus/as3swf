@@ -39,6 +39,16 @@
 			}
 		}
 		
+		override public function clone():SWFShapeRecord {
+			var record:SWFShapeRecordStraightEdge = new SWFShapeRecordStraightEdge();
+			record.deltaX = deltaX;
+			record.deltaY = deltaY;
+			record.generalLineFlag = generalLineFlag;
+			record.vertLineFlag = vertLineFlag;
+			record.numBits = numBits;
+			return record;
+		}
+		
 		override public function get type():uint { return SWFShapeRecord.TYPE_STRAIGHTEDGE; }
 		
 		override public function toString(indent:uint = 0):String {

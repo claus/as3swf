@@ -44,6 +44,17 @@
 			translateY = data.readSB(translateBits);
 		}
 		
+		public function clone():SWFMatrix {
+			var matrix:SWFMatrix = new SWFMatrix();
+			matrix.scaleX = scaleX;
+			matrix.scaleY = scaleY;
+			matrix.rotateSkew0 = rotateSkew0;
+			matrix.rotateSkew1 = rotateSkew1;
+			matrix.translateX = translateX;
+			matrix.translateY = translateY;
+			return matrix;
+		}
+		
 		public function isIdentity():Boolean {
 			return (scaleX == 1 && scaleY == 1 && rotateSkew0 == 0 && rotateSkew1 == 0 && translateX == 0 && translateY == 0);
 		}

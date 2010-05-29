@@ -1,6 +1,8 @@
 ﻿package com.codeazur.as3swf.data
 {
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.utils.ColorUtils;
+	import com.codeazur.as3swf.utils.MatrixUtils;
 	
 	public class SWFMorphFillStyle
 	{
@@ -71,6 +73,29 @@
 				default:
 					throw(new Error("Unknown fill style type: 0x" + type.toString(16)));
 			}
+		}
+		
+		public function getMorphedFillStyle(ratio:Number = 0):SWFFillStyle {
+			var fillStyle:SWFFillStyle = new SWFFillStyle();
+			fillStyle.type = type;
+			switch(type) {
+				case 0x00:
+					fillStyle.rgb = ColorUtils.interpolate(startColor, endColor, ratio);
+					break;
+				case 0x10:
+				case 0x12:
+					fillStyle.gradientMatrix = MatrixUtils.interpolate(startGradientMatrix, endGradientMatrix, ratio);
+					fillStyle.gradient = gradient.getMorphedGradient(ratio);
+					break;
+				case 0x40:
+				case 0x41:
+				case 0x42:
+				case 0x43:
+					fillStyle.bitmapId = bitmapId;
+					fillStyle.bitmapMatrix = MatrixUtils.interpolate(startBitmapMatrix, endBitmapMatrix, ratio);
+					break;
+			}
+			return fillStyle;
 		}
 		
 		public function toString():String {

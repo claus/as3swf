@@ -30,6 +30,14 @@
 			}
 		}
 		
+		public function getMorphedGradient(ratio:Number = 0):SWFGradient {
+			var gradient:SWFGradient = new SWFGradient();
+			for(var i:uint = 0; i < records.length; i++) {
+				gradient.records.push(records[i].getMorphedGradientRecord(ratio)); 
+			}
+			return gradient;
+		}
+		
 		public function toString():String {
 			return "(" + _records.join(",") + ")";
 		}

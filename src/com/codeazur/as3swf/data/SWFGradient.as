@@ -41,6 +41,17 @@
 				data.writeGRADIENTRECORD(records[i], level);
 			}
 		}
+		
+		public function clone():SWFGradient {
+			var gradient:SWFGradient = new SWFGradient();
+			gradient.spreadMode = spreadMode;
+			gradient.interpolationMode = interpolationMode;
+			gradient.focalPoint = focalPoint;
+			for(var i:uint = 0; i < records.length; i++) {
+				gradient.records.push(records[i].clone());
+			}
+			return gradient;
+		}
 
 		public function toString():String {
 			return "(" + _records.join(",") + ")";

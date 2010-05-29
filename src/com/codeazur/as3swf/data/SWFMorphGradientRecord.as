@@ -1,6 +1,7 @@
 ﻿package com.codeazur.as3swf.data
 {
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.utils.ColorUtils;
 	
 	public class SWFMorphGradientRecord
 	{
@@ -27,6 +28,13 @@
 			data.writeRGBA(startColor);
 			data.writeUI8(endRatio);
 			data.writeRGBA(endColor);
+		}
+		
+		public function getMorphedGradientRecord(ratio:Number = 0):SWFGradientRecord {
+			var gradientRecord:SWFGradientRecord = new SWFGradientRecord();
+			gradientRecord.color = ColorUtils.interpolate(startColor, endColor, ratio);
+			gradientRecord.ratio = startRatio + (endRatio - startRatio) * ratio;
+			return gradientRecord;
 		}
 		
 		public function toString():String {

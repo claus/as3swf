@@ -24,20 +24,36 @@
 	{
 		protected var _records:Vector.<SWFShapeRecord>;
 
-		protected var tmpFillStyles:Vector.<SWFFillStyle>;
-		protected var tmpLineStyles:Vector.<SWFLineStyle>;
-		protected var tmpFillEdgeMap:Dictionary;
-		protected var tmpLineEdgeMap:Dictionary;
+		protected var _fillStyles:Vector.<SWFFillStyle>;
+		protected var _lineStyles:Vector.<SWFLineStyle>;
+		protected var _referencePoint:Point;
+		
+		protected var fillEdgeMap:Dictionary;
+		protected var lineEdgeMap:Dictionary;
 		protected var coordMap:Dictionary;
 		
-		public function SWFShape(data:SWFData = null, level:uint = 1) {
+		protected var unitDivisor:Number;
+		
+		protected var edgeMapsCreated:Boolean = false;
+		
+		public function SWFShape(data:SWFData = null, level:uint = 1, unitDivisor:Number = 20) {
 			_records = new Vector.<SWFShapeRecord>();
+			_fillStyles = new Vector.<SWFFillStyle>();
+			_lineStyles = new Vector.<SWFLineStyle>();
+			_referencePoint = new Point(0, 0);
+			this.unitDivisor = unitDivisor;
 			if (data != null) {
 				parse(data, level);
 			}
 		}
 		
 		public function get records():Vector.<SWFShapeRecord> { return _records; }
+
+		public function get fillStyles():Vector.<SWFFillStyle> { return _fillStyles; }
+		public function get lineStyles():Vector.<SWFLineStyle> { return _lineStyles; }
+
+		// The reference point is used with font glyphs
+		public function get referencePoint():Point { return _referencePoint; }
 
 		public function getMaxFillStyleIndex():uint {
 			var ret:uint = 0;
@@ -81,6 +97,7 @@
 			var numFillBits:uint = data.readUB(4);
 			var numLineBits:uint = data.readUB(4);
 			readShapeRecords(data, numFillBits, numLineBits, level);
+			determineReferencePoint();
 		}
 		
 		public function publish(data:SWFData, level:uint = 1):void {
@@ -166,130 +183,145 @@
 			}
 		}
 		
-		public function export(handler:IShapeExporter = null, initFillStyles:Vector.<SWFFillStyle> = null, initLineStyles:Vector.<SWFLineStyle> = null):void {
-			var xPos:Number = 0;
-			var yPos:Number = 0;
-			var from:Point;
-			var to:Point;
-			var control:Point;
-			var fillStyleIdxOffset:int = 0;
-			var lineStyleIdxOffset:int = 0;
-			var currentFillStyleIdx0:uint = 0;
-			var currentFillStyleIdx1:uint = 0;
-			var currentLineStyleIdx:uint = 0;
-			var subPath:Vector.<IEdge> = new Vector.<IEdge>();
-			tmpFillStyles = initFillStyles;
-			tmpLineStyles = initLineStyles;
-			tmpFillEdgeMap = new Dictionary();
-			tmpLineEdgeMap = new Dictionary();
-			if (handler == null) { handler = new DefaultShapeExporter(null); }
-			for (var i:uint = 0; i < _records.length; i++) {
-				var shapeRecord:SWFShapeRecord = _records[i];
-				switch(shapeRecord.type) {
-					case SWFShapeRecord.TYPE_STYLECHANGE:
-						var styleChangeRecord:SWFShapeRecordStyleChange = shapeRecord as SWFShapeRecordStyleChange;
-						if (styleChangeRecord.stateLineStyle || styleChangeRecord.stateFillStyle0 || styleChangeRecord.stateFillStyle1) {
-							processSubPath(subPath, currentLineStyleIdx, currentFillStyleIdx0, currentFillStyleIdx1);
-							subPath = new Vector.<IEdge>();
-						}
-						if (styleChangeRecord.stateNewStyles) {
-							fillStyleIdxOffset = tmpFillStyles.length;
-							lineStyleIdxOffset = tmpLineStyles.length;
-							appendFillStyles(tmpFillStyles, styleChangeRecord.fillStyles);
-							appendLineStyles(tmpLineStyles, styleChangeRecord.lineStyles);
-						}
-						if (styleChangeRecord.stateLineStyle) {
-							currentLineStyleIdx = styleChangeRecord.lineStyle;
-							if (currentLineStyleIdx > 0) {
-								currentLineStyleIdx += lineStyleIdxOffset;
-							}
-						}
-						if (styleChangeRecord.stateFillStyle0) {
-							currentFillStyleIdx0 = styleChangeRecord.fillStyle0;
-							if (currentFillStyleIdx0 > 0) {
-								currentFillStyleIdx0 += fillStyleIdxOffset;
-							}
-						}
-						if (styleChangeRecord.stateFillStyle1) {
-							currentFillStyleIdx1 = styleChangeRecord.fillStyle1;
-							if (currentFillStyleIdx1 > 0) {
-								currentFillStyleIdx1 += fillStyleIdxOffset;
-							}
-						}
-						if (styleChangeRecord.stateMoveTo) {
-							xPos = styleChangeRecord.moveDeltaX / 20;
-							yPos = styleChangeRecord.moveDeltaY / 20;
-						}
-						break;
-					case SWFShapeRecord.TYPE_STRAIGHTEDGE:
-						var straightEdgeRecord:SWFShapeRecordStraightEdge = shapeRecord as SWFShapeRecordStraightEdge;
-						from = new Point(NumberUtils.roundPixels20(xPos), NumberUtils.roundPixels20(yPos));
-						if (straightEdgeRecord.generalLineFlag) {
-							xPos += straightEdgeRecord.deltaX / 20;
-							yPos += straightEdgeRecord.deltaY / 20;
-						} else {
-							if (straightEdgeRecord.vertLineFlag) {
-								yPos += straightEdgeRecord.deltaY / 20;
-							} else {
-								xPos += straightEdgeRecord.deltaX / 20;
-							}
-						}
-						to = new Point(NumberUtils.roundPixels20(xPos), NumberUtils.roundPixels20(yPos));
-						subPath.push(new StraightEdge(from, to, currentLineStyleIdx, currentFillStyleIdx1));
-						break;
-					case SWFShapeRecord.TYPE_CURVEDEDGE:
-						var curvedEdgeRecord:SWFShapeRecordCurvedEdge = shapeRecord as SWFShapeRecordCurvedEdge;
-						from = new Point(NumberUtils.roundPixels20(xPos), NumberUtils.roundPixels20(yPos));
-						var xPosControl:Number = xPos + curvedEdgeRecord.controlDeltaX / 20;
-						var yPosControl:Number = yPos + curvedEdgeRecord.controlDeltaY / 20;
-						xPos = xPosControl + curvedEdgeRecord.anchorDeltaX / 20;
-						yPos = yPosControl + curvedEdgeRecord.anchorDeltaY / 20;
-						control = new Point(xPosControl, yPosControl);
-						to = new Point(NumberUtils.roundPixels20(xPos), NumberUtils.roundPixels20(yPos));
-						subPath.push(new CurvedEdge(from, control, to, currentLineStyleIdx, currentFillStyleIdx1));
-						break; 
-					case SWFShapeRecord.TYPE_END:
-						// We're done. Process the last subpath, if any
-						processSubPath(subPath, currentLineStyleIdx, currentFillStyleIdx0, currentFillStyleIdx1);
-						// Let the doc handler know that a shape export starts
-						handler.beginShape();
-						// Export fills first
-						exportFillPath(handler);
-						// Export strokes last
-						exportLinePath(handler);
-						// Let the doc handler know that we're done exporting a shape
-						handler.endShape();
-						break;
-				}
+		protected function determineReferencePoint():void {
+			var styleChangeRecord:SWFShapeRecordStyleChange = _records[0] as SWFShapeRecordStyleChange;
+			if(styleChangeRecord && styleChangeRecord.stateMoveTo) {
+				referencePoint.x = NumberUtils.roundPixels400(styleChangeRecord.moveDeltaX / unitDivisor);
+				referencePoint.y = NumberUtils.roundPixels400(styleChangeRecord.moveDeltaY / unitDivisor);
 			}
-			tmpFillStyles = null;
-			tmpLineStyles = null;
+		}
+		
+		public function export(handler:IShapeExporter = null):void {
+			// Create edge maps
+			createEdgeMaps();
+			// If no handler is passed, default to DefaultShapeExporter (does nothing)
+			if (handler == null) { handler = new DefaultShapeExporter(null); }
+			// Let the doc handler know that a shape export starts
+			handler.beginShape();
+			// Export fills first
+			exportFillPath(handler);
+			// Export strokes last
+			exportLinePath(handler);
+			// Let the doc handler know that we're done exporting a shape
+			handler.endShape();
+		}
+		
+		protected function createEdgeMaps():void {
+			if(!edgeMapsCreated) {
+				var xPos:Number = 0;
+				var yPos:Number = 0;
+				var from:Point;
+				var to:Point;
+				var control:Point;
+				var fillStyleIdxOffset:int = 0;
+				var lineStyleIdxOffset:int = 0;
+				var currentFillStyleIdx0:uint = 0;
+				var currentFillStyleIdx1:uint = 0;
+				var currentLineStyleIdx:uint = 0;
+				var subPath:Vector.<IEdge> = new Vector.<IEdge>();
+				fillEdgeMap = new Dictionary();
+				lineEdgeMap = new Dictionary();
+				for (var i:uint = 0; i < _records.length; i++) {
+					var shapeRecord:SWFShapeRecord = _records[i];
+					switch(shapeRecord.type) {
+						case SWFShapeRecord.TYPE_STYLECHANGE:
+							var styleChangeRecord:SWFShapeRecordStyleChange = shapeRecord as SWFShapeRecordStyleChange;
+							if (styleChangeRecord.stateLineStyle || styleChangeRecord.stateFillStyle0 || styleChangeRecord.stateFillStyle1) {
+								processSubPath(subPath, currentLineStyleIdx, currentFillStyleIdx0, currentFillStyleIdx1);
+								subPath = new Vector.<IEdge>();
+							}
+							if (styleChangeRecord.stateNewStyles) {
+								fillStyleIdxOffset = _fillStyles.length;
+								lineStyleIdxOffset = _lineStyles.length;
+								appendFillStyles(_fillStyles, styleChangeRecord.fillStyles);
+								appendLineStyles(_lineStyles, styleChangeRecord.lineStyles);
+							}
+							if (styleChangeRecord.stateLineStyle) {
+								currentLineStyleIdx = styleChangeRecord.lineStyle;
+								if (currentLineStyleIdx > 0) {
+									currentLineStyleIdx += lineStyleIdxOffset;
+								}
+							}
+							if (styleChangeRecord.stateFillStyle0) {
+								currentFillStyleIdx0 = styleChangeRecord.fillStyle0;
+								if (currentFillStyleIdx0 > 0) {
+									currentFillStyleIdx0 += fillStyleIdxOffset;
+								}
+							}
+							if (styleChangeRecord.stateFillStyle1) {
+								currentFillStyleIdx1 = styleChangeRecord.fillStyle1;
+								if (currentFillStyleIdx1 > 0) {
+									currentFillStyleIdx1 += fillStyleIdxOffset;
+								}
+							}
+							if (styleChangeRecord.stateMoveTo) {
+								xPos = styleChangeRecord.moveDeltaX / unitDivisor;
+								yPos = styleChangeRecord.moveDeltaY / unitDivisor;
+							}
+							break;
+						case SWFShapeRecord.TYPE_STRAIGHTEDGE:
+							var straightEdgeRecord:SWFShapeRecordStraightEdge = shapeRecord as SWFShapeRecordStraightEdge;
+							from = new Point(NumberUtils.roundPixels400(xPos), NumberUtils.roundPixels400(yPos));
+							if (straightEdgeRecord.generalLineFlag) {
+								xPos += straightEdgeRecord.deltaX / unitDivisor;
+								yPos += straightEdgeRecord.deltaY / unitDivisor;
+							} else {
+								if (straightEdgeRecord.vertLineFlag) {
+									yPos += straightEdgeRecord.deltaY / unitDivisor;
+								} else {
+									xPos += straightEdgeRecord.deltaX / unitDivisor;
+								}
+							}
+							to = new Point(NumberUtils.roundPixels400(xPos), NumberUtils.roundPixels400(yPos));
+							subPath.push(new StraightEdge(from, to, currentLineStyleIdx, currentFillStyleIdx1));
+							break;
+						case SWFShapeRecord.TYPE_CURVEDEDGE:
+							var curvedEdgeRecord:SWFShapeRecordCurvedEdge = shapeRecord as SWFShapeRecordCurvedEdge;
+							from = new Point(NumberUtils.roundPixels400(xPos), NumberUtils.roundPixels400(yPos));
+							var xPosControl:Number = xPos + curvedEdgeRecord.controlDeltaX / unitDivisor;
+							var yPosControl:Number = yPos + curvedEdgeRecord.controlDeltaY / unitDivisor;
+							xPos = xPosControl + curvedEdgeRecord.anchorDeltaX / unitDivisor;
+							yPos = yPosControl + curvedEdgeRecord.anchorDeltaY / unitDivisor;
+							control = new Point(xPosControl, yPosControl);
+							to = new Point(NumberUtils.roundPixels400(xPos), NumberUtils.roundPixels400(yPos));
+							subPath.push(new CurvedEdge(from, control, to, currentLineStyleIdx, currentFillStyleIdx1));
+							break; 
+						case SWFShapeRecord.TYPE_END:
+							// We're done. Process the last subpath, if any
+							processSubPath(subPath, currentLineStyleIdx, currentFillStyleIdx0, currentFillStyleIdx1);
+							break;
+					}
+				}
+				cleanEdgeMap(fillEdgeMap);
+				cleanEdgeMap(lineEdgeMap);
+				edgeMapsCreated = true;
+			}
 		}
 		
 		protected function processSubPath(subPath:Vector.<IEdge>, lineStyleIdx:uint, fillStyleIdx0:uint, fillStyleIdx1:uint):void {
 			var path:Vector.<IEdge>;
 			var hasDuplicates:Boolean = (fillStyleIdx0 != 0 && fillStyleIdx1 != 0);
 			if (fillStyleIdx0 != 0) {
-				path = tmpFillEdgeMap[fillStyleIdx0] as Vector.<IEdge>;
-				if(path == null) { path = tmpFillEdgeMap[fillStyleIdx0] = new Vector.<IEdge>(); }
+				path = fillEdgeMap[fillStyleIdx0] as Vector.<IEdge>;
+				if(path == null) { path = fillEdgeMap[fillStyleIdx0] = new Vector.<IEdge>(); }
 				for (var j:int = subPath.length - 1; j >= 0; j--) {
 					path.push(subPath[j].reverseWithNewFillStyle(fillStyleIdx0));
 				}
 			}
 			if (fillStyleIdx1 != 0) {
-				path = tmpFillEdgeMap[fillStyleIdx1] as Vector.<IEdge>;
-				if(path == null) { path = tmpFillEdgeMap[fillStyleIdx1] = new Vector.<IEdge>(); }
+				path = fillEdgeMap[fillStyleIdx1] as Vector.<IEdge>;
+				if(path == null) { path = fillEdgeMap[fillStyleIdx1] = new Vector.<IEdge>(); }
 				appendEdges(path, subPath);
 			}
 			if (lineStyleIdx != 0) {
-				path = tmpLineEdgeMap[lineStyleIdx] as Vector.<IEdge>;
-				if(path == null) { path = tmpLineEdgeMap[lineStyleIdx] = new Vector.<IEdge>(); }
+				path = lineEdgeMap[lineStyleIdx] as Vector.<IEdge>;
+				if(path == null) { path = lineEdgeMap[lineStyleIdx] = new Vector.<IEdge>(); }
 				appendEdges(path, subPath);
 			}
 		}
 		
 		protected function exportFillPath(handler:IShapeExporter):void {
-			var path:Vector.<IEdge> = createPathFromEdgeMap(tmpFillEdgeMap);
+			var path:Vector.<IEdge> = createPathFromEdgeMap(fillEdgeMap);
 			var pos:Point = new Point(Number.MAX_VALUE, Number.MAX_VALUE);
 			var fillStyleIdx:uint = uint.MAX_VALUE;
 			var hasFills:Boolean = false;
@@ -312,7 +344,7 @@
 						hasOpenFill = true;
 						try {
 							var matrix:Matrix;
-							var fillStyle:SWFFillStyle = tmpFillStyles[fillStyleIdx - 1];
+							var fillStyle:SWFFillStyle = _fillStyles[fillStyleIdx - 1];
 							switch(fillStyle.type) {
 								case 0x00:
 									// Solid fill
@@ -366,7 +398,6 @@
 							// Font shapes define no fillstyles per se, but do reference fillstyle index 1,
 							// which represents the font color. We just report solid black in this case.
 							handler.beginFill(0);
-							trace(e);
 						}
 					}
 				}
@@ -392,7 +423,7 @@
 		}
 		
 		protected function exportLinePath(handler:IShapeExporter):void {
-			var path:Vector.<IEdge> = createPathFromEdgeMap(tmpLineEdgeMap);
+			var path:Vector.<IEdge> = createPathFromEdgeMap(lineEdgeMap);
 			var pos:Point = new Point(Number.MAX_VALUE, Number.MAX_VALUE);
 			var lineStyleIdx:uint = uint.MAX_VALUE;
 			var lineStyle:SWFLineStyle;
@@ -403,7 +434,7 @@
 					if (lineStyleIdx != e.lineStyleIdx) {
 						lineStyleIdx = e.lineStyleIdx;
 						try {
-							lineStyle = tmpLineStyles[lineStyleIdx - 1];
+							lineStyle = _lineStyles[lineStyleIdx - 1];
 						} catch (e:Error) {
 							lineStyle = null;
 						}
@@ -478,7 +509,6 @@
 		}
 		
 		protected function createPathFromEdgeMap(edgeMap:Dictionary):Vector.<IEdge> {
-			cleanEdgeMap(edgeMap);
 			var newPath:Vector.<IEdge> = new Vector.<IEdge>();
 			var styleIdxArray:Array = [];
 			for(var styleIdx:String in edgeMap) {
@@ -490,7 +520,7 @@
 			}
 			return newPath;
 		}
-
+		
 		protected function cleanEdgeMap(edgeMap:Dictionary):void {
 			for(var styleIdx:String in edgeMap) {
 				var subPath:Vector.<IEdge> = edgeMap[styleIdx] as Vector.<IEdge>;

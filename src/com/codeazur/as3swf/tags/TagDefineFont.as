@@ -1,7 +1,9 @@
 ﻿package com.codeazur.as3swf.tags
 {
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.data.SWFFillStyle;
 	import com.codeazur.as3swf.data.SWFShape;
+	import com.codeazur.as3swf.exporters.IShapeExporter;
 	import com.codeazur.utils.StringUtils;
 	
 	public class TagDefineFont extends Tag implements IDefinitionTag
@@ -29,7 +31,7 @@
 			data.skipBytes((numGlyphs - 1) << 1);
 			// Read glyph shape table
 			for (var i:uint = 0; i < numGlyphs; i++) {
-				_glyphShapeTable.push(data.readSHAPE());
+				_glyphShapeTable.push(data.readSHAPE(unitDivisor));
 			}
 		}
 		
@@ -57,9 +59,15 @@
 			data.writeBytes(body);
 		}
 		
+		public function export(handler:IShapeExporter, glyphIndex:uint):void {
+			glyphShapeTable[glyphIndex].export(handler);
+		}
+		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "DefineFont"; }
 		override public function get version():uint { return 1; }
+		
+		protected function get unitDivisor():Number { return 1; }
 		
 		public function toString(indent:uint = 0):String {
 			var str:String = toStringMain(indent) +

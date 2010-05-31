@@ -392,16 +392,16 @@
 		// Shape and shape records
 		/////////////////////////////////////////////////////////
 		
-		public function readSHAPE():SWFShape {
-			return new SWFShape(this);
+		public function readSHAPE(unitDivisor:Number = 20):SWFShape {
+			return new SWFShape(this, 1, unitDivisor);
 		}
 		
 		public function writeSHAPE(value:SWFShape):void {
 			value.publish(this);
 		}
 		
-		public function readSHAPEWITHSTYLE(level:uint = 1):SWFShapeWithStyle {
-			return new SWFShapeWithStyle(this, level);
+		public function readSHAPEWITHSTYLE(level:uint = 1, unitDivisor:Number = 20):SWFShapeWithStyle {
+			return new SWFShapeWithStyle(this, level, unitDivisor);
 		}
 
 		public function writeSHAPEWITHSTYLE(value:SWFShapeWithStyle, level:uint = 1):void {

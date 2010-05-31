@@ -7,28 +7,28 @@
 	
 	public class SWFShapeWithStyle extends SWFShape
 	{
-		protected var _fillStyles:Vector.<SWFFillStyle>;
-		protected var _lineStyles:Vector.<SWFLineStyle>;
+		protected var _initialFillStyles:Vector.<SWFFillStyle>;
+		protected var _initialLineStyles:Vector.<SWFLineStyle>;
 		
-		public function SWFShapeWithStyle(data:SWFData = null, level:uint = 1) {
-			_fillStyles = new Vector.<SWFFillStyle>();
-			_lineStyles = new Vector.<SWFLineStyle>();
-			super(data, level);
+		public function SWFShapeWithStyle(data:SWFData = null, level:uint = 1, unitDivisor:Number = 20) {
+			_initialFillStyles = new Vector.<SWFFillStyle>();
+			_initialLineStyles = new Vector.<SWFLineStyle>();
+			super(data, level, unitDivisor);
 		}
 		
-		public function get fillStyles():Vector.<SWFFillStyle> { return _fillStyles; }
-		public function get lineStyles():Vector.<SWFLineStyle> { return _lineStyles; }
+		public function get initialFillStyles():Vector.<SWFFillStyle> { return _initialFillStyles; }
+		public function get initialLineStyles():Vector.<SWFLineStyle> { return _initialLineStyles; }
 		
 		override public function parse(data:SWFData, level:uint = 1):void {
 			data.resetBitsPending();
 			var i:uint;
 			var fillStylesLen:uint = readStyleArrayLength(data, level);
 			for (i = 0; i < fillStylesLen; i++) {
-				fillStyles.push(data.readFILLSTYLE(level));
+				initialFillStyles.push(data.readFILLSTYLE(level));
 			}
 			var lineStylesLen:uint = readStyleArrayLength(data, level);
 			for (i = 0; i < lineStylesLen; i++) {
-				lineStyles.push(level <= 3 ? data.readLINESTYLE(level) : data.readLINESTYLE2(level));
+				initialLineStyles.push(level <= 3 ? data.readLINESTYLE(level) : data.readLINESTYLE2(level));
 			}
 			var numFillBits:uint = data.readUB(4);
 			var numLineBits:uint = data.readUB(4);
@@ -39,15 +39,15 @@
 		override public function publish(data:SWFData, level:uint = 1):void {
 			data.resetBitsPending();
 			var i:uint;
-			var fillStylesLen:uint = fillStyles.length;
+			var fillStylesLen:uint = initialFillStyles.length;
 			writeStyleArrayLength(data, fillStylesLen, level);
 			for (i = 0; i < fillStylesLen; i++) {
-				fillStyles[i].publish(data, level);
+				initialFillStyles[i].publish(data, level);
 			}
-			var lineStylesLen:uint = lineStyles.length;
+			var lineStylesLen:uint = initialLineStyles.length;
 			writeStyleArrayLength(data, lineStylesLen, level);
 			for (i = 0; i < lineStylesLen; i++) {
-				lineStyles[i].publish(data, level);
+				initialLineStyles[i].publish(data, level);
 			}
 			var fillBits:uint = data.calculateMaxBits(false, [getMaxFillStyleIndex()]);
 			var lineBits:uint = data.calculateMaxBits(false, [getMaxLineStyleIndex()]);
@@ -57,29 +57,25 @@
 			writeShapeRecords(data, fillBits, lineBits, level);
 		}
 				
-		override public function export(handler:IShapeExporter = null, initFillStyles:Vector.<SWFFillStyle> = null, initLineStyles:Vector.<SWFLineStyle> = null):void {
-			if(initFillStyles == null) { initFillStyles = new Vector.<SWFFillStyle>(); }
-			if(initLineStyles == null) { initLineStyles = new Vector.<SWFLineStyle>(); }
-			super.export(
-				handler, 
-				initFillStyles.concat(_fillStyles.concat()),
-				initLineStyles.concat(_lineStyles.concat())
-			);
+		override public function export(handler:IShapeExporter = null):void {
+			_fillStyles = _initialFillStyles.concat();
+			_lineStyles = _initialLineStyles.concat();
+			super.export(handler);
 		}
 
 		override public function toString(indent:uint = 0):String {
 			var i:uint;
 			var str:String = "";
-			if (_fillStyles.length > 0) {
+			if (_initialFillStyles.length > 0) {
 				str += "\n" + StringUtils.repeat(indent) + "FillStyles:";
-				for (i = 0; i < _fillStyles.length; i++) {
-					str += "\n" + StringUtils.repeat(indent + 2) + "[" + (i + 1) + "] " + _fillStyles[i].toString();
+				for (i = 0; i < _initialFillStyles.length; i++) {
+					str += "\n" + StringUtils.repeat(indent + 2) + "[" + (i + 1) + "] " + _initialFillStyles[i].toString();
 				}
 			}
-			if (_lineStyles.length > 0) {
+			if (_initialLineStyles.length > 0) {
 				str += "\n" + StringUtils.repeat(indent) + "LineStyles:";
-				for (i = 0; i < _lineStyles.length; i++) {
-					str += "\n" + StringUtils.repeat(indent + 2) + "[" + (i + 1) + "] " + _lineStyles[i].toString();
+				for (i = 0; i < _initialLineStyles.length; i++) {
+					str += "\n" + StringUtils.repeat(indent + 2) + "[" + (i + 1) + "] " + _initialLineStyles[i].toString();
 				}
 			}
 			return str + super.toString(indent);

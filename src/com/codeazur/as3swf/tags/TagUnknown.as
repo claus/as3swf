@@ -13,16 +13,11 @@
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
-			if (rawLength > 0) {
-				data.writeBytes(parent.parent.bytes, rawIndex, rawLength);
-			} else {
-				throw(new Error("No raw tag data available."));
-			}
+			throw(new Error("No raw tag data available."));
 		}
 		
 		public function toString(indent:uint = 0):String {
-			return toStringMain(indent) + 
-				"Length: " + ((rawLength > 0) ? rawLength : 0);
+			return toStringMain(indent);
 		}
 	}
 }

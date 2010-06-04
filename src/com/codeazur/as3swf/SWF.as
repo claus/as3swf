@@ -1,6 +1,9 @@
 ﻿package com.codeazur.as3swf
 {
 	import com.codeazur.as3swf.data.SWFRectangle;
+	import com.codeazur.as3swf.events.SWFEventDispatcher;
+	import com.codeazur.as3swf.events.SWFErrorEvent;
+	import com.codeazur.as3swf.events.SWFEvent;
 	import com.codeazur.as3swf.tags.ITag;
 	import com.codeazur.as3swf.timeline.Frame;
 	import com.codeazur.as3swf.timeline.Scene;
@@ -8,7 +11,7 @@
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	
-	public class SWF implements ITimeline
+	public class SWF extends SWFEventDispatcher
 	{
 		public var version:int = 10;
 		public var fileLength:uint = 0;
@@ -19,12 +22,13 @@
 		
 		public var compressed:Boolean;
 		
-		protected var _timeline:SWFTimeline;
-		protected var _bytes:SWFData;
+		public var timeline:SWFTimeline;
+		
+		protected var bytes:SWFData;
 		
 		public function SWF(ba:ByteArray = null) {
-			_timeline = new SWFTimeline(this);
-			_bytes = new SWFData();
+			bytes = new SWFData();
+			timeline = new SWFTimeline();
 			if (ba != null) {
 				loadBytes(ba);
 			} else {
@@ -32,17 +36,12 @@
 			}
 		}
 		
-		public function get timeline():SWFTimeline { return _timeline; }
-
 		// Convenience getters
 		public function get tags():Vector.<ITag> { return timeline.tags; }
 		public function get dictionary():Dictionary { return timeline.dictionary; }
 		public function get scenes():Vector.<Scene> { return timeline.scenes; }
 		public function get frames():Vector.<Frame> { return timeline.frames; }
 		public function get layers():Vector.<Array> { return timeline.layers; }
-		
-		// This shouldn't be public
-		public function get bytes():SWFData { return _bytes; }
 		
 		public function getTagByCharacterId(characterId:uint):ITag {
 			return timeline.getTagByCharacterId(characterId);
@@ -52,15 +51,49 @@
 			bytes.length = 0;
 			ba.position = 0;
 			ba.readBytes(bytes);
-			parseInternal();
+			parse(bytes);
+		}
+		
+		public function loadBytesAsync(ba:ByteArray):void {
+			bytes.length = 0;
+			ba.position = 0;
+			ba.readBytes(bytes);
+			parseAsync(bytes);
 		}
 		
 		public function parse(data:SWFData):void {
-			_bytes = data;
-			parseInternal();
+			bytes = data;
+			parseHeader();
+			timeline.parse(bytes, version);
 		}
 		
-		protected function parseInternal():void {
+		public function parseAsync(data:SWFData):void {
+			bytes = data;
+			parseHeader();
+			if(dispatchEvent(new SWFEvent(SWFEvent.HEADER, data, false, true))) {
+				addTimelineListeners();
+				timeline.parseAsync(bytes, version);
+			}
+		}
+		
+		protected function parseAsyncProgressHandler(event:SWFEvent):void {
+			if(!dispatchEvent(event.clone())) {
+				event.preventDefault();
+				removeTimelineListeners();
+			}
+		}
+		
+		protected function parseAsyncCompleteHandler(event:SWFEvent):void {
+			dispatchEvent(event.clone());
+			removeTimelineListeners();
+		}
+		
+		protected function parseAsyncErrorHandler(event:SWFErrorEvent):void {
+			dispatchEvent(event.clone());
+			removeTimelineListeners();
+		}
+		
+		protected function parseHeader():void {
 			compressed = false;
 			bytes.position = 0;
 			var signatureByte:uint = bytes.readUI8();
@@ -87,7 +120,6 @@
 			frameSize = bytes.readRECT();
 			frameRate = bytes.readFIXED8();
 			frameCount = bytes.readUI16();
-			timeline.parse(bytes, version);
 		}
 		
 		public function publish(ba:ByteArray):void {
@@ -114,6 +146,18 @@
 			data.position = 0;
 			ba.length = 0;
 			ba.writeBytes(data);
+		}
+		
+		protected function addTimelineListeners():void {
+			timeline.addEventListener(SWFEvent.PROGRESS, parseAsyncProgressHandler);
+			timeline.addEventListener(SWFEvent.COMPLETE, parseAsyncCompleteHandler);
+			timeline.addEventListener(SWFErrorEvent.ERROR, parseAsyncErrorHandler);
+		}
+		
+		protected function removeTimelineListeners():void {
+			timeline.removeEventListener(SWFEvent.PROGRESS, parseAsyncProgressHandler);
+			timeline.removeEventListener(SWFEvent.COMPLETE, parseAsyncCompleteHandler);
+			timeline.removeEventListener(SWFErrorEvent.ERROR, parseAsyncErrorHandler);
 		}
 		
 		public function toString():String {

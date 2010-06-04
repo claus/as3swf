@@ -792,18 +792,8 @@
 		// etc
 		/////////////////////////////////////////////////////////
 		
-		public function readRawTag():ByteArray {
-			var raw:ByteArray;
-			var pos:uint = position;
-
-			var header:SWFRecordHeader = readTagHeader();
-			if (header.contentLength > 0) {
-				raw = new ByteArray();
-				readBytes(raw, 0, header.contentLength);
-			}
-
-			position = pos;
-			return raw;
+		public function readRawTag():SWFRawTag {
+			return new SWFRawTag(this);
 		}
 		
 		public function skipBytes(length:uint):void {

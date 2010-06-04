@@ -1,9 +1,13 @@
 package com.codeazur.as3swf
 {
 	import com.codeazur.as3swf.data.SWFFrameLabel;
+	import com.codeazur.as3swf.data.SWFRawTag;
 	import com.codeazur.as3swf.data.SWFRecordHeader;
 	import com.codeazur.as3swf.data.SWFScene;
 	import com.codeazur.as3swf.data.consts.SoundCompression;
+	import com.codeazur.as3swf.events.SWFErrorEvent;
+	import com.codeazur.as3swf.events.SWFEvent;
+	import com.codeazur.as3swf.events.SWFEventDispatcher;
 	import com.codeazur.as3swf.factories.SWFTagFactory;
 	import com.codeazur.as3swf.tags.IDefinitionTag;
 	import com.codeazur.as3swf.tags.ITag;
@@ -26,15 +30,17 @@ package com.codeazur.as3swf
 	import com.codeazur.as3swf.timeline.SoundStream;
 	import com.codeazur.utils.StringUtils;
 	
+	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	import flash.utils.Endian;
+	import flash.utils.getTimer;
 
-	public class SWFTimeline
+	public class SWFTimeline extends SWFEventDispatcher
 	{
-		public var parent:ITimeline;
-		
 		protected var _tags:Vector.<ITag>;
+		protected var _tagsRaw:Vector.<SWFRawTag>;
 		protected var _dictionary:Dictionary;
 		protected var _scenes:Vector.<Scene>;
 		protected var _frames:Vector.<Frame>;
@@ -44,19 +50,26 @@ package com.codeazur.as3swf
 		protected var currentFrame:Frame;
 		protected var frameLabels:Dictionary;
 		protected var hasSoundStream:Boolean = false;
+
+		protected var enterFrameProvider:Sprite;
+		protected var data:SWFData;
+		protected var version:uint;
+		protected var eof:Boolean;
 		
-		public function SWFTimeline(parent:ITimeline)
+		public function SWFTimeline()
 		{
-			this.parent = parent;
-			
 			_tags = new Vector.<ITag>();
+			_tagsRaw = new Vector.<SWFRawTag>();
 			_dictionary = new Dictionary();
 			_scenes = new Vector.<Scene>();
 			_frames = new Vector.<Frame>();
 			_layers = new Vector.<Array>();
+			
+			enterFrameProvider = new Sprite();
 		}
 		
 		public function get tags():Vector.<ITag> { return _tags; }
+		public function get tagsRaw():Vector.<SWFRawTag> { return _tagsRaw; }
 		public function get dictionary():Dictionary { return _dictionary; }
 		public function get scenes():Vector.<Scene> { return _scenes; }
 		public function get frames():Vector.<Frame> { return _frames; }
@@ -67,86 +80,109 @@ package com.codeazur.as3swf
 			return tags[dictionary[characterId]];
 		}
 		
-		public function parse(data:SWFData, version:uint):void
-		{
+		public function parse(data:SWFData, version:uint):void {
+			parseInit(data, version);
+			while (parseTag(data)) {};
+			parseFinalize();
+		}
+		
+		public function parseAsync(data:SWFData, version:uint):void {
+			parseInit(data, version);
+			enterFrameProvider.addEventListener(Event.ENTER_FRAME, parseAsyncHandler);
+		}
+		
+		protected function parseAsyncHandler(event:Event):void {
+			enterFrameProvider.removeEventListener(Event.ENTER_FRAME, parseAsyncHandler);
+			if(dispatchEvent(new SWFEvent(SWFEvent.PROGRESS, data, false, true))) {
+				parseAsyncInternal();
+			}
+		}
+		
+		protected function parseAsyncInternal():void {
+			var time:int = getTimer();
+			while (parseTag(data)) {
+				if((getTimer() - time) > 50) {
+					enterFrameProvider.addEventListener(Event.ENTER_FRAME, parseAsyncHandler);
+					return;
+				}
+			}
+			parseFinalize();
+			if(eof) {
+				dispatchEvent(new SWFErrorEvent(SWFErrorEvent.ERROR, SWFErrorEvent.REASON_EOF));
+			} else {
+				dispatchEvent(new SWFEvent(SWFEvent.COMPLETE, data));
+			}
+		}
+		
+		protected function parseInit(data:SWFData, version:uint):void {
 			tags.length = 0;
 			frames.length = 0;
 			layers.length = 0;
 			_dictionary = new Dictionary();
-			
 			currentFrame = new Frame();
 			frameLabels = new Dictionary();
 			hasSoundStream = false;
-			
-			var raw:ByteArray;
-			var header:SWFRecordHeader;
-			var tag:ITag;
-			var pos:uint;
-			
-			while (!header || header.type != TagEnd.TYPE)
-			{
-				pos = data.position;
-				// Bail out if eof
-				if(pos > data.length) {
-					trace("WARNING: end of file encountered, no end tag.");
-					break;
-				}
-				header = data.readTagHeader();
-				tag = SWFTagFactory.create(header.type);
-				tag.parent = this;
-				tag.rawIndex = pos;
-				tag.rawLength = header.tagLength;
-				try {
-					tag.parse(data, header.contentLength, version);
-				} catch(e:Error) {
-					// If we get here there was a problem parsing this particular tag.
-					// Corrupted SWF, possible SWF exploit, or obfuscated SWF.
-					// TODO: register errors and warnings
-					trace("WARNING: parse error: " + e.message + ", Tag: " + tag.name + ", Index: " + tags.length);
-				}
-				// Register parsed tag, build dictionary and display list etc
-				processTag(tag);
-				// Adjust position (just in case the parser under- or overflows)
-				if(data.position != pos + header.tagLength) {
-					trace("WARNING: excess bytes: " + 
-						(data.position - (pos + header.tagLength)) + ", " +
-						"Tag: " + tag.name + ", " +
-						"Index: " + (tags.length - 1)
-					);
-					data.position = pos + header.tagLength;
-				}
+			this.data = data;
+			this.version = version;
+		}
+		
+		protected function parseTag(data:SWFData):Boolean {
+			var pos:uint = data.position;
+			// Bail out if eof
+			eof = (pos > data.length);
+			if(eof) {
+				trace("WARNING: end of file encountered, no end tag.");
+				return false;
 			}
-			
+			var tagRaw:SWFRawTag = data.readRawTag();
+			var tagHeader:SWFRecordHeader = tagRaw.header;
+			var tag:ITag = SWFTagFactory.create(tagHeader.type);
+			try {
+				tag.parse(data, tagHeader.contentLength, version);
+			} catch(e:Error) {
+				// If we get here there was a problem parsing this particular tag.
+				// Corrupted SWF, possible SWF exploit, or obfuscated SWF.
+				// TODO: register errors and warnings
+				trace("WARNING: parse error: " + e.message + ", Tag: " + tag.name + ", Index: " + tags.length);
+			}
+			// Register tag
+			tags.push(tag);
+			tagsRaw.push(tagRaw);
+			// Build dictionary and display list etc
+			processTag(tag);
+			// Adjust position (just in case the parser under- or overflows)
+			if(data.position != pos + tagHeader.tagLength) {
+				trace("WARNING: excess bytes: " + 
+					(data.position - (pos + tagHeader.tagLength)) + ", " +
+					"Tag: " + tag.name + ", " +
+					"Index: " + (tags.length - 1)
+				);
+				data.position = pos + tagHeader.tagLength;
+			}
+			return (tagHeader.type != TagEnd.TYPE);
+		}
+		
+		protected function parseFinalize():void {
 			if(soundStream && soundStream.data.length == 0) {
 				_soundStream = null;
 			}
-			
 			buildLayers();
 		}
 		
-		public function publish(data:SWFData, version:uint):void
-		{
-			for (var i:uint = 0; i < tags.length; i++)
-			{
+		public function publish(data:SWFData, version:uint):void {
+			for (var i:uint = 0; i < tags.length; i++) {
 				try {
 					tags[i].publish(data, version);
 				}
 				catch (e:Error) {
-					var tag:ITag = tags[i];
-					trace("WARNING: publish error: " + e.message + " (tag: " + tag.name + ", index: " + i + ")");
-					if (tag.rawLength > 0) {
-						data.writeBytes(tag.raw);
-					} else {
-						throw(e);
-					}
+					trace("WARNING: publish error: " + e.message + " (tag: " + tags[i].name + ", index: " + i + ")");
+					tagsRaw[i].publish(data);
 				}
 			}
 		}
 		
 		protected function processTag(tag:ITag):void {
-			var currentTagIndex:uint = tags.length;
-			// Register tag
-			tags.push(tag);
+			var currentTagIndex:uint = tags.length - 1;
 			// Register definition tag in dictionary (key: character id, value: tag index)
 			if(tag is IDefinitionTag) {
 				var definitionTag:IDefinitionTag = tag as IDefinitionTag;

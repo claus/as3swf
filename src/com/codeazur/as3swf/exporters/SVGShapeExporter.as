@@ -66,15 +66,9 @@ package com.codeazur.as3swf.exporters
 			path.@["stroke-width"] = isNaN(thickness) ? 1 : thickness;
 			if(alpha != 1) { path.@["stroke-opacity"] = alpha; }
 			switch(startCaps) {
-				case CapsStyle.NONE:
-					path.@["stroke-linecap"] = "butt";
-					break;
-				case CapsStyle.SQUARE:
-					path.@["stroke-linecap"] = "square";
-					break;
-				default:
-					path.@["stroke-linecap"] = "round";
-					break;
+				case CapsStyle.NONE: path.@["stroke-linecap"] = "butt"; break;
+				case CapsStyle.SQUARE: path.@["stroke-linecap"] = "square"; break;
+				default: path.@["stroke-linecap"] = "round"; break;
 			}
 			switch(joints) {
 				case JointStyle.MITER:
@@ -83,12 +77,8 @@ package com.codeazur.as3swf.exporters
 						path.@["stroke-miterlimit"] = miterLimit;
 					}
 					break;
-				case JointStyle.BEVEL:
-					path.@["stroke-linejoin"] = "bevel";
-					break;
-				default:
-					path.@["stroke-linejoin"] = "round";
-					break;
+				case JointStyle.BEVEL: path.@["stroke-linejoin"] = "bevel"; break;
+				default: path.@["stroke-linejoin"] = "round"; break;
 			}
 		}
 
@@ -128,20 +118,15 @@ package com.codeazur.as3swf.exporters
 				gradient.@cx = 0;
 				gradient.@cy = 0;
 				if(focalPointRatio != 0) {
-					// TODO: focal point
+					gradient.@fx = 819.2 * focalPointRatio;
+					gradient.@fy = 0;
 				}
 			}
 			if(spreadMethod != SpreadMethod.PAD) { gradient.@spreadMethod = spreadMethod; }
 			switch(spreadMethod) {
-				case SpreadMethod.PAD:
-					gradient.@spreadMethod = "pad";
-					break;
-				case SpreadMethod.REFLECT:
-					gradient.@spreadMethod = "reflect";
-					break;
-				case SpreadMethod.REPEAT:
-					gradient.@spreadMethod = "repeat";
-					break;
+				case SpreadMethod.PAD: gradient.@spreadMethod = "pad"; break;
+				case SpreadMethod.REFLECT: gradient.@spreadMethod = "reflect"; break;
+				case SpreadMethod.REPEAT: gradient.@spreadMethod = "repeat"; break;
 			}
 			if(interpolationMethod == InterpolationMethod.LINEAR_RGB) { gradient.@["color-interpolation"] = "linearRGB"; }
 			if(matrix) {

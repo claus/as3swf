@@ -3,7 +3,7 @@
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.SWFRectangle;
 	import com.codeazur.as3swf.data.SWFShapeWithStyle;
-	import com.codeazur.as3swf.exporters.IShapeExporter;
+	import com.codeazur.as3swf.exporters.core.IShapeExporter;
 	
 	public class TagDefineShape extends Tag implements IDefinitionTag
 	{

@@ -13,6 +13,7 @@ package com.codeazur.as3swf.exporters
 	import flash.geom.Matrix;
 	
 	import mx.graphics.SolidColorStroke;
+	import com.codeazur.as3swf.exporters.core.DefaultSVGShapeExporter;
 	
 	public class FXGShapeExporter extends DefaultSVGShapeExporter
 	{

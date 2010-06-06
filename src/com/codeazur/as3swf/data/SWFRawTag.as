@@ -18,9 +18,10 @@ package com.codeazur.as3swf.data
 			var pos:uint = data.position;
 			header = data.readTagHeader();
 			bytes = new SWFData();
+			var posContent:uint = data.position;
 			data.position = pos;
 			data.readBytes(bytes, 0, header.tagLength);
-			data.position = pos;
+			data.position = posContent;
 		}
 		
 		public function publish(data:SWFData):void {

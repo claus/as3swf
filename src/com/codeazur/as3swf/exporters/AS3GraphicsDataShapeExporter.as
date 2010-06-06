@@ -14,6 +14,7 @@ package com.codeazur.as3swf.exporters
 	import flash.display.LineScaleMode;
 	import flash.display.SpreadMethod;
 	import flash.geom.Matrix;
+	import com.codeazur.as3swf.exporters.core.DefaultShapeExporter;
 	
 	public class AS3GraphicsDataShapeExporter extends DefaultShapeExporter
 	{

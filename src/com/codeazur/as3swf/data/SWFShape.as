@@ -8,8 +8,8 @@
 	import com.codeazur.as3swf.data.etc.CurvedEdge;
 	import com.codeazur.as3swf.data.etc.IEdge;
 	import com.codeazur.as3swf.data.etc.StraightEdge;
-	import com.codeazur.as3swf.exporters.DefaultShapeExporter;
-	import com.codeazur.as3swf.exporters.IShapeExporter;
+	import com.codeazur.as3swf.exporters.core.DefaultShapeExporter;
+	import com.codeazur.as3swf.exporters.core.IShapeExporter;
 	import com.codeazur.as3swf.utils.ColorUtils;
 	import com.codeazur.as3swf.utils.NumberUtils;
 	import com.codeazur.utils.StringUtils;

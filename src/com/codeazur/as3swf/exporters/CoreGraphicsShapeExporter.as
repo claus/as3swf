@@ -12,6 +12,7 @@
 	import flash.display.SpreadMethod;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
+	import com.codeazur.as3swf.exporters.core.DefaultShapeExporter;
 
 	public class CoreGraphicsShapeExporter extends DefaultShapeExporter
 	{

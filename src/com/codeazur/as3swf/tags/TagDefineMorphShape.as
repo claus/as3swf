@@ -11,7 +11,7 @@
 	import com.codeazur.as3swf.data.SWFShapeRecordCurvedEdge;
 	import com.codeazur.as3swf.data.SWFShapeRecordStraightEdge;
 	import com.codeazur.as3swf.data.SWFShapeRecordStyleChange;
-	import com.codeazur.as3swf.exporters.IShapeExporter;
+	import com.codeazur.as3swf.exporters.core.IShapeExporter;
 	import com.codeazur.utils.StringUtils;
 	
 	public class TagDefineMorphShape extends Tag implements IDefinitionTag

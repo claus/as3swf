@@ -3,7 +3,7 @@
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.SWFFillStyle;
 	import com.codeazur.as3swf.data.SWFShape;
-	import com.codeazur.as3swf.exporters.IShapeExporter;
+	import com.codeazur.as3swf.exporters.core.IShapeExporter;
 	import com.codeazur.utils.StringUtils;
 	
 	public class TagDefineFont extends Tag implements IDefinitionTag

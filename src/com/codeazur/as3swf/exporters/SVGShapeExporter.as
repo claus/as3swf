@@ -71,14 +71,14 @@ package com.codeazur.as3swf.exporters
 				default: path.@["stroke-linecap"] = "round"; break;
 			}
 			switch(joints) {
-				case JointStyle.MITER:
+				case JointStyle.BEVEL: path.@["stroke-linejoin"] = "bevel"; break;
+				case JointStyle.ROUND: path.@["stroke-linejoin"] = "round"; break;
+				default:
 					path.@["stroke-linejoin"] = "miter";
-					if(miterLimit > 1 && miterLimit != 4) {
+					if(miterLimit >= 1 && miterLimit != 4) {
 						path.@["stroke-miterlimit"] = miterLimit;
 					}
 					break;
-				case JointStyle.BEVEL: path.@["stroke-linejoin"] = "bevel"; break;
-				default: path.@["stroke-linejoin"] = "round"; break;
 			}
 		}
 

@@ -324,24 +324,13 @@
 			var path:Vector.<IEdge> = createPathFromEdgeMap(fillEdgeMap);
 			var pos:Point = new Point(Number.MAX_VALUE, Number.MAX_VALUE);
 			var fillStyleIdx:uint = uint.MAX_VALUE;
-			var hasFills:Boolean = false;
-			var hasOpenFill:Boolean = false;
-			for (var i:uint = 0; i < path.length; i++) {
-				var e:IEdge = path[i];
-				if (fillStyleIdx != e.fillStyleIdx) {
-					fillStyleIdx = e.fillStyleIdx;
-					if (fillStyleIdx == 0) {
-						// Fillstyle index 0: no fill
-						if (hasOpenFill) {
-							handler.endFill();
-							hasOpenFill = false;
-						}
-					} else {
-						if (!hasFills) {
-							handler.beginFills();
-							hasFills = true;
-						}
-						hasOpenFill = true;
+			if(path.length > 0) {
+				handler.beginFills();
+				for (var i:uint = 0; i < path.length; i++) {
+					var e:IEdge = path[i];
+					if (fillStyleIdx != e.fillStyleIdx) {
+						fillStyleIdx = e.fillStyleIdx;
+						pos = new Point(Number.MAX_VALUE, Number.MAX_VALUE);
 						try {
 							var matrix:Matrix;
 							var fillStyle:SWFFillStyle = _fillStyles[fillStyleIdx - 1];
@@ -390,9 +379,6 @@
 										(fillStyle.type == 0x40 || fillStyle.type == 0x41)
 									);
 									break;
-								default:
-									hasOpenFill = false;
-									break;
 							}
 						} catch (e:Error) {
 							// Font shapes define no fillstyles per se, but do reference fillstyle index 1,
@@ -400,8 +386,6 @@
 							handler.beginFill(0);
 						}
 					}
-				}
-				if (hasOpenFill) {
 					if (!pos.equals(e.from)) {
 						handler.moveTo(e.from.x, e.from.y);
 					}
@@ -411,13 +395,9 @@
 					} else {
 						handler.lineTo(e.to.x, e.to.y);
 					}
+					pos = e.to;
 				}
-				pos = e.to;
-			}
-			if (hasOpenFill) {
 				handler.endFill();
-			}
-			if (hasFills) {
 				handler.endFills();
 			}
 		}
@@ -433,6 +413,7 @@
 					var e:IEdge = path[i];
 					if (lineStyleIdx != e.lineStyleIdx) {
 						lineStyleIdx = e.lineStyleIdx;
+						pos = new Point(Number.MAX_VALUE, Number.MAX_VALUE);
 						try {
 							lineStyle = _lineStyles[lineStyleIdx - 1];
 						} catch (e:Error) {

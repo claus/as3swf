@@ -1,6 +1,7 @@
 package com.codeazur.as3swf.exporters
 {
 	import com.codeazur.as3swf.SWF;
+	import com.codeazur.as3swf.exporters.core.DefaultShapeExporter;
 	
 	import flash.display.CapsStyle;
 	import flash.display.GraphicsEndFill;
@@ -14,13 +15,13 @@ package com.codeazur.as3swf.exporters
 	import flash.display.LineScaleMode;
 	import flash.display.SpreadMethod;
 	import flash.geom.Matrix;
-	import com.codeazur.as3swf.exporters.core.DefaultShapeExporter;
 	
 	public class AS3GraphicsDataShapeExporter extends DefaultShapeExporter
 	{
 		protected var _graphicsData:Vector.<IGraphicsData>;
 		
 		protected var tmpGraphicsPath:GraphicsPath;
+		protected var tmpStroke:GraphicsStroke;
 		
 		public function AS3GraphicsDataShapeExporter(swf:SWF) {
 			super(swf);
@@ -67,7 +68,7 @@ package com.codeazur.as3swf.exporters
 
 		override public function lineStyle(thickness:Number = NaN, color:uint = 0, alpha:Number = 1.0, pixelHinting:Boolean = false, scaleMode:String = LineScaleMode.NORMAL, startCaps:String = CapsStyle.ROUND, endCaps:String = CapsStyle.ROUND, joints:String = JointStyle.ROUND, miterLimit:Number = 3):void {
 			cleanUpGraphicsPath();
-			_graphicsData.push(new GraphicsStroke(
+			tmpStroke = new GraphicsStroke(
 				thickness,
 				pixelHinting,
 				scaleMode,
@@ -75,7 +76,23 @@ package com.codeazur.as3swf.exporters
 				joints,
 				miterLimit,
 				new GraphicsSolidFill(color, alpha)
-			)); 
+			);
+			_graphicsData.push(tmpStroke);
+		}
+		
+		override public function lineGradientStyle(type:String, colors:Array, alphas:Array, ratios:Array, matrix:Matrix=null, spreadMethod:String=SpreadMethod.PAD, interpolationMethod:String=InterpolationMethod.RGB, focalPointRatio:Number=0):void {
+			if(tmpStroke) {
+				tmpStroke.fill = new GraphicsGradientFill(
+					type,
+					colors,
+					alphas,
+					ratios,
+					matrix,
+					spreadMethod,
+					interpolationMethod,
+					focalPointRatio
+				);
+			}
 		}
 		
 		override public function moveTo(x:Number, y:Number):void {
@@ -99,6 +116,7 @@ package com.codeazur.as3swf.exporters
 				_graphicsData.push(tmpGraphicsPath);
 			}
 			tmpGraphicsPath = new GraphicsPath();
+			tmpStroke = null;
 		}
 	}
 }

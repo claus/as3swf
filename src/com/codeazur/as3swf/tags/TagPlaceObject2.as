@@ -99,6 +99,7 @@
 			if (hasColorTransform) { str += ", ColorTransform: " + colorTransform; }
 			if (hasRatio) { str += ", Ratio: " + ratio; }
 			if (hasName) { str += ", Name: " + objName; }
+			if (hasClipDepth) { str += ", ClipDepth: " + clipDepth; }
 			if (hasClipActions && clipActions != null) {
 				str += "\n" + StringUtils.repeat(indent + 2) + clipActions.toString(indent + 2);
 			}

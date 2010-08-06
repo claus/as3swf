@@ -12,6 +12,7 @@ package com.codeazur.as3swf.timeline
 		public var label:String;
 		
 		protected var _objects:Dictionary;
+		protected var _objectsSortedByDepth:Array;
 		protected var _characters:Array;
 		
 		public function Frame(frameNumber:uint = 0, tagIndexStart:uint = 0)
@@ -24,6 +25,21 @@ package com.codeazur.as3swf.timeline
 		
 		public function get objects():Dictionary { return _objects; }
 		public function get characters():Array { return _characters; }
+
+		public function getObjectsSortedByDepth():Array {
+			var depths:Array = [];
+			if(_objectsSortedByDepth == null) {
+				for(var depth:String in _objects) {
+					depths.push(depth);
+				}
+				depths.sort(Array.NUMERIC);
+				_objectsSortedByDepth = [];
+				for(var i:uint = 0; i < depths.length; i++) {
+					_objectsSortedByDepth.push(_objects[depths[i]]);
+				}
+			}
+			return _objectsSortedByDepth;
+		}
 		
 		public function get tagCount():uint {
 			return tagIndexEnd - tagIndexStart + 1;
@@ -56,10 +72,12 @@ package com.codeazur.as3swf.timeline
 				// No character defined at specified depth. Create one.
 				_objects[depth] = new FrameObject(depth, characterId, tagIndex, 0, true);
 			}
+			_objectsSortedByDepth = null;
 		}
 		
 		public function removeObject(depth:uint, characterId:uint):void {
 			delete _objects[depth];
+			_objectsSortedByDepth = null;
 		}
 		
 		public function clone():Frame {

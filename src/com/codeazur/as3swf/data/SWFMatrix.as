@@ -3,6 +3,7 @@
 	import com.codeazur.as3swf.SWFData;
 	
 	import flash.geom.Matrix;
+	import flash.geom.Point;
 	
 	public class SWFMatrix
 	{
@@ -12,6 +13,10 @@
 		public var rotateSkew1:Number = 0.0;
 		public var translateX:int = 0;
 		public var translateY:int = 0;
+		
+		public var xscale:Number;
+		public var yscale:Number;
+		public var rotation:Number;
 		
 		public function SWFMatrix(data:SWFData = null) {
 			if (data != null) {
@@ -42,6 +47,12 @@
 			var translateBits:uint = data.readUB(5);
 			translateX = data.readSB(translateBits);
 			translateY = data.readSB(translateBits);
+			// conversion to rotation, xscale, yscale
+			var px:Point = matrix.deltaTransformPoint(new Point(0, 1));
+			rotation = ((180 / Math.PI) * Math.atan2(px.y, px.x) - 90);
+			if(rotation < 0) { rotation = 360 + rotation; }
+			xscale = Math.sqrt(scaleX * scaleX + rotateSkew0 * rotateSkew0);
+			yscale = Math.sqrt(rotateSkew1 * rotateSkew1 + scaleY * scaleY);
 		}
 		
 		public function clone():SWFMatrix {

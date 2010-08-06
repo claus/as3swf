@@ -100,7 +100,6 @@
 			var endIdx:uint = mp3.length;
 			var samples:uint = 0;
 			var firstFrame:Boolean = true;
-			var bitrate:uint = 0;
 			var samplingrate:uint = 0;
 			var channelmode:uint = 0;
 			var frame:MPEGFrame = new MPEGFrame();
@@ -137,14 +136,9 @@
 							frame.setCRCByteAt(1, mp3[i++]);
 						}
 						if (firstFrame) {
-							samplingrate = frame.samplingrate;
-							bitrate = frame.bitrate;
-							channelmode = frame.channelMode;
 							firstFrame = false;
-						} else {
-							if (bitrate != frame.bitrate) {
-								throw(new Error("This mp3 is encoded with variable bitrates. VBR is not allowed. Please use CBR mp3s."));
-							}
+							samplingrate = frame.samplingrate;
+							channelmode = frame.channelMode;
 						}
 						samples += frame.samples;
 						i += frame.size;

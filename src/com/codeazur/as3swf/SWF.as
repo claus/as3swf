@@ -1,11 +1,12 @@
 ﻿package com.codeazur.as3swf
 {
 	import com.codeazur.as3swf.data.SWFRectangle;
-	import com.codeazur.as3swf.events.SWFEventDispatcher;
 	import com.codeazur.as3swf.events.SWFErrorEvent;
 	import com.codeazur.as3swf.events.SWFEvent;
+	import com.codeazur.as3swf.events.SWFEventDispatcher;
 	import com.codeazur.as3swf.tags.ITag;
 	import com.codeazur.as3swf.timeline.Frame;
+	import com.codeazur.as3swf.timeline.Layer;
 	import com.codeazur.as3swf.timeline.Scene;
 	
 	import flash.utils.ByteArray;
@@ -28,7 +29,7 @@
 		
 		public function SWF(ba:ByteArray = null) {
 			bytes = new SWFData();
-			timeline = new SWFTimeline();
+			timeline = new SWFTimeline(this);
 			if (ba != null) {
 				loadBytes(ba);
 			} else {
@@ -41,10 +42,10 @@
 		public function get dictionary():Dictionary { return timeline.dictionary; }
 		public function get scenes():Vector.<Scene> { return timeline.scenes; }
 		public function get frames():Vector.<Frame> { return timeline.frames; }
-		public function get layers():Vector.<Array> { return timeline.layers; }
+		public function get layers():Vector.<Layer> { return timeline.layers; }
 		
 		public function getTagByCharacterId(characterId:uint):ITag {
-			return timeline.getTagByCharacterId(characterId);
+			return tags[dictionary[characterId]];
 		}
 		
 		public function loadBytes(ba:ByteArray):void {

@@ -11,6 +11,7 @@ package com.codeazur.as3swf
 	import com.codeazur.as3swf.factories.SWFTagFactory;
 	import com.codeazur.as3swf.tags.IDefinitionTag;
 	import com.codeazur.as3swf.tags.ITag;
+	import com.codeazur.as3swf.tags.TagDefineMorphShape;
 	import com.codeazur.as3swf.tags.TagDefineSceneAndFrameLabelData;
 	import com.codeazur.as3swf.tags.TagEnd;
 	import com.codeazur.as3swf.tags.TagFrameLabel;
@@ -25,7 +26,8 @@ package com.codeazur.as3swf
 	import com.codeazur.as3swf.tags.TagSoundStreamHead2;
 	import com.codeazur.as3swf.timeline.Frame;
 	import com.codeazur.as3swf.timeline.FrameObject;
-	import com.codeazur.as3swf.timeline.LayerObject;
+	import com.codeazur.as3swf.timeline.Layer;
+	import com.codeazur.as3swf.timeline.LayerStrip;
 	import com.codeazur.as3swf.timeline.Scene;
 	import com.codeazur.as3swf.timeline.SoundStream;
 	import com.codeazur.utils.StringUtils;
@@ -44,9 +46,11 @@ package com.codeazur.as3swf
 		protected var _dictionary:Dictionary;
 		protected var _scenes:Vector.<Scene>;
 		protected var _frames:Vector.<Frame>;
-		protected var _layers:Vector.<Array>;
+		protected var _layers:Vector.<Layer>;
 		protected var _soundStream:SoundStream;
 
+		protected var swf:SWF;
+		
 		protected var currentFrame:Frame;
 		protected var frameLabels:Dictionary;
 		protected var hasSoundStream:Boolean = false;
@@ -56,14 +60,16 @@ package com.codeazur.as3swf
 		protected var version:uint;
 		protected var eof:Boolean;
 		
-		public function SWFTimeline()
+		public function SWFTimeline(swf:SWF)
 		{
+			this.swf = swf;
+			
 			_tags = new Vector.<ITag>();
 			_tagsRaw = new Vector.<SWFRawTag>();
 			_dictionary = new Dictionary();
 			_scenes = new Vector.<Scene>();
 			_frames = new Vector.<Frame>();
-			_layers = new Vector.<Array>();
+			_layers = new Vector.<Layer>();
 			
 			enterFrameProvider = new Sprite();
 		}
@@ -73,11 +79,11 @@ package com.codeazur.as3swf
 		public function get dictionary():Dictionary { return _dictionary; }
 		public function get scenes():Vector.<Scene> { return _scenes; }
 		public function get frames():Vector.<Frame> { return _frames; }
-		public function get layers():Vector.<Array> { return _layers; }
+		public function get layers():Vector.<Layer> { return _layers; }
 		public function get soundStream():SoundStream { return _soundStream; }
 		
 		public function getTagByCharacterId(characterId:uint):ITag {
-			return tags[dictionary[characterId]];
+			return swf.getTagByCharacterId(characterId);
 		}
 		
 		public function parse(data:SWFData, version:uint):void {
@@ -136,7 +142,7 @@ package com.codeazur.as3swf
 			}
 			var tagRaw:SWFRawTag = data.readRawTag();
 			var tagHeader:SWFRecordHeader = tagRaw.header;
-			var tag:ITag = SWFTagFactory.create(tagHeader.type);
+			var tag:ITag = SWFTagFactory.create(tagHeader.type, swf);
 			try {
 				tag.parse(data, tagHeader.contentLength, version);
 			} catch(e:Error) {
@@ -183,7 +189,7 @@ package com.codeazur.as3swf
 		
 		protected function processTag(tag:ITag):void {
 			var currentTagIndex:uint = tags.length - 1;
-			// Register definition tag in dictionary (key: character id, value: tag index)
+			// Register definition tag in dictionary (key: character id, value: definition tag index)
 			if(tag is IDefinitionTag) {
 				var definitionTag:IDefinitionTag = tag as IDefinitionTag;
 				if(definitionTag.characterId > 0) {
@@ -281,23 +287,54 @@ package com.codeazur.as3swf
 			var depthInt:uint;
 			var depths:Dictionary = new Dictionary();
 			var depthsAvailable:Array = [];
+			
 			for(i = 0; i < frames.length; i++) {
 				var frame:Frame = frames[i];
 				for(depth in frame.objects) {
 					depthInt = parseInt(depth);
-					var layerObject:LayerObject = new LayerObject(frame.frameNumber, depthInt);
 					if(depthsAvailable.indexOf(depthInt) > -1) {
-						(depths[depth] as Array).push(layerObject);
+						(depths[depth] as Array).push(frame.frameNumber);
 					} else {
-						depths[depth] = [layerObject];
+						depths[depth] = [frame.frameNumber];
 						depthsAvailable.push(depthInt);
 					}
 				}
 			}
+
 			depthsAvailable.sort(Array.NUMERIC);
+
+			var curClipDepth:uint = 0;
 			for(i = 0; i < depthsAvailable.length; i++) {
-				_layers.push(depths[depthsAvailable[i]]);
+				var layer:Layer = new Layer(depthsAvailable[i], frames.length);
+				var frameIndices:Array = depths[depthsAvailable[i].toString()];
+				var frameIndicesLen:uint = frameIndices.length;
+				if(frameIndicesLen > 0) {
+					var curStripType:uint = LayerStrip.TYPE_EMPTY;
+					var startFrameIndex:uint = uint.MAX_VALUE;
+					var endFrameIndex:uint = uint.MAX_VALUE;
+					for(var j:uint = 0; j < frameIndicesLen; j++) {
+						var curFrameIndex:uint = frameIndices[j];
+						var curFrameObject:FrameObject = frames[curFrameIndex].objects[layer.depth] as FrameObject;
+						if(curFrameObject.isKeyframe) {
+							// a keyframe marks the start of a new strip: save current strip
+							layer.appendStrip(curStripType, startFrameIndex, endFrameIndex);
+							// set start of new strip
+							startFrameIndex = curFrameIndex;
+							// evaluate type of new strip (motion tween detection see below)
+							curStripType = (getTagByCharacterId(curFrameObject.characterId) is TagDefineMorphShape) ? LayerStrip.TYPE_SHAPETWEEN : LayerStrip.TYPE_STATIC;
+						} else if(curStripType == LayerStrip.TYPE_STATIC && curFrameObject.lastModifiedAtIndex > 0) {
+							// if one of the matrices of an object in a static strip is
+							// modified at least once, we are dealing with a motion tween:
+							curStripType = LayerStrip.TYPE_MOTIONTWEEN;
+						}
+						// update the end of the strip
+						endFrameIndex = curFrameIndex;
+					}
+					layer.appendStrip(curStripType, startFrameIndex, endFrameIndex);
+				}
+				_layers.push(layer);
 			}
+
 			for(i = 0; i < frames.length; i++) {
 				var frameObjs:Dictionary = frames[i].objects;
 				for(depth in frameObjs) {
@@ -332,7 +369,8 @@ package com.codeazur.as3swf
 				for (i = 0; i < layers.length; i++) {
 					str += "\n" + StringUtils.repeat(indent + 4) +
 						"[" + i + "] Frames " +
-						layers[i].join(", ");
+						//layers[i].join(", ");
+						"";
 				}
 			}
 			return str;

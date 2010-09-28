@@ -15,6 +15,7 @@ package com.codeazur.as3swf.timeline
 
 		// Whether this is a keyframe or not
 		public var isKeyframe:Boolean;
+		
 		// The index of the layer this object resides on 
 		public var layer:int = -1;
 		

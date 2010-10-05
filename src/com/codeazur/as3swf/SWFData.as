@@ -239,14 +239,12 @@
 		/////////////////////////////////////////////////////////
 		
 		public function readString():String {
-			var c:uint;
-			var ba:ByteArray = new ByteArray();
-			while ((c = readUnsignedByte()) != 0) {
-				ba.writeByte(c);
-			}
-			ba.position = 0;
-			resetBitsPending();
-			return ba.readUTFBytes(ba.length);
+			var index:int = this.position;
+
+			while (this[index])
+				index++;
+
+			return this.readUTFBytes(index - this.position + 1);
 		}
 		
 		public function writeString(value:String):void {

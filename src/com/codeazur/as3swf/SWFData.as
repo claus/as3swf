@@ -239,12 +239,10 @@
 		/////////////////////////////////////////////////////////
 		
 		public function readString():String {
-			var index:int = this.position;
-
-			while (this[index])
-				index++;
-
-			return this.readUTFBytes(index - this.position + 1);
+			var index:uint = position;
+			while (this[index++]) {}
+			resetBitsPending();
+			return readUTFBytes(index - position);
 		}
 		
 		public function writeString(value:String):void {

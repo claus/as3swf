@@ -17,6 +17,7 @@
 		public function TagDefineShape() {}
 		
 		public function get characterId():uint { return _characterId; }
+		public function set characterId(value:uint):void { _characterId = value; }
 		
 		public function parse(data:SWFData, length:uint, version:uint):void {
 			_characterId = data.readUI16();

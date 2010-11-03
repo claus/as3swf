@@ -1,5 +1,7 @@
 ﻿package com.codeazur.as3swf.tags
 {
+	import com.codeazur.as3swf.data.consts.BitmapFormat;
+
 	public class TagDefineBitsLossless2 extends TagDefineBitsLossless implements IDefinitionTag
 	{
 		public static const TYPE:uint = 36;
@@ -13,7 +15,7 @@
 		override public function toString(indent:uint = 0):String {
 			return toStringMain(indent) +
 				"ID: " + characterId + ", " +
-				"Format: " + bitmapFormat + ", " +
+				"Format: " + BitmapFormat.toString(bitmapFormat) + ", " +
 				"Size: (" + bitmapWidth + "," + bitmapHeight + ")";
 		}
 	}

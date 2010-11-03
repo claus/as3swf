@@ -2,7 +2,7 @@
 {
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.consts.BitmapFormat;
-
+	
 	import flash.utils.ByteArray;
 	
 	public class TagDefineBitsLossless extends Tag implements IDefinitionTag
@@ -22,6 +22,8 @@
 		}
 		
 		public function get characterId():uint { return _characterId; }
+		public function set characterId(value:uint):void { _characterId = value; }
+		
 		public function get zlibBitmapData():ByteArray { return _zlibBitmapData; }
 		
 		public function parse(data:SWFData, length:uint, version:uint):void {

@@ -6,12 +6,13 @@
 	{
 		public static const TYPE:uint = 41;
 		
+		private static const UINT_MAX_CARRY:Number = uint.MAX_VALUE + 1;
+
 		public var productId:uint;
 		public var edition:uint;
 		public var majorVersion:uint;
 		public var minorVersion:uint;
-		public var majorBuild:uint;
-		public var minorBuild:uint;
+		public var build:Number;
 		public var compileDate:Date;
 		
 		public function TagProductInfo() {}
@@ -21,10 +22,13 @@
 			edition = data.readUI32();
 			majorVersion = data.readUI8();
 			minorVersion = data.readUI8();
-			minorBuild = data.readUI32();
-			majorBuild = data.readUI32();
-			var sec:Number = data.readUI32();
-			sec += data.readUI32() * 4294967296;
+
+			build = data.readUI32()
+					+ data.readUI32() * UINT_MAX_CARRY;
+
+			var sec:Number = data.readUI32()
+					+ data.readUI32() * UINT_MAX_CARRY;
+
 			compileDate = new Date(sec);
 		}
 		
@@ -34,10 +38,10 @@
 			body.writeUI32(edition);
 			body.writeUI8(majorVersion);
 			body.writeUI8(minorVersion);
-			body.writeUI32(minorBuild);
-			body.writeUI32(majorBuild);
-			body.writeUI32(uint(compileDate.time));
-			body.writeUI32(uint(compileDate.time / 4294967296));
+			body.writeUI32(build);
+			body.writeUI32(build / UINT_MAX_CARRY);
+			body.writeUI32(compileDate.time);
+			body.writeUI32(compileDate.time / UINT_MAX_CARRY);
 			data.writeTagHeader(type, body.length);
 			data.writeBytes(body);
 		}
@@ -50,7 +54,7 @@
 			return toStringMain(indent) +
 				"ProductID: " + productId + ", " +
 				"Edition: " + edition + ", " +
-				"Version: " + majorVersion + "." + minorVersion + "." + majorBuild + "." + minorBuild + ", " +
+				"Version: " + majorVersion + "." + minorVersion + " r" + build + ", " +
 				"CompileDate: " + compileDate.toString();
 		}
 	}

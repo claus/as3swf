@@ -24,6 +24,8 @@
 		public var compressed:Boolean;
 		
 		public var timeline:SWFTimeline;
+
+		public var asyncTimeout:int = 50;
 		
 		protected var bytes:SWFData;
 		
@@ -43,9 +45,14 @@
 		public function get scenes():Vector.<Scene> { return timeline.scenes; }
 		public function get frames():Vector.<Frame> { return timeline.frames; }
 		public function get layers():Vector.<Layer> { return timeline.layers; }
+
+		public function get backgroundColor():uint { return timeline.backgroundColor; }
 		
 		public function getTagByCharacterId(characterId:uint):ITag {
-			return tags[dictionary[characterId]];
+			if(dictionary[characterId] != undefined) {
+				return tags[dictionary[characterId]];
+			}
+			return null;
 		}
 		
 		public function loadBytes(ba:ByteArray):void {

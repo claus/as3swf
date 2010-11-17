@@ -1,17 +1,11 @@
 ﻿package com.codeazur.as3swf.tags
 {
 	import com.codeazur.as3swf.SWFData;
-	import com.codeazur.as3swf.data.SWFClipActions;
 	import com.codeazur.utils.StringUtils;
 	
 	public class TagPlaceObject2 extends TagPlaceObject implements ITag, IDisplayListTag
 	{
 		public static const TYPE:uint = 26;
-		
-		public var ratio:uint;
-		public var objName:String;
-		public var clipDepth:uint;
-		public var clipActions:SWFClipActions;
 		
 		public function TagPlaceObject2() {}
 		

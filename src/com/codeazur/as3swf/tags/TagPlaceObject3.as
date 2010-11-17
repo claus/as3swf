@@ -2,31 +2,13 @@
 {
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.consts.BlendMode;
-	import com.codeazur.as3swf.data.filters.IFilter;
 	import com.codeazur.utils.StringUtils;
 	
 	public class TagPlaceObject3 extends TagPlaceObject2 implements ITag, IDisplayListTag
 	{
 		public static const TYPE:uint = 70;
 		
-		public var hasImage:Boolean;
-		public var hasClassName:Boolean;
-		public var hasCacheAsBitmap:Boolean;
-		public var hasBlendMode:Boolean;
-		public var hasFilterList:Boolean;
-		
-		public var className:String;
-		public var blendMode:uint;
-		public var bitmapCache:uint;
-		
-		protected var _surfaceFilterList:Vector.<IFilter>;
-		
-		public function TagPlaceObject3() {
-			super();
-			_surfaceFilterList = new Vector.<IFilter>();
-		}
-		
-		public function get surfaceFilterList():Vector.<IFilter> { return _surfaceFilterList; }
+		public function TagPlaceObject3() {}
 		
 		override public function parse(data:SWFData, length:uint, version:uint):void {
 			var flags1:uint = data.readUI8();

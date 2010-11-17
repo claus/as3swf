@@ -18,5 +18,24 @@ package com.codeazur.as3swf.timeline
 			this.startFrameIndex = startFrameIndex;
 			this.endFrameIndex = endFrameIndex;
 		}
+		
+		public function toString():String {
+			var str:String;
+			if(startFrameIndex == endFrameIndex) {
+				str = "Frame: " + startFrameIndex;
+			} else {
+				str = "Frames: " + startFrameIndex + "-" + endFrameIndex;
+			}
+			str += ", Type: ";
+			switch(type) {
+				case TYPE_EMPTY: str += "EMPTY"; break;
+				case TYPE_SPACER: str += "SPACER"; break;
+				case TYPE_STATIC: str += "STATIC"; break;
+				case TYPE_MOTIONTWEEN: str += "MOTIONTWEEN"; break;
+				case TYPE_SHAPETWEEN: str += "SHAPETWEEN"; break;
+				default: str += "unknown"; break;
+			}
+			return str;
+		}
 	}
 }

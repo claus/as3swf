@@ -1,5 +1,7 @@
 package com.codeazur.as3swf.timeline
 {
+	import com.codeazur.as3swf.tags.TagPlaceObject;
+	import com.codeazur.as3swf.tags.TagRemoveObject;
 	import com.codeazur.utils.StringUtils;
 	
 	import flash.utils.Dictionary;
@@ -45,11 +47,11 @@ package com.codeazur.as3swf.timeline
 			return tagIndexEnd - tagIndexStart + 1;
 		}
 		
-		public function placeObject(tagIndex:uint, depth:uint, characterId:uint = 0):void {
-			var frameObject:FrameObject = _objects[depth] as FrameObject; 
+		public function placeObject(tagIndex:uint, tag:TagPlaceObject):void {
+			var frameObject:FrameObject = _objects[tag.depth] as FrameObject; 
 			if(frameObject) {
 				// A character is already available at the specified depth
-				if(characterId == 0) {
+				if(tag.characterId == 0) {
 					// The PlaceObject tag has no character id defined:
 					// This means that the previous character is reused 
 					// and most likely modified by transforms
@@ -62,21 +64,21 @@ package com.codeazur.as3swf.timeline
 					frameObject.lastModifiedAtIndex = 0;
 					frameObject.placedAtIndex = tagIndex;
 					frameObject.isKeyframe = true;
-					if(characterId != frameObject.characterId) {
+					if(tag.characterId != frameObject.characterId) {
 						// The character id does not match the previous character:
 						// An entirely new character is placed at this depth.
-						frameObject.characterId = characterId;
+						frameObject.characterId = tag.characterId;
 					}
 				}
 			} else {
 				// No character defined at specified depth. Create one.
-				_objects[depth] = new FrameObject(depth, characterId, tagIndex, 0, true);
+				_objects[tag.depth] = new FrameObject(tag.depth, tag.characterId, tag.className, tagIndex, 0, true);
 			}
 			_objectsSortedByDepth = null;
 		}
 		
-		public function removeObject(depth:uint, characterId:uint):void {
-			delete _objects[depth];
+		public function removeObject(tag:TagRemoveObject):void {
+			delete _objects[tag.depth];
 			_objectsSortedByDepth = null;
 		}
 		

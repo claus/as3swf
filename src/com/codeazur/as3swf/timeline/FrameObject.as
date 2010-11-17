@@ -8,6 +8,8 @@ package com.codeazur.as3swf.timeline
 		public var depth:uint;
 		// The character id of this display object
 		public var characterId:uint;
+		// The class name of this display object
+		public var className:String;
 		// The tag index of the PlaceObject tag that placed this object on the display list
 		public var placedAtIndex:uint;
 		// The tag index of the PlaceObject tag that modified this object (optional)
@@ -19,10 +21,11 @@ package com.codeazur.as3swf.timeline
 		// The index of the layer this object resides on 
 		public var layer:int = -1;
 		
-		public function FrameObject(depth:uint, characterId:uint, placedAtIndex:uint, lastModifiedAtIndex:uint = 0, isKeyframe:Boolean = false)
+		public function FrameObject(depth:uint, characterId:uint, className:String, placedAtIndex:uint, lastModifiedAtIndex:uint = 0, isKeyframe:Boolean = false)
 		{
 			this.depth = depth;
 			this.characterId = characterId;
+			this.className = className;
 			this.placedAtIndex = placedAtIndex;
 			this.lastModifiedAtIndex = lastModifiedAtIndex;
 			this.isKeyframe = isKeyframe;
@@ -30,14 +33,17 @@ package com.codeazur.as3swf.timeline
 		}
 		
 		public function clone():FrameObject {
-			return new FrameObject(depth, characterId, placedAtIndex, lastModifiedAtIndex, false);
+			return new FrameObject(depth, characterId, className, placedAtIndex, lastModifiedAtIndex, false);
 		}
 		
 		public function toString(indent:uint = 0):String {
 			var str:String = "\n" + StringUtils.repeat(indent + 2) +
 				"Depth: " + depth + (layer > -1 ? " (Layer " + layer + ")" : "") + ", " +
-				"CharacterId: " + characterId + ", " +
-				"PlacedAt: "  + placedAtIndex;
+				"CharacterId: " + characterId + ", ";
+			if(className != null) {
+				str += "ClassName: " + className + ", ";
+			}
+			str += "PlacedAt: "  + placedAtIndex;
 			if(lastModifiedAtIndex) {
 				str += ", LastModifiedAt: " + lastModifiedAtIndex;
 			}

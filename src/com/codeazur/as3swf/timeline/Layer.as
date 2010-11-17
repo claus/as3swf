@@ -1,5 +1,7 @@
 package com.codeazur.as3swf.timeline
 {
+	import com.codeazur.utils.StringUtils;
+
 	public class Layer
 	{
 		public var depth:uint = 0;
@@ -48,6 +50,18 @@ package com.codeazur.as3swf.timeline
 			var startStripIndex:uint = frameStripMap[start];
 			var endStripIndex:uint = (end >= frameStripMap.length) ? strips.length - 1 : frameStripMap[end];
 			return strips.slice(startStripIndex, endStripIndex + 1);
+		}
+		
+		public function toString(indent:uint = 0):String {
+			var str:String = "Depth: " + depth + ", Frames: " + frameCount;
+			if(strips.length > 0) {
+				str += "\n" + StringUtils.repeat(indent + 2) + "Strips:";
+				for(var i:uint = 0; i < strips.length; i++) {
+					var strip:LayerStrip = strips[i] as LayerStrip;
+					str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + strip.toString();
+				}
+			}
+			return str;
 		}
 	}
 }

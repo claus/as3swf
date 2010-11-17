@@ -20,6 +20,7 @@ package com.codeazur.as3swf
 	import com.codeazur.as3swf.tags.TagPlaceObject3;
 	import com.codeazur.as3swf.tags.TagRemoveObject;
 	import com.codeazur.as3swf.tags.TagRemoveObject2;
+	import com.codeazur.as3swf.tags.TagSetBackgroundColor;
 	import com.codeazur.as3swf.tags.TagShowFrame;
 	import com.codeazur.as3swf.tags.TagSoundStreamBlock;
 	import com.codeazur.as3swf.tags.TagSoundStreamHead;
@@ -41,6 +42,10 @@ package com.codeazur.as3swf
 
 	public class SWFTimeline extends SWFEventDispatcher
 	{
+		// We're just being lazy here.
+		public static var TIMEOUT:int = 50;
+		public static var AUTOBUILD_LAYERS:Boolean = false;
+		
 		protected var _tags:Vector.<ITag>;
 		protected var _tagsRaw:Vector.<SWFRawTag>;
 		protected var _dictionary:Dictionary;
@@ -59,6 +64,8 @@ package com.codeazur.as3swf
 		protected var data:SWFData;
 		protected var version:uint;
 		protected var eof:Boolean;
+
+		internal var backgroundColor:uint = 0xffffff;
 		
 		public function SWFTimeline(swf:SWF)
 		{
@@ -107,7 +114,7 @@ package com.codeazur.as3swf
 		protected function parseAsyncInternal():void {
 			var time:int = getTimer();
 			while (parseTag(data)) {
-				if((getTimer() - time) > 50) {
+				if((getTimer() - time) > TIMEOUT) {
 					enterFrameProvider.addEventListener(Event.ENTER_FRAME, parseAsyncHandler);
 					return;
 				}
@@ -172,7 +179,9 @@ package com.codeazur.as3swf
 			if(soundStream && soundStream.data.length == 0) {
 				_soundStream = null;
 			}
-			buildLayers();
+			if(AUTOBUILD_LAYERS) {
+				buildLayers();
+			}
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
@@ -196,6 +205,7 @@ package com.codeazur.as3swf
 					dictionary[definitionTag.characterId] = currentTagIndex;
 					currentFrame.characters.push(definitionTag.characterId);
 				}
+				return;
 			}
 			switch(tag.type)
 			{
@@ -213,13 +223,11 @@ package com.codeazur.as3swf
 				case TagPlaceObject.TYPE:
 				case TagPlaceObject2.TYPE:
 				case TagPlaceObject3.TYPE:
-					var tagPlaceObject:TagPlaceObject = tag as TagPlaceObject;
-					currentFrame.placeObject(currentTagIndex, tagPlaceObject.depth, tagPlaceObject.characterId);
+					currentFrame.placeObject(currentTagIndex, tag as TagPlaceObject);
 					break;
 				case TagRemoveObject.TYPE:
 				case TagRemoveObject2.TYPE:
-					var tagRemoveObject:TagRemoveObject = tag as TagRemoveObject;
-					currentFrame.removeObject(tagRemoveObject.depth, tagRemoveObject.characterId);
+					currentFrame.removeObject(tag as TagRemoveObject);
 					break;
 
 				// Register frame labels and scenes
@@ -278,10 +286,15 @@ package com.codeazur.as3swf
 						soundStream.numFrames++;
 					}
 					break;
+				
+				case TagSetBackgroundColor.TYPE:
+					var tagSetBackgroundColor:TagSetBackgroundColor = tag as TagSetBackgroundColor;
+					backgroundColor = tagSetBackgroundColor.color;
+					break;
 			}
 		}
 		
-		protected function buildLayers():void {
+		public function buildLayers():void {
 			var i:uint;
 			var depth:String;
 			var depthInt:uint;
@@ -367,10 +380,8 @@ package com.codeazur.as3swf
 			if (layers.length > 0) {
 				str += "\n" + StringUtils.repeat(indent + 2) + "Layers:";
 				for (i = 0; i < layers.length; i++) {
-					str += "\n" + StringUtils.repeat(indent + 4) +
-						"[" + i + "] Frames " +
-						//layers[i].join(", ");
-						"";
+					str += "\n" + StringUtils.repeat(indent + 4) + 
+						"[" + i + "] " + layers[i].toString(indent + 4);
 				}
 			}
 			return str;

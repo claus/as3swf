@@ -4,6 +4,8 @@
 	
 	public class ActionIncrement extends Action implements IAction
 	{
+		public static const CODE:uint = 0x50;
+		
 		public function ActionIncrement(code:uint, length:uint) {
 			super(code, length);
 		}

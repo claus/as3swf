@@ -4,6 +4,8 @@
 	
 	public class ActionSetProperty extends Action implements IAction
 	{
+		public static const CODE:uint = 0x23;
+		
 		public function ActionSetProperty(code:uint, length:uint) {
 			super(code, length);
 		}

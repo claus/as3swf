@@ -4,6 +4,8 @@
 	
 	public class ActionPushDuplicate extends Action implements IAction
 	{
+		public static const CODE:uint = 0x4c;
+		
 		public function ActionPushDuplicate(code:uint, length:uint) {
 			super(code, length);
 		}

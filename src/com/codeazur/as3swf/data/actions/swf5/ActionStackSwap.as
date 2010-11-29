@@ -4,6 +4,8 @@
 	
 	public class ActionStackSwap extends Action implements IAction
 	{
+		public static const CODE:uint = 0x4d;
+		
 		public function ActionStackSwap(code:uint, length:uint) {
 			super(code, length);
 		}

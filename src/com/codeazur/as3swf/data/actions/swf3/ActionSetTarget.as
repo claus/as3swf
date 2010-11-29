@@ -5,6 +5,8 @@
 	
 	public class ActionSetTarget extends Action implements IAction
 	{
+		public static const CODE:uint = 0x8b;
+		
 		public var targetName:String;
 		
 		public function ActionSetTarget(code:uint, length:uint) {

@@ -4,6 +4,8 @@
 	
 	public class ActionDecrement extends Action implements IAction
 	{
+		public static const CODE:uint = 0x51;
+		
 		public function ActionDecrement(code:uint, length:uint) {
 			super(code, length);
 		}

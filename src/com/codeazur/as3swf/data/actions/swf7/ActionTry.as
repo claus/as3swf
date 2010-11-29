@@ -6,6 +6,8 @@
 	
 	public class ActionTry extends Action implements IAction
 	{
+		public static const CODE:uint = 0x8f;
+		
 		public var catchInRegisterFlag:Boolean;
 		public var finallyBlockFlag:Boolean;
 		public var catchBlockFlag:Boolean;

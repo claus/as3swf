@@ -4,6 +4,8 @@
 	
 	public class ActionCloneSprite extends Action implements IAction
 	{
+		public static const CODE:uint = 0x24;
+		
 		public function ActionCloneSprite(code:uint, length:uint) {
 			super(code, length);
 		}

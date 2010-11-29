@@ -5,6 +5,8 @@
 	
 	public class ActionJump extends Action implements IAction
 	{
+		public static const CODE:uint = 0x99;
+		
 		public var branchOffset:int;
 		
 		public function ActionJump(code:uint, length:uint) {

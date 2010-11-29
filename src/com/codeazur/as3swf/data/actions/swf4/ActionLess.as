@@ -4,6 +4,8 @@
 	
 	public class ActionLess extends Action implements IAction
 	{
+		public static const CODE:uint = 0x0f;
+		
 		public function ActionLess(code:uint, length:uint) {
 			super(code, length);
 		}

@@ -4,6 +4,8 @@
 	
 	public class ActionCharToAscii extends Action implements IAction
 	{
+		public static const CODE:uint = 0x32;
+		
 		public function ActionCharToAscii(code:uint, length:uint) {
 			super(code, length);
 		}

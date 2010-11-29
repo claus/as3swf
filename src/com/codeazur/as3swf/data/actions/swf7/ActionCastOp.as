@@ -4,6 +4,8 @@
 	
 	public class ActionCastOp extends Action implements IAction
 	{
+		public static const CODE:uint = 0x2b;
+		
 		public function ActionCastOp(code:uint, length:uint) {
 			super(code, length);
 		}

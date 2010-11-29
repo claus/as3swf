@@ -4,6 +4,8 @@
 	
 	public class ActionMBStringExtract extends Action implements IAction
 	{
+		public static const CODE:uint = 0x35;
+		
 		public function ActionMBStringExtract(code:uint, length:uint) {
 			super(code, length);
 		}

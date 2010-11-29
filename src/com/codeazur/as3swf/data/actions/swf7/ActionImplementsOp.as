@@ -4,6 +4,8 @@
 	
 	public class ActionImplementsOp extends Action implements IAction
 	{
+		public static const CODE:uint = 0x2c;
+		
 		public function ActionImplementsOp(code:uint, length:uint) {
 			super(code, length);
 		}

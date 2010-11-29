@@ -4,6 +4,8 @@
 	
 	public class ActionThrow extends Action implements IAction
 	{
+		public static const CODE:uint = 0x2a;
+		
 		public function ActionThrow(code:uint, length:uint) {
 			super(code, length);
 		}

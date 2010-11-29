@@ -4,6 +4,8 @@
 	
 	public class ActionTypeOf extends Action implements IAction
 	{
+		public static const CODE:uint = 0x44;
+		
 		public function ActionTypeOf(code:uint, length:uint) {
 			super(code, length);
 		}

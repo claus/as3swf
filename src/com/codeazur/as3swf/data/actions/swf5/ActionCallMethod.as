@@ -4,6 +4,8 @@
 	
 	public class ActionCallMethod extends Action implements IAction
 	{
+		public static const CODE:uint = 0x52;
+		
 		public function ActionCallMethod(code:uint, length:uint) {
 			super(code, length);
 		}

@@ -4,6 +4,8 @@
 	
 	public class ActionReturn extends Action implements IAction
 	{
+		public static const CODE:uint = 0x3e;
+		
 		public function ActionReturn(code:uint, length:uint) {
 			super(code, length);
 		}

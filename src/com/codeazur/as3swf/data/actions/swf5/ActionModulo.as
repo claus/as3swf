@@ -4,6 +4,8 @@
 	
 	public class ActionModulo extends Action implements IAction
 	{
+		public static const CODE:uint = 0x3f;
+		
 		public function ActionModulo(code:uint, length:uint) {
 			super(code, length);
 		}

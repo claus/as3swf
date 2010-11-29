@@ -7,6 +7,8 @@
 	
 	public class ActionDefineFunction2 extends Action implements IAction
 	{
+		public static const CODE:uint = 0x8e;
+		
 		public var functionName:String;
 		public var functionParams:Vector.<SWFRegisterParam>;
 		public var functionBody:Vector.<IAction>;

@@ -4,6 +4,8 @@
 	
 	public class ActionInstanceOf extends Action implements IAction
 	{
+		public static const CODE:uint = 0x54;
+		
 		public function ActionInstanceOf(code:uint, length:uint) {
 			super(code, length);
 		}

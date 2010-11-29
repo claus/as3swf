@@ -5,6 +5,8 @@
 	
 	public class ActionStoreRegister extends Action implements IAction
 	{
+		public static const CODE:uint = 0x87;
+		
 		public var registerNumber:uint;
 		
 		public function ActionStoreRegister(code:uint, length:uint) {

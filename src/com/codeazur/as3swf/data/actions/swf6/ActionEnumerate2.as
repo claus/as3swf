@@ -4,6 +4,8 @@
 	
 	public class ActionEnumerate2 extends Action implements IAction
 	{
+		public static const CODE:uint = 0x55;
+		
 		public function ActionEnumerate2(code:uint, length:uint) {
 			super(code, length);
 		}

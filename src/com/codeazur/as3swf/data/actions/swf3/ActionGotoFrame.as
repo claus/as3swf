@@ -5,6 +5,8 @@
 	
 	public class ActionGotoFrame extends Action implements IAction
 	{
+		public static const CODE:uint = 0x81;
+		
 		public var frame:uint;
 		
 		public function ActionGotoFrame(code:uint, length:uint) {

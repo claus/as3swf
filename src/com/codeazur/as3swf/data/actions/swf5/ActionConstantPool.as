@@ -6,6 +6,8 @@
 	
 	public class ActionConstantPool extends Action implements IAction
 	{
+		public static const CODE:uint = 0x88;
+		
 		public var constants:Vector.<String>;
 		
 		public function ActionConstantPool(code:uint, length:uint) {

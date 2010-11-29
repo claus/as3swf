@@ -4,6 +4,8 @@
 	
 	public class ActionAsciiToChar extends Action implements IAction
 	{
+		public static const CODE:uint = 0x33;
+		
 		public function ActionAsciiToChar(code:uint, length:uint) {
 			super(code, length);
 		}

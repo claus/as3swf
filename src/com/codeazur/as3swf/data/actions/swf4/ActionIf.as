@@ -5,6 +5,8 @@
 	
 	public class ActionIf extends Action implements IAction
 	{
+		public static const CODE:uint = 0x9d;
+		
 		public var branchOffset:int;
 		
 		public function ActionIf(code:uint, length:uint) {

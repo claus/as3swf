@@ -4,6 +4,8 @@
 	
 	public class ActionMBCharToAscii extends Action implements IAction
 	{
+		public static const CODE:uint = 0x36;
+		
 		public function ActionMBCharToAscii(code:uint, length:uint) {
 			super(code, length);
 		}

@@ -5,6 +5,8 @@
 	
 	public class ActionPlay extends Action implements IAction
 	{
+		public static const CODE:uint = 0x06;
+		
 		public function ActionPlay(code:uint, length:uint) {
 			super(code, length);
 		}

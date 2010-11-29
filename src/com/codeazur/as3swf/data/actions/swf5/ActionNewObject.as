@@ -4,6 +4,8 @@
 	
 	public class ActionNewObject extends Action implements IAction
 	{
+		public static const CODE:uint = 0x40;
+		
 		public function ActionNewObject(code:uint, length:uint) {
 			super(code, length);
 		}

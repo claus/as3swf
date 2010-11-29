@@ -5,6 +5,8 @@
 	
 	public class ActionWaitForFrame2 extends Action implements IAction
 	{
+		public static const CODE:uint = 0x8d;
+		
 		public var skipCount:uint;
 		
 		public function ActionWaitForFrame2(code:uint, length:uint) {

@@ -7,6 +7,8 @@
 	
 	public class ActionPush extends Action implements IAction
 	{
+		public static const CODE:uint = 0x96;
+		
 		public var values:Vector.<SWFActionValue>;
 		
 		public function ActionPush(code:uint, length:uint) {

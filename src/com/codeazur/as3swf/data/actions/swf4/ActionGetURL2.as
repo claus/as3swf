@@ -5,6 +5,8 @@
 	
 	public class ActionGetURL2 extends Action implements IAction
 	{
+		public static const CODE:uint = 0x9a;
+		
 		public var sendVarsMethod:uint;
 		public var reserved:uint;
 		public var loadTargetFlag:Boolean;

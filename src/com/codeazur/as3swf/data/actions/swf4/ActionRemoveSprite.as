@@ -4,6 +4,8 @@
 	
 	public class ActionRemoveSprite extends Action implements IAction
 	{
+		public static const CODE:uint = 0x25;
+		
 		public function ActionRemoveSprite(code:uint, length:uint) {
 			super(code, length);
 		}

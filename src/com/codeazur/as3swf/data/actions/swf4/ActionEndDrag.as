@@ -4,6 +4,8 @@
 	
 	public class ActionEndDrag extends Action implements IAction
 	{
+		public static const CODE:uint = 0x28;
+		
 		public function ActionEndDrag(code:uint, length:uint) {
 			super(code, length);
 		}

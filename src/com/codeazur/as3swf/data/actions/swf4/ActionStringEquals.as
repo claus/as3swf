@@ -4,6 +4,8 @@
 	
 	public class ActionStringEquals extends Action implements IAction
 	{
+		public static const CODE:uint = 0x13;
+		
 		public function ActionStringEquals(code:uint, length:uint) {
 			super(code, length);
 		}

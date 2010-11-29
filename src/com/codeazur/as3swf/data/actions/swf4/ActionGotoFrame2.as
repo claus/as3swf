@@ -5,6 +5,8 @@
 	
 	public class ActionGotoFrame2 extends Action implements IAction
 	{
+		public static const CODE:uint = 0x9f;
+		
 		public var sceneBiasFlag:Boolean;
 		public var playFlag:Boolean;
 		public var sceneBias:uint;

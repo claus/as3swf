@@ -4,6 +4,8 @@
 	
 	public class ActionCallFunction extends Action implements IAction
 	{
+		public static const CODE:uint = 0x3d;
+		
 		public function ActionCallFunction(code:uint, length:uint) {
 			super(code, length);
 		}

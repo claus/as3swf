@@ -4,6 +4,8 @@
 	
 	public class ActionRandomNumber extends Action implements IAction
 	{
+		public static const CODE:uint = 0x30;
+		
 		public function ActionRandomNumber(code:uint, length:uint) {
 			super(code, length);
 		}

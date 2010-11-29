@@ -4,6 +4,8 @@
 	
 	public class ActionOr extends Action implements IAction
 	{
+		public static const CODE:uint = 0x11;
+		
 		public function ActionOr(code:uint, length:uint) {
 			super(code, length);
 		}

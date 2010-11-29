@@ -4,6 +4,8 @@
 	
 	public class ActionPreviousFrame extends Action implements IAction
 	{
+		public static const CODE:uint = 0x05;
+		
 		public function ActionPreviousFrame(code:uint, length:uint) {
 			super(code, length);
 		}

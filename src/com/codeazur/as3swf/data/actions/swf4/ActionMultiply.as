@@ -4,6 +4,8 @@
 	
 	public class ActionMultiply extends Action implements IAction
 	{
+		public static const CODE:uint = 0x0c;
+		
 		public function ActionMultiply(code:uint, length:uint) {
 			super(code, length);
 		}

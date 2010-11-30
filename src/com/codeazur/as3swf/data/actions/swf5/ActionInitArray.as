@@ -4,6 +4,8 @@
 	
 	public class ActionInitArray extends Action implements IAction
 	{
+		public static const CODE:uint = 0x42;
+		
 		public function ActionInitArray(code:uint, length:uint) {
 			super(code, length);
 		}

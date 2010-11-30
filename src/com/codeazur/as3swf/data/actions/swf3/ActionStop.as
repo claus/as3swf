@@ -4,6 +4,8 @@
 	
 	public class ActionStop extends Action implements IAction
 	{
+		public static const CODE:uint = 0x07;
+		
 		public function ActionStop(code:uint, length:uint) {
 			super(code, length);
 		}

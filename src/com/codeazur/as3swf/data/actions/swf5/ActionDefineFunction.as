@@ -6,6 +6,8 @@
 	
 	public class ActionDefineFunction extends Action implements IAction
 	{
+		public static const CODE:uint = 0x9b;
+		
 		public var functionName:String;
 		public var functionParams:Vector.<String>;
 		public var functionBody:Vector.<IAction>;

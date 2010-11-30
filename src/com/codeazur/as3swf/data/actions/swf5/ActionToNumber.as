@@ -4,6 +4,8 @@
 	
 	public class ActionToNumber extends Action implements IAction
 	{
+		public static const CODE:uint = 0x4a;
+		
 		public function ActionToNumber(code:uint, length:uint) {
 			super(code, length);
 		}

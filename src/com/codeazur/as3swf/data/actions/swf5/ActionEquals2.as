@@ -4,6 +4,8 @@
 	
 	public class ActionEquals2 extends Action implements IAction
 	{
+		public static const CODE:uint = 0x49;
+		
 		public function ActionEquals2(code:uint, length:uint) {
 			super(code, length);
 		}

@@ -4,6 +4,8 @@
 	
 	public class ActionBitAnd extends Action implements IAction
 	{
+		public static const CODE:uint = 0x60;
+		
 		public function ActionBitAnd(code:uint, length:uint) {
 			super(code, length);
 		}

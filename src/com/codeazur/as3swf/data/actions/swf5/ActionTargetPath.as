@@ -4,6 +4,8 @@
 	
 	public class ActionTargetPath extends Action implements IAction
 	{
+		public static const CODE:uint = 0x45;
+		
 		public function ActionTargetPath(code:uint, length:uint) {
 			super(code, length);
 		}

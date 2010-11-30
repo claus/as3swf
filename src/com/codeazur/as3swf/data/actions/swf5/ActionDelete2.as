@@ -4,6 +4,8 @@
 	
 	public class ActionDelete2 extends Action implements IAction
 	{
+		public static const CODE:uint = 0x3b;
+		
 		public function ActionDelete2(code:uint, length:uint) {
 			super(code, length);
 		}

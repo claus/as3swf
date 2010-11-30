@@ -5,6 +5,8 @@
 	
 	public class ActionGetURL extends Action implements IAction
 	{
+		public static const CODE:uint = 0x83;
+		
 		public var urlString:String;
 		public var targetString:String;
 		

@@ -6,6 +6,8 @@
 	
 	public class ActionWith extends Action implements IAction
 	{
+		public static const CODE:uint = 0x94;
+		
 		public var withBody:Vector.<IAction>;
 		
 		public function ActionWith(code:uint, length:uint) {

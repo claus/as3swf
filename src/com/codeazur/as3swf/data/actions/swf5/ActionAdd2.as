@@ -4,6 +4,8 @@
 	
 	public class ActionAdd2 extends Action implements IAction
 	{
+		public static const CODE:uint = 0x47;
+		
 		public function ActionAdd2(code:uint, length:uint) {
 			super(code, length);
 		}

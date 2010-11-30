@@ -5,6 +5,8 @@
 	
 	public class ActionGotoLabel extends Action implements IAction
 	{
+		public static const CODE:uint = 0x8c;
+		
 		public var label:String;
 		
 		public function ActionGotoLabel(code:uint, length:uint) {

@@ -4,6 +4,8 @@
 	
 	public class ActionDivide extends Action implements IAction
 	{
+		public static const CODE:uint = 0x0d;
+		
 		public function ActionDivide(code:uint, length:uint) {
 			super(code, length);
 		}

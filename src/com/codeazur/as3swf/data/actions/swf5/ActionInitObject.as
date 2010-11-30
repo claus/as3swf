@@ -4,6 +4,8 @@
 	
 	public class ActionInitObject extends Action implements IAction
 	{
+		public static const CODE:uint = 0x43;
+		
 		public function ActionInitObject(code:uint, length:uint) {
 			super(code, length);
 		}

@@ -4,6 +4,8 @@
 	
 	public class ActionToString extends Action implements IAction
 	{
+		public static const CODE:uint = 0x4b;
+		
 		public function ActionToString(code:uint, length:uint) {
 			super(code, length);
 		}

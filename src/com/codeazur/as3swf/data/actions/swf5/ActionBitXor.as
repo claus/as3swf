@@ -4,6 +4,8 @@
 	
 	public class ActionBitXor extends Action implements IAction
 	{
+		public static const CODE:uint = 0x62;
+		
 		public function ActionBitXor(code:uint, length:uint) {
 			super(code, length);
 		}

@@ -4,6 +4,8 @@
 	
 	public class ActionDefineLocal2 extends Action implements IAction
 	{
+		public static const CODE:uint = 0x41;
+		
 		public function ActionDefineLocal2(code:uint, length:uint) {
 			super(code, length);
 		}

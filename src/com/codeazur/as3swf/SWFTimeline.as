@@ -45,6 +45,7 @@ package com.codeazur.as3swf
 		// We're just being lazy here.
 		public static var TIMEOUT:int = 50;
 		public static var AUTOBUILD_LAYERS:Boolean = false;
+		public static var EXTRACT_SOUND_STREAM:Boolean = true;
 		
 		protected var _tags:Vector.<ITag>;
 		protected var _tagsRaw:Vector.<SWFRawTag>;
@@ -251,17 +252,19 @@ package com.codeazur.as3swf
 				// Register sound stream
 				case TagSoundStreamHead.TYPE:
 				case TagSoundStreamHead2.TYPE:
-					var tagSoundStreamHead:TagSoundStreamHead = tag as TagSoundStreamHead;
-					_soundStream = new SoundStream();
-					soundStream.compression = tagSoundStreamHead.streamSoundCompression;
-					soundStream.rate = tagSoundStreamHead.streamSoundRate;
-					soundStream.size = tagSoundStreamHead.streamSoundSize;
-					soundStream.type = tagSoundStreamHead.streamSoundType;
-					soundStream.numFrames = 0;
-					soundStream.numSamples = 0;
+					if(EXTRACT_SOUND_STREAM) {
+						var tagSoundStreamHead:TagSoundStreamHead = tag as TagSoundStreamHead;
+						_soundStream = new SoundStream();
+						soundStream.compression = tagSoundStreamHead.streamSoundCompression;
+						soundStream.rate = tagSoundStreamHead.streamSoundRate;
+						soundStream.size = tagSoundStreamHead.streamSoundSize;
+						soundStream.type = tagSoundStreamHead.streamSoundType;
+						soundStream.numFrames = 0;
+						soundStream.numSamples = 0;
+					}
 					break;
 				case TagSoundStreamBlock.TYPE:
-					if(soundStream != null) {
+					if(EXTRACT_SOUND_STREAM && soundStream != null) {
 						if(!hasSoundStream) {
 							hasSoundStream = true;
 							soundStream.startFrame = currentFrame.frameNumber;

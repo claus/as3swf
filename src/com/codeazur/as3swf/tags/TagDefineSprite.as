@@ -20,7 +20,7 @@
 		protected var _timeline:SWFTimeline;
 		
 		public function TagDefineSprite(swf:SWF) {
-			_timeline = new SWFTimeline(swf);
+			_timeline = swf.createTimeline();
 		}
 		
 		public function get characterId():uint { return _characterId; }

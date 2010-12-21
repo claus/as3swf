@@ -10,11 +10,13 @@ package com.codeazur.as3swf
 	import com.codeazur.as3swf.events.SWFEventDispatcher;
 	import com.codeazur.as3swf.factories.SWFTagFactory;
 	import com.codeazur.as3swf.tags.IDefinitionTag;
+	import com.codeazur.as3swf.tags.IDisplayListTag;
 	import com.codeazur.as3swf.tags.ITag;
 	import com.codeazur.as3swf.tags.TagDefineMorphShape;
 	import com.codeazur.as3swf.tags.TagDefineSceneAndFrameLabelData;
 	import com.codeazur.as3swf.tags.TagEnd;
 	import com.codeazur.as3swf.tags.TagFrameLabel;
+	import com.codeazur.as3swf.tags.TagJPEGTables;
 	import com.codeazur.as3swf.tags.TagPlaceObject;
 	import com.codeazur.as3swf.tags.TagPlaceObject2;
 	import com.codeazur.as3swf.tags.TagPlaceObject3;
@@ -67,6 +69,7 @@ package com.codeazur.as3swf
 		protected var eof:Boolean;
 
 		internal var backgroundColor:uint = 0xffffff;
+		internal var jpegTablesTag:TagJPEGTables;
 		
 		public function SWFTimeline(swf:SWF)
 		{
@@ -90,8 +93,8 @@ package com.codeazur.as3swf
 		public function get layers():Vector.<Layer> { return _layers; }
 		public function get soundStream():SoundStream { return _soundStream; }
 		
-		public function getTagByCharacterId(characterId:uint):ITag {
-			return swf.getTagByCharacterId(characterId);
+		public function getCharacter(characterId:uint):IDefinitionTag {
+			return swf.getCharacter(characterId);
 		}
 		
 		public function parse(data:SWFData, version:uint):void {
@@ -181,11 +184,13 @@ package com.codeazur.as3swf
 				_soundStream = null;
 			}
 			if(AUTOBUILD_LAYERS) {
+				// TODO: This needs to go into processTags()
 				buildLayers();
 			}
 		}
 		
 		public function publish(data:SWFData, version:uint):void {
+			// TODO: asyncronous publishing
 			for (var i:uint = 0; i < tags.length; i++) {
 				try {
 					tags[i].publish(data, version);
@@ -199,18 +204,51 @@ package com.codeazur.as3swf
 		
 		protected function processTag(tag:ITag):void {
 			var currentTagIndex:uint = tags.length - 1;
-			// Register definition tag in dictionary (key: character id, value: definition tag index)
 			if(tag is IDefinitionTag) {
-				var definitionTag:IDefinitionTag = tag as IDefinitionTag;
-				if(definitionTag.characterId > 0) {
-					dictionary[definitionTag.characterId] = currentTagIndex;
-					currentFrame.characters.push(definitionTag.characterId);
-				}
+				processDefinitionTag(tag as IDefinitionTag, currentTagIndex);
+				return;
+			} else if(tag is IDisplayListTag) {
+				processDisplayListTag(tag as IDisplayListTag, currentTagIndex);
 				return;
 			}
-			switch(tag.type)
-			{
-				// Register display list tags
+			switch(tag.type) {
+				// Frame labels and scenes
+				case TagFrameLabel.TYPE:
+				case TagDefineSceneAndFrameLabelData.TYPE:
+					processFrameLabelTag(tag, currentTagIndex);
+					break;
+				// Sound stream
+				case TagSoundStreamHead.TYPE:
+				case TagSoundStreamHead2.TYPE:
+				case TagSoundStreamBlock.TYPE:
+					if(EXTRACT_SOUND_STREAM) {
+						processSoundStreamTag(tag, currentTagIndex);
+					}
+					break;
+				// Background color
+				case TagSetBackgroundColor.TYPE:
+					processBackgroundColorTag(tag as TagSetBackgroundColor, currentTagIndex);
+					break;
+				// Global JPEG Table
+				case TagJPEGTables.TYPE:
+					processJPEGTablesTag(tag as TagJPEGTables, currentTagIndex);
+					break;
+			}
+		}
+		
+		protected function processDefinitionTag(tag:IDefinitionTag, currentTagIndex:uint):void {
+			if(tag.characterId > 0) {
+				// Register definition tag in dictionary
+				// key: character id
+				// value: definition tag index
+				dictionary[tag.characterId] = currentTagIndex;
+				// Register character id in the current frame's character array
+				currentFrame.characters.push(tag.characterId);
+			}
+		}
+
+		protected function processDisplayListTag(tag:IDisplayListTag, currentTagIndex:uint):void {
+			switch(tag.type) {
 				case TagShowFrame.TYPE:
 					currentFrame.tagIndexEnd = currentTagIndex;
 					if(currentFrame.label == null && frameLabels[currentFrame.frameNumber]) {
@@ -230,8 +268,11 @@ package com.codeazur.as3swf
 				case TagRemoveObject2.TYPE:
 					currentFrame.removeObject(tag as TagRemoveObject);
 					break;
+			}
+		}
 
-				// Register frame labels and scenes
+		protected function processFrameLabelTag(tag:ITag, currentTagIndex:uint):void {
+			switch(tag.type) {
 				case TagDefineSceneAndFrameLabelData.TYPE:
 					var tagSceneAndFrameLabelData:TagDefineSceneAndFrameLabelData = tag as TagDefineSceneAndFrameLabelData;
 					var i:uint;
@@ -248,23 +289,24 @@ package com.codeazur.as3swf
 					var tagFrameLabel:TagFrameLabel = tag as TagFrameLabel;
 					currentFrame.label = tagFrameLabel.frameName;
 					break;
-
-				// Register sound stream
+			}
+		}
+		
+		protected function processSoundStreamTag(tag:ITag, currentTagIndex:uint):void {
+			switch(tag.type) {
 				case TagSoundStreamHead.TYPE:
 				case TagSoundStreamHead2.TYPE:
-					if(EXTRACT_SOUND_STREAM) {
-						var tagSoundStreamHead:TagSoundStreamHead = tag as TagSoundStreamHead;
-						_soundStream = new SoundStream();
-						soundStream.compression = tagSoundStreamHead.streamSoundCompression;
-						soundStream.rate = tagSoundStreamHead.streamSoundRate;
-						soundStream.size = tagSoundStreamHead.streamSoundSize;
-						soundStream.type = tagSoundStreamHead.streamSoundType;
-						soundStream.numFrames = 0;
-						soundStream.numSamples = 0;
-					}
+					var tagSoundStreamHead:TagSoundStreamHead = tag as TagSoundStreamHead;
+					_soundStream = new SoundStream();
+					soundStream.compression = tagSoundStreamHead.streamSoundCompression;
+					soundStream.rate = tagSoundStreamHead.streamSoundRate;
+					soundStream.size = tagSoundStreamHead.streamSoundSize;
+					soundStream.type = tagSoundStreamHead.streamSoundType;
+					soundStream.numFrames = 0;
+					soundStream.numSamples = 0;
 					break;
 				case TagSoundStreamBlock.TYPE:
-					if(EXTRACT_SOUND_STREAM && soundStream != null) {
+					if(soundStream != null) {
 						if(!hasSoundStream) {
 							hasSoundStream = true;
 							soundStream.startFrame = currentFrame.frameNumber;
@@ -289,12 +331,15 @@ package com.codeazur.as3swf
 						soundStream.numFrames++;
 					}
 					break;
-				
-				case TagSetBackgroundColor.TYPE:
-					var tagSetBackgroundColor:TagSetBackgroundColor = tag as TagSetBackgroundColor;
-					backgroundColor = tagSetBackgroundColor.color;
-					break;
 			}
+		}
+
+		protected function processBackgroundColorTag(tag:TagSetBackgroundColor, currentTagIndex:uint):void {
+			backgroundColor = tag.color;
+		}
+
+		protected function processJPEGTablesTag(tag:TagJPEGTables, currentTagIndex:uint):void {
+			jpegTablesTag = tag;
 		}
 		
 		public function buildLayers():void {
@@ -337,7 +382,7 @@ package com.codeazur.as3swf
 							// set start of new strip
 							startFrameIndex = curFrameIndex;
 							// evaluate type of new strip (motion tween detection see below)
-							curStripType = (getTagByCharacterId(curFrameObject.characterId) is TagDefineMorphShape) ? LayerStrip.TYPE_SHAPETWEEN : LayerStrip.TYPE_STATIC;
+							curStripType = (getCharacter(curFrameObject.characterId) is TagDefineMorphShape) ? LayerStrip.TYPE_SHAPETWEEN : LayerStrip.TYPE_STATIC;
 						} else if(curStripType == LayerStrip.TYPE_STATIC && curFrameObject.lastModifiedAtIndex > 0) {
 							// if one of the matrices of an object in a static strip is
 							// modified at least once, we are dealing with a motion tween:

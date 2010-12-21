@@ -4,6 +4,7 @@
 	import com.codeazur.as3swf.events.SWFErrorEvent;
 	import com.codeazur.as3swf.events.SWFEvent;
 	import com.codeazur.as3swf.events.SWFEventDispatcher;
+	import com.codeazur.as3swf.tags.IDefinitionTag;
 	import com.codeazur.as3swf.tags.ITag;
 	import com.codeazur.as3swf.timeline.Frame;
 	import com.codeazur.as3swf.timeline.Layer;
@@ -25,13 +26,11 @@
 		
 		public var timeline:SWFTimeline;
 
-		public var asyncTimeout:int = 50;
-		
 		protected var bytes:SWFData;
 		
 		public function SWF(ba:ByteArray = null) {
 			bytes = new SWFData();
-			timeline = new SWFTimeline(this);
+			timeline = createTimeline();
 			if (ba != null) {
 				loadBytes(ba);
 			} else {
@@ -48,11 +47,8 @@
 
 		public function get backgroundColor():uint { return timeline.backgroundColor; }
 		
-		public function getTagByCharacterId(characterId:uint):ITag {
-			if(dictionary[characterId] != undefined) {
-				return tags[dictionary[characterId]];
-			}
-			return null;
+		public function getCharacter(characterId:uint):IDefinitionTag {
+			return dictionary[characterId] as IDefinitionTag;
 		}
 		
 		public function loadBytes(ba:ByteArray):void {
@@ -154,6 +150,10 @@
 			data.position = 0;
 			ba.length = 0;
 			ba.writeBytes(data);
+		}
+		
+		public function createTimeline():SWFTimeline {
+			return new SWFTimeline(this);
 		}
 		
 		protected function addTimelineListeners():void {

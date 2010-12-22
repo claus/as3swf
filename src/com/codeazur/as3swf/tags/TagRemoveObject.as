@@ -2,7 +2,7 @@
 {
 	import com.codeazur.as3swf.SWFData;
 	
-	public class TagRemoveObject extends Tag implements ITag, IDisplayListTag
+	public class TagRemoveObject implements IDisplayListTag
 	{
 		public static const TYPE:uint = 5;
 		
@@ -22,12 +22,13 @@
 			data.writeUI16(depth);
 		}
 		
-		override public function get type():uint { return TYPE; }
-		override public function get name():String { return "RemoveObject"; }
-		override public function get version():uint { return 1; }
-		
+		public function get type():uint { return TYPE; }
+		public function get name():String { return "RemoveObject"; }
+		public function get version():uint { return 1; }
+		public function get level():uint { return 1; }
+
 		public function toString(indent:uint = 0):String {
-			return toStringMain(indent) +
+			return Tag.toStringCommon(type, name, indent) +
 				"CharacterID: " + characterId + ", " +
 				"Depth: " + depth;
 		}

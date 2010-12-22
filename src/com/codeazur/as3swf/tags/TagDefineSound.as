@@ -9,7 +9,7 @@
 	
 	import flash.utils.ByteArray;
 	
-	public class TagDefineSound extends Tag implements IDefinitionTag
+	public class TagDefineSound implements IDefinitionTag
 	{
 		public static const TYPE:uint = 14;
 		
@@ -79,12 +79,13 @@
 			data.writeBytes(body);
 		}
 		
-		override public function get type():uint { return TYPE; }
-		override public function get name():String { return "DefineSound"; }
-		override public function get version():uint { return 1; }
-		
+		public function get type():uint { return TYPE; }
+		public function get name():String { return "DefineSound"; }
+		public function get version():uint { return 1; }
+		public function get level():uint { return 1; }
+	
 		public function toString(indent:uint = 0):String {
-			var str:String = toStringMain(indent) +
+			var str:String = Tag.toStringCommon(type, name, indent) +
 				"SoundID: " + characterId + ", " +
 				"Format: " + SoundCompression.toString(soundFormat) + ", " +
 				"Rate: " + SoundRate.toString(soundRate) + ", " +

@@ -4,7 +4,7 @@
 	import com.codeazur.as3swf.data.consts.VideoCodecID;
 	import com.codeazur.as3swf.data.consts.VideoDeblockingType;
 	
-	public class TagDefineVideoStream extends Tag implements IDefinitionTag
+	public class TagDefineVideoStream implements IDefinitionTag
 	{
 		public static const TYPE:uint = 60;
 
@@ -44,12 +44,13 @@
 			data.writeUI8(codecId);
 		}
 		
-		override public function get type():uint { return TYPE; }
-		override public function get name():String { return "DefineVideoStream"; }
-		override public function get version():uint { return 6; }
-		
+		public function get type():uint { return TYPE; }
+		public function get name():String { return "DefineVideoStream"; }
+		public function get version():uint { return 6; }
+		public function get level():uint { return 1; }
+	
 		public function toString(indent:uint = 0):String {
-			return toStringMain(indent) +
+			return Tag.toStringCommon(type, name, indent) +
 				"ID: " + characterId + ", " +
 				"Frames: " + numFrames + ", " +
 				"Width: " + width + ", " +

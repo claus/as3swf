@@ -5,7 +5,7 @@
 	import com.codeazur.as3swf.data.SWFShapeWithStyle;
 	import com.codeazur.as3swf.exporters.core.IShapeExporter;
 	
-	public class TagDefineShape extends Tag implements IDefinitionTag
+	public class TagDefineShape implements IDefinitionTag
 	{
 		public static const TYPE:uint = 2;
 		
@@ -38,12 +38,13 @@
 			shapes.export(handler);
 		}
 		
-		override public function get type():uint { return TYPE; }
-		override public function get name():String { return "DefineShape"; }
-		override public function get version():uint { return 1; }
-		
+		public function get type():uint { return TYPE; }
+		public function get name():String { return "DefineShape"; }
+		public function get version():uint { return 1; }
+		public function get level():uint { return 1; }
+
 		public function toString(indent:uint = 0):String {
-			var str:String = toStringMain(indent) +
+			var str:String = Tag.toStringCommon(type, name, indent) +
 				"ID: " + characterId + ", " +
 				"Bounds: " + shapeBounds;
 			str += shapes.toString(indent + 2);

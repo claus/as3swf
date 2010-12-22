@@ -2,8 +2,10 @@
 {
 	import com.codeazur.as3swf.SWFData;
 	
-	public class TagUnknown extends Tag implements ITag
+	public class TagUnknown implements ITag
 	{
+		protected var _type:uint;
+		
 		public function TagUnknown(type:uint = 0) {
 			_type = type;
 		}
@@ -16,8 +18,13 @@
 			throw(new Error("No raw tag data available."));
 		}
 		
+		public function get type():uint { return _type; }
+		public function get name():String { return "????"; }
+		public function get version():uint { return 0; }
+		public function get level():uint { return 1; }
+		
 		public function toString(indent:uint = 0):String {
-			return toStringMain(indent);
+			return Tag.toStringCommon(type, name, indent);
 		}
 	}
 }

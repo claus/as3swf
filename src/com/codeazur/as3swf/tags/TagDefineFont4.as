@@ -4,7 +4,7 @@
 	
 	import flash.utils.ByteArray;
 	
-	public class TagDefineFont4 extends Tag implements IDefinitionTag
+	public class TagDefineFont4 implements IDefinitionTag
 	{
 		public static const TYPE:uint = 91;
 		
@@ -52,12 +52,13 @@
 			data.writeBytes(body);
 		}
 		
-		override public function get type():uint { return TYPE; }
-		override public function get name():String { return "DefineFont4"; }
-		override public function get version():uint { return 10; }
-		
+		public function get type():uint { return TYPE; }
+		public function get name():String { return "DefineFont4"; }
+		public function get version():uint { return 10; }
+		public function get level():uint { return 1; }
+
 		public function toString(indent:uint = 0):String {
-			var str:String = toStringMain(indent) +
+			var str:String = Tag.toStringCommon(type, name, indent) +
 				"ID: " + characterId + ", " +
 				"FontName: " + fontName + ", " +
 				"HasFontData: " + hasFontData + ", " +

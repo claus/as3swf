@@ -4,7 +4,7 @@
 	import com.codeazur.as3swf.data.consts.BlendMode;
 	import com.codeazur.utils.StringUtils;
 	
-	public class TagPlaceObject3 extends TagPlaceObject2 implements ITag, IDisplayListTag
+	public class TagPlaceObject3 extends TagPlaceObject2 implements IDisplayListTag
 	{
 		public static const TYPE:uint = 70;
 		
@@ -129,9 +129,10 @@
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "PlaceObject3"; }
 		override public function get version():uint { return 8; }
-		
+		override public function get level():uint { return 3; }
+
 		override public function toString(indent:uint = 0):String {
-			var str:String = toStringMain(indent) +
+			var str:String = Tag.toStringCommon(type, name, indent) +
 				"Depth: " + depth;
 			if (hasClassName || (hasImage && hasCharacter)) { str += ", ClassName: " + className; }
 			if (hasCharacter) { str += ", CharacterID: " + characterId; }

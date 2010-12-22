@@ -36,9 +36,10 @@
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "EnableDebugger2"; }
 		override public function get version():uint { return 6; }
-		
+		override public function get level():uint { return 2; }
+	
 		override public function toString(indent:uint = 0):String {
-			return toStringMain(indent) +
+			return Tag.toStringCommon(type, name, indent) +
 				"Password: " + (_password.length ? 'null' : _password.readUTF()) + ", " +
 				"Reserved: 0x" + _reserved.toString(16);
 		}

@@ -2,7 +2,7 @@
 {
 	import com.codeazur.as3swf.SWFData;
 	
-	public class TagSetTabIndex extends Tag implements ITag
+	public class TagSetTabIndex implements ITag
 	{
 		public static const TYPE:uint = 66;
 		
@@ -22,12 +22,13 @@
 			data.writeUI16(tabIndex);
 		}
 		
-		override public function get type():uint { return TYPE; }
-		override public function get name():String { return "SetTabIndex"; }
-		override public function get version():uint { return 7; }
-		
+		public function get type():uint { return TYPE; }
+		public function get name():String { return "SetTabIndex"; }
+		public function get version():uint { return 7; }
+		public function get level():uint { return 1; }
+
 		public function toString(indent:uint = 0):String {
-			return toStringMain(indent) +
+			return Tag.toStringCommon(type, name, indent) +
 				"Depth: " + depth + ", " +
 				"TabIndex: " + tabIndex;
 		}

@@ -5,7 +5,7 @@
 	
 	import flash.utils.ByteArray;
 	
-	public class TagDebugID extends Tag implements ITag
+	public class TagDebugID implements ITag
 	{
 		public static const TYPE:uint = 63;
 		
@@ -30,12 +30,13 @@
 			}
 		}
 		
-		override public function get type():uint { return TYPE; }
-		override public function get name():String { return "DebugID"; }
-		override public function get version():uint { return 6; }
+		public function get type():uint { return TYPE; }
+		public function get name():String { return "DebugID"; }
+		public function get version():uint { return 6; }
+		public function get level():uint { return 1; }
 		
 		public function toString(indent:uint = 0):String {
-			var str:String = toStringMain(indent) + "UUID: ";
+			var str:String = Tag.toStringCommon(type, name, indent) + "UUID: ";
 			if (_uuid.length == 16) {
 				str += StringUtils.printf("%02x%02x%02x%02x-", _uuid[0], _uuid[1], _uuid[2], _uuid[3]);
 				str += StringUtils.printf("%02x%02x-", _uuid[4], _uuid[5]);

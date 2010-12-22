@@ -4,7 +4,7 @@
 	
 	import flash.utils.ByteArray;
 	
-	public class TagEnableDebugger extends Tag implements ITag
+	public class TagEnableDebugger implements ITag
 	{
 		public static const TYPE:uint = 58;
 		
@@ -29,12 +29,13 @@
 			}
 		}
 		
-		override public function get type():uint { return TYPE; }
-		override public function get name():String { return "EnableDebugger"; }
-		override public function get version():uint { return 5; }
-		
+		public function get type():uint { return TYPE; }
+		public function get name():String { return "EnableDebugger"; }
+		public function get version():uint { return 5; }
+		public function get level():uint { return 1; }
+
 		public function toString(indent:uint = 0):String {
-			return toStringMain(indent);
+			return Tag.toStringCommon(type, name, indent);
 		}
 	}
 }

@@ -2,7 +2,7 @@
 {
 	import com.codeazur.as3swf.SWFData;
 	
-	public class TagRemoveObject2 extends TagRemoveObject implements ITag, IDisplayListTag
+	public class TagRemoveObject2 extends TagRemoveObject implements IDisplayListTag
 	{
 		public static const TYPE:uint = 28;
 		
@@ -20,9 +20,10 @@
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "RemoveObject2"; }
 		override public function get version():uint { return 3; }
-		
+		override public function get level():uint { return 2; }
+
 		override public function toString(indent:uint = 0):String {
-			return toStringMain(indent) +
+			return Tag.toStringCommon(type, name, indent) +
 				"Depth: " + depth;
 		}
 	}

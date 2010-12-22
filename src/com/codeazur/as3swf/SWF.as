@@ -15,12 +15,12 @@
 	
 	public class SWF extends SWFEventDispatcher
 	{
-		public var version:int = 10;
-		public var fileLength:uint = 0;
-		public var fileLengthCompressed:uint = 0;
+		public var version:int;
+		public var fileLength:uint;
+		public var fileLengthCompressed:uint;
 		public var frameSize:SWFRectangle;
-		public var frameRate:Number = 50;
-		public var frameCount:uint = 1;
+		public var frameRate:Number;
+		public var frameCount:uint;
 		
 		public var compressed:Boolean;
 		
@@ -34,7 +34,13 @@
 			if (ba != null) {
 				loadBytes(ba);
 			} else {
+				version = 10;
+				fileLength = 0;
+				fileLengthCompressed = 0;
 				frameSize = new SWFRectangle();
+				frameRate = 50;
+				frameCount = 1;
+				compressed = true;
 			}
 		}
 		

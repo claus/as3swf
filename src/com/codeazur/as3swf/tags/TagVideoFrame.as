@@ -4,7 +4,7 @@
 	
 	import flash.utils.ByteArray;
 	
-	public class TagVideoFrame extends Tag implements ITag
+	public class TagVideoFrame implements ITag
 	{
 		public static const TYPE:uint = 61;
 
@@ -34,12 +34,13 @@
 			}
 		}
 		
-		override public function get type():uint { return TYPE; }
-		override public function get name():String { return "VideoFrame"; }
-		override public function get version():uint { return 6; }
-		
+		public function get type():uint { return TYPE; }
+		public function get name():String { return "VideoFrame"; }
+		public function get version():uint { return 6; }
+		public function get level():uint { return 1; }
+
 		public function toString(indent:uint = 0):String {
-			return toStringMain(indent) +
+			return Tag.toStringCommon(type, name, indent) +
 				"StreamID: " + streamId + ", " +
 				"Frame: " + frameNum;
 		}

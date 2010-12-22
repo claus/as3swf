@@ -4,7 +4,7 @@
 	import com.codeazur.as3swf.data.SWFSymbol;
 	import com.codeazur.utils.StringUtils;
 	
-	public class TagExportAssets extends Tag implements ITag
+	public class TagExportAssets implements ITag
 	{
 		public static const TYPE:uint = 56;
 		
@@ -34,12 +34,13 @@
 			data.writeBytes(body);
 		}
 		
-		override public function get type():uint { return TYPE; }
-		override public function get name():String { return "ExportAssets"; }
-		override public function get version():uint { return 5; }
-		
+		public function get type():uint { return TYPE; }
+		public function get name():String { return "ExportAssets"; }
+		public function get version():uint { return 5; }
+		public function get level():uint { return 1; }
+	
 		public function toString(indent:uint = 0):String {
-			var str:String = toStringMain(indent);
+			var str:String = Tag.toStringCommon(type, name, indent);
 			if (_symbols.length > 0) {
 				str += "\n" + StringUtils.repeat(indent + 2) + "Assets:";
 				for (var i:uint = 0; i < _symbols.length; i++) {

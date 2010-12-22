@@ -11,9 +11,10 @@
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "DefineBitsLossless2"; }
 		override public function get version():uint { return 3; }
-		
+		override public function get level():uint { return 2; }
+
 		override public function toString(indent:uint = 0):String {
-			return toStringMain(indent) +
+			return Tag.toStringCommon(type, name, indent) +
 				"ID: " + characterId + ", " +
 				"Format: " + BitmapFormat.toString(bitmapFormat) + ", " +
 				"Size: (" + bitmapWidth + "," + bitmapHeight + ")";

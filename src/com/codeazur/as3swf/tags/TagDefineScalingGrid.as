@@ -3,7 +3,7 @@
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.SWFRectangle;
 	
-	public class TagDefineScalingGrid extends Tag implements IDefinitionTag
+	public class TagDefineScalingGrid implements IDefinitionTag
 	{
 		public static const TYPE:uint = 78;
 		
@@ -28,12 +28,13 @@
 			data.writeBytes(body);
 		}
 		
-		override public function get type():uint { return TYPE; }
-		override public function get name():String { return "DefineScalingGrid"; }
-		override public function get version():uint { return 8; }
+		public function get type():uint { return TYPE; }
+		public function get name():String { return "DefineScalingGrid"; }
+		public function get version():uint { return 8; }
+		public function get level():uint { return 1; }
 		
 		public function toString(indent:uint = 0):String {
-			return toStringMain(indent) +
+			return Tag.toStringCommon(type, name, indent) +
 				"CharacterID: " + characterId + ", " +
 				"Splitter: " + splitter;
 		}

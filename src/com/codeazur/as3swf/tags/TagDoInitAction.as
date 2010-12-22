@@ -34,9 +34,10 @@
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "DoInitAction"; }
 		override public function get version():uint { return 6; }
-		
+		override public function get level():uint { return 1; }
+
 		override public function toString(indent:uint = 0):String {
-			var str:String = toStringMain(indent) +
+			var str:String = Tag.toStringCommon(type, name, indent) +
 				"SpriteID: " +spriteId + ", ";
 				"Records: " + _actions.length;
 			for (var i:uint = 0; i < _actions.length; i++) {

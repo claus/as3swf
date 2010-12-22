@@ -4,7 +4,7 @@
 	
 	import flash.utils.ByteArray;
 	
-	public class TagSoundStreamBlock extends Tag implements ITag
+	public class TagSoundStreamBlock implements ITag
 	{
 		public static const TYPE:uint = 19;
 		
@@ -27,12 +27,13 @@
 			}
 		}
 		
-		override public function get type():uint { return TYPE; }
-		override public function get name():String { return "SoundStreamBlock"; }
-		override public function get version():uint { return 1; }
+		public function get type():uint { return TYPE; }
+		public function get name():String { return "SoundStreamBlock"; }
+		public function get version():uint { return 1; }
+		public function get level():uint { return 1; }
 		
 		public function toString(indent:uint = 0):String {
-			return toStringMain(indent) + "Length: " + _soundData.length;
+			return Tag.toStringCommon(type, name, indent) + "Length: " + _soundData.length;
 		}
 	}
 }

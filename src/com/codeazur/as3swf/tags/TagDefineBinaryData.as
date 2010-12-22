@@ -4,7 +4,7 @@
 	
 	import flash.utils.ByteArray;
 	
-	public class TagDefineBinaryData extends Tag implements IDefinitionTag
+	public class TagDefineBinaryData implements IDefinitionTag
 	{
 		public static const TYPE:uint = 87;
 		
@@ -37,12 +37,13 @@
 			data.writeBytes(body);
 		}
 		
-		override public function get type():uint { return TYPE; }
-		override public function get name():String { return "DefineBinaryData"; }
-		override public function get version():uint { return 9; }
+		public function get type():uint { return TYPE; }
+		public function get name():String { return "DefineBinaryData"; }
+		public function get version():uint { return 9; }
+		public function get level():uint { return 1; }
 
 		public function toString(indent:uint = 0):String {
-			return toStringMain(indent) +
+			return Tag.toStringCommon(type, name, indent) +
 				"ID: " + characterId + ", " +
 				"Length: " + _binaryData.length;
 		}

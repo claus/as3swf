@@ -2,7 +2,7 @@
 {
 	import com.codeazur.as3swf.SWFData;
 	
-	public class TagCSMTextSettings extends Tag implements ITag
+	public class TagCSMTextSettings implements ITag
 	{
 		public static const TYPE:uint = 74;
 		
@@ -35,12 +35,13 @@
 			data.writeUI8(0); // reserved, always 0
 		}
 		
-		override public function get type():uint { return TYPE; }
-		override public function get name():String { return "CSMTextSettings"; }
-		override public function get version():uint { return 8; }
+		public function get type():uint { return TYPE; }
+		public function get name():String { return "CSMTextSettings"; }
+		public function get version():uint { return 8; }
+		public function get level():uint { return 1; }
 		
 		public function toString(indent:uint = 0):String {
-			return toStringMain(indent) +
+			return Tag.toStringCommon(type, name, indent) +
 				"TextID: " + textId + ", " +
 				"UseFlashType: " + useFlashType + ", " +
 				"GridFit: " + gridFit + ", " +

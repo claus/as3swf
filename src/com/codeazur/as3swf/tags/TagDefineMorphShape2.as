@@ -93,12 +93,13 @@
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "DefineMorphShape2"; }
 		override public function get version():uint { return 8; }
+		override public function get level():uint { return 2; }
 		
 		override public function toString(indent:uint = 0):String {
 			var i:uint;
 			var indent2:String = StringUtils.repeat(indent + 2);
 			var indent4:String = StringUtils.repeat(indent + 4);
-			var str:String = toStringMain(indent) + "ID: " + characterId;
+			var str:String = Tag.toStringCommon(type, name, indent) + "ID: " + characterId;
 			str += "\n" + indent2 + "Bounds:";
 			str += "\n" + indent4 + "StartBounds: " + startBounds.toString();
 			str += "\n" + indent4 + "EndBounds: " + endBounds.toString();

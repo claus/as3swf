@@ -5,7 +5,7 @@
 	import com.codeazur.as3swf.data.SWFScene;
 	import com.codeazur.utils.StringUtils;
 	
-	public class TagDefineSceneAndFrameLabelData extends Tag implements ITag
+	public class TagDefineSceneAndFrameLabelData implements ITag
 	{
 		public static const TYPE:uint = 86;
 		
@@ -55,12 +55,13 @@
 			data.writeBytes(body);
 		}
 		
-		override public function get type():uint { return TYPE; }
-		override public function get name():String { return "DefineSceneAndFrameLabelData"; }
-		override public function get version():uint { return 9; }
-		
+		public function get type():uint { return TYPE; }
+		public function get name():String { return "DefineSceneAndFrameLabelData"; }
+		public function get version():uint { return 9; }
+		public function get level():uint { return 1; }
+
 		public function toString(indent:uint = 0):String {
-			var str:String = toStringMain(indent);
+			var str:String = Tag.toStringCommon(type, name, indent);
 			var i:uint;
 			if (_scenes.length > 0) {
 				str += "\n" + StringUtils.repeat(indent + 2) + "Scenes:";

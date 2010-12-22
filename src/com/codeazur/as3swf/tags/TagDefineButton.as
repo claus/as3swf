@@ -7,7 +7,7 @@
 	
 	import flash.utils.Dictionary;
 	
-	public class TagDefineButton extends Tag implements IDefinitionTag
+	public class TagDefineButton implements IDefinitionTag
 	{
 		public static const TYPE:uint = 7;
 		
@@ -65,9 +65,10 @@
 			return frames[state] as Vector.<SWFButtonRecord>;
 		}
 		
-		override public function get type():uint { return TYPE; }
-		override public function get name():String { return "DefineButton"; }
-		override public function get version():uint { return 1; }
+		public function get type():uint { return TYPE; }
+		public function get name():String { return "DefineButton"; }
+		public function get version():uint { return 1; }
+		public function get level():uint { return 1; }
 		
 		protected function processRecords():void {
 			var upState:Vector.<SWFButtonRecord> = new Vector.<SWFButtonRecord>();
@@ -98,7 +99,7 @@
 		}
 		
 		public function toString(indent:uint = 0):String {
-			var str:String = toStringMain(indent) +
+			var str:String = Tag.toStringCommon(type, name, indent) +
 				"ID: " + _characterId;
 			var i:uint;
 			if (_characters.length > 0) {

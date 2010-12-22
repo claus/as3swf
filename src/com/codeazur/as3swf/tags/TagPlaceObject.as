@@ -6,7 +6,7 @@
 	import com.codeazur.as3swf.data.SWFMatrix;
 	import com.codeazur.as3swf.data.filters.IFilter;
 	
-	public class TagPlaceObject extends Tag implements ITag, IDisplayListTag
+	public class TagPlaceObject implements IDisplayListTag
 	{
 		public static const TYPE:uint = 4;
 		
@@ -73,12 +73,13 @@
 			data.writeBytes(body);
 		}
 		
-		override public function get type():uint { return TYPE; }
-		override public function get name():String { return "PlaceObject"; }
-		override public function get version():uint { return 1; }
+		public function get type():uint { return TYPE; }
+		public function get name():String { return "PlaceObject"; }
+		public function get version():uint { return 1; }
+		public function get level():uint { return 1; }
 		
 		public function toString(indent:uint = 0):String {
-			var str:String = toStringMain(indent) +
+			var str:String = Tag.toStringCommon(type, name, indent) +
 				"Depth: " + depth;
 			if (hasCharacter) { str += ", CharacterID: " + characterId; }
 			if (hasMatrix) { str += ", Matrix: " + matrix; }

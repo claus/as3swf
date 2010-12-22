@@ -3,7 +3,7 @@
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.utils.ColorUtils;
 	
-	public class TagSetBackgroundColor extends Tag implements ITag
+	public class TagSetBackgroundColor implements ITag
 	{
 		public static const TYPE:uint = 9;
 		
@@ -26,12 +26,13 @@
 			data.writeRGB(color);
 		}
 		
-		override public function get type():uint { return TYPE; }
-		override public function get name():String { return "SetBackgroundColor"; }
-		override public function get version():uint { return 1; }
-		
+		public function get type():uint { return TYPE; }
+		public function get name():String { return "SetBackgroundColor"; }
+		public function get version():uint { return 1; }
+		public function get level():uint { return 1; }
+
 		public function toString(indent:uint = 0):String {
-			return toStringMain(indent) +
+			return Tag.toStringCommon(type, name, indent) +
 				"Color: " + ColorUtils.rgbToString(color);
 		}
 	}

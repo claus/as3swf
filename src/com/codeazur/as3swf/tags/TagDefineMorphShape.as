@@ -14,7 +14,7 @@
 	import com.codeazur.as3swf.exporters.core.IShapeExporter;
 	import com.codeazur.utils.StringUtils;
 	
-	public class TagDefineMorphShape extends Tag implements IDefinitionTag
+	public class TagDefineMorphShape implements IDefinitionTag
 	{
 		public static const TYPE:uint = 46;
 		
@@ -178,15 +178,16 @@
 			return curvedEdge;
 		}
 		
-		override public function get type():uint { return TYPE; }
-		override public function get name():String { return "DefineMorphShape"; }
-		override public function get version():uint { return 3; }
+		public function get type():uint { return TYPE; }
+		public function get name():String { return "DefineMorphShape"; }
+		public function get version():uint { return 3; }
+		public function get level():uint { return 1; }
 		
 		public function toString(indent:uint = 0):String {
 			var i:uint;
 			var indent2:String = StringUtils.repeat(indent + 2);
 			var indent4:String = StringUtils.repeat(indent + 4);
-			var str:String = toStringMain(indent) + "ID: " + characterId;
+			var str:String = Tag.toStringCommon(type, name, indent) + "ID: " + characterId;
 			str += "\n" + indent2 + "Bounds:";
 			str += "\n" + indent4 + "StartBounds: " + startBounds.toString();
 			str += "\n" + indent4 + "EndBounds: " + endBounds.toString();

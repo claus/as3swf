@@ -2,7 +2,7 @@
 {
 	import com.codeazur.as3swf.SWFData;
 	
-	public class TagDefineFontName extends Tag implements ITag
+	public class TagDefineFontName implements ITag
 	{
 		public static const TYPE:uint = 88;
 		
@@ -27,12 +27,13 @@
 			data.writeBytes(body);
 		}
 		
-		override public function get type():uint { return TYPE; }
-		override public function get name():String { return "DefineFontName"; }
-		override public function get version():uint { return 9; }
-		
+		public function get type():uint { return TYPE; }
+		public function get name():String { return "DefineFontName"; }
+		public function get version():uint { return 9; }
+		public function get level():uint { return 1; }
+
 		public function toString(indent:uint = 0):String {
-			return toStringMain(indent) +
+			return Tag.toStringCommon(type, name, indent) +
 				"FontID: " + fontId + ", " +
 				"Name: " + fontName + ", " +
 				"Copyright: " + fontCopyright;

@@ -4,6 +4,7 @@
 	import com.codeazur.as3swf.events.SWFEvent;
 	
 	import flash.utils.ByteArray;
+	import flash.utils.IDataOutput;
 	
 	public class SWF extends SWFTimelineContainer
 	{
@@ -17,6 +18,9 @@
 		public var compressed:Boolean;
 		
 		protected var bytes:SWFData;
+		
+		protected static const FILE_LENGTH_POS:uint = 4;
+		protected static const COMPRESSION_START_POS:uint = 8;
 		
 		public function SWF(ba:ByteArray = null) {
 			bytes = new SWFData();
@@ -50,15 +54,27 @@
 		public function parse(data:SWFData):void {
 			bytes = data;
 			parseHeader();
-			parseTags(bytes, version);
+			parseTags(data, version);
 		}
 		
 		public function parseAsync(data:SWFData):void {
 			bytes = data;
 			parseHeader();
 			if(dispatchEvent(new SWFEvent(SWFEvent.HEADER, data, false, true))) {
-				parseTagsAsync(bytes, version);
+				parseTagsAsync(data, version);
 			}
+		}
+		
+		public function publish(ba:ByteArray):void {
+			var data:SWFData = new SWFData();
+			publishHeader(data);
+			publishTags(data, version);
+			publishFinalize(data);
+			ba.writeBytes(data);
+		}
+		
+		public function publishAsync(ba:ByteArray):void {
+			// TODO
 		}
 		
 		protected function parseHeader():void {
@@ -90,30 +106,28 @@
 			frameCount = bytes.readUI16();
 		}
 		
-		public function publish(ba:ByteArray):void {
-			var data:SWFData = new SWFData();
+		protected function publishHeader(data:SWFData):void {
 			data.writeUI8(compressed ? 0x43 : 0x46);
 			data.writeUI8(0x57);
 			data.writeUI8(0x53);
 			data.writeUI8(version);
-			var fileLengthPos:uint = data.position;
 			data.writeUI32(0);
 			data.writeRECT(frameSize);
 			data.writeFIXED8(frameRate);
 			data.writeUI16(frameCount); // TODO: get the real number of frames from the tags
-			publishTags(data, version);
+		}
+		
+		protected function publishFinalize(data:SWFData):void {
 			fileLength = fileLengthCompressed = data.length;
 			if (compressed) {
-				data.position = 8;
+				data.position = COMPRESSION_START_POS;
 				data.swfCompress();
 				fileLengthCompressed = data.length;
 			}
 			var endPos:uint = data.position;
-			data.position = fileLengthPos;
+			data.position = FILE_LENGTH_POS;
 			data.writeUI32(fileLength);
 			data.position = 0;
-			ba.length = 0;
-			ba.writeBytes(data);
 		}
 		
 		override public function toString(indent:uint = 0):String {

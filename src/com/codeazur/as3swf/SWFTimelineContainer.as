@@ -8,12 +8,14 @@ package com.codeazur.as3swf
 	import com.codeazur.as3swf.events.SWFErrorEvent;
 	import com.codeazur.as3swf.events.SWFEvent;
 	import com.codeazur.as3swf.events.SWFEventDispatcher;
+	import com.codeazur.as3swf.factories.ISWFTagFactory;
 	import com.codeazur.as3swf.factories.SWFTagFactory;
 	import com.codeazur.as3swf.tags.IDefinitionTag;
 	import com.codeazur.as3swf.tags.IDisplayListTag;
 	import com.codeazur.as3swf.tags.ITag;
 	import com.codeazur.as3swf.tags.TagDefineMorphShape;
 	import com.codeazur.as3swf.tags.TagDefineSceneAndFrameLabelData;
+	import com.codeazur.as3swf.tags.TagDefineSprite;
 	import com.codeazur.as3swf.tags.TagEnd;
 	import com.codeazur.as3swf.tags.TagFrameLabel;
 	import com.codeazur.as3swf.tags.TagJPEGTables;
@@ -67,6 +69,8 @@ package com.codeazur.as3swf
 		protected var _tmpData:SWFData;
 		protected var _tmpVersion:uint;
 
+		protected var _tagFactory:ISWFTagFactory;
+
 		public var backgroundColor:uint = 0xffffff;
 		public var jpegTablesTag:TagJPEGTables;
 		
@@ -78,6 +82,8 @@ package com.codeazur.as3swf
 			_scenes = new Vector.<Scene>();
 			_frames = new Vector.<Frame>();
 			_layers = new Vector.<Layer>();
+		
+			_tagFactory = new SWFTagFactory();
 			
 			enterFrameProvider = new Sprite();
 		}
@@ -88,7 +94,11 @@ package com.codeazur.as3swf
 		public function get scenes():Vector.<Scene> { return _scenes; }
 		public function get frames():Vector.<Frame> { return _frames; }
 		public function get layers():Vector.<Layer> { return _layers; }
+
 		public function get soundStream():SoundStream { return _soundStream; }
+		
+		public function get tagFactory():ISWFTagFactory { return _tagFactory; }
+		public function set tagFactory(value:ISWFTagFactory):void { _tagFactory = value; }
 		
 		public function getCharacter(characterId:uint):IDefinitionTag {
 			return dictionary[characterId] as IDefinitionTag;
@@ -150,8 +160,11 @@ package com.codeazur.as3swf
 			}
 			var tagRaw:SWFRawTag = data.readRawTag();
 			var tagHeader:SWFRecordHeader = tagRaw.header;
-			var tag:ITag = SWFTagFactory.create(tagHeader.type);
+			var tag:ITag = tagFactory.create(tagHeader.type);
 			try {
+				if(tag is SWFTimelineContainer) {
+					SWFTimelineContainer(tag).tagFactory = tagFactory;
+				}
 				tag.parse(data, tagHeader.contentLength, _tmpVersion);
 			} catch(e:Error) {
 				// If we get here there was a problem parsing this particular tag.

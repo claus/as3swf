@@ -1,19 +1,11 @@
 ﻿package com.codeazur.as3swf
 {
 	import com.codeazur.as3swf.data.SWFRectangle;
-	import com.codeazur.as3swf.events.SWFErrorEvent;
 	import com.codeazur.as3swf.events.SWFEvent;
-	import com.codeazur.as3swf.events.SWFEventDispatcher;
-	import com.codeazur.as3swf.tags.IDefinitionTag;
-	import com.codeazur.as3swf.tags.ITag;
-	import com.codeazur.as3swf.timeline.Frame;
-	import com.codeazur.as3swf.timeline.Layer;
-	import com.codeazur.as3swf.timeline.Scene;
 	
 	import flash.utils.ByteArray;
-	import flash.utils.Dictionary;
 	
-	public class SWF extends SWFEventDispatcher
+	public class SWF extends SWFTimelineContainer
 	{
 		public var version:int;
 		public var fileLength:uint;
@@ -24,13 +16,10 @@
 		
 		public var compressed:Boolean;
 		
-		public var timeline:SWFTimeline;
-
 		protected var bytes:SWFData;
 		
 		public function SWF(ba:ByteArray = null) {
 			bytes = new SWFData();
-			timeline = createTimeline();
 			if (ba != null) {
 				loadBytes(ba);
 			} else {
@@ -42,19 +31,6 @@
 				frameCount = 1;
 				compressed = true;
 			}
-		}
-		
-		// Convenience getters
-		public function get tags():Vector.<ITag> { return timeline.tags; }
-		public function get dictionary():Dictionary { return timeline.dictionary; }
-		public function get scenes():Vector.<Scene> { return timeline.scenes; }
-		public function get frames():Vector.<Frame> { return timeline.frames; }
-		public function get layers():Vector.<Layer> { return timeline.layers; }
-
-		public function get backgroundColor():uint { return timeline.backgroundColor; }
-		
-		public function getCharacter(characterId:uint):IDefinitionTag {
-			return dictionary[characterId] as IDefinitionTag;
 		}
 		
 		public function loadBytes(ba:ByteArray):void {
@@ -74,33 +50,15 @@
 		public function parse(data:SWFData):void {
 			bytes = data;
 			parseHeader();
-			timeline.parse(bytes, version);
+			parseTags(bytes, version);
 		}
 		
 		public function parseAsync(data:SWFData):void {
 			bytes = data;
 			parseHeader();
 			if(dispatchEvent(new SWFEvent(SWFEvent.HEADER, data, false, true))) {
-				addTimelineListeners();
-				timeline.parseAsync(bytes, version);
+				parseTagsAsync(bytes, version);
 			}
-		}
-		
-		protected function parseAsyncProgressHandler(event:SWFEvent):void {
-			if(!dispatchEvent(event.clone())) {
-				event.preventDefault();
-				removeTimelineListeners();
-			}
-		}
-		
-		protected function parseAsyncCompleteHandler(event:SWFEvent):void {
-			dispatchEvent(event.clone());
-			removeTimelineListeners();
-		}
-		
-		protected function parseAsyncErrorHandler(event:SWFErrorEvent):void {
-			dispatchEvent(event.clone());
-			removeTimelineListeners();
 		}
 		
 		protected function parseHeader():void {
@@ -143,7 +101,7 @@
 			data.writeRECT(frameSize);
 			data.writeFIXED8(frameRate);
 			data.writeUI16(frameCount); // TODO: get the real number of frames from the tags
-			timeline.publish(data, version);
+			publishTags(data, version);
 			fileLength = fileLengthCompressed = data.length;
 			if (compressed) {
 				data.position = 8;
@@ -158,23 +116,7 @@
 			ba.writeBytes(data);
 		}
 		
-		public function createTimeline():SWFTimeline {
-			return new SWFTimeline(this);
-		}
-		
-		protected function addTimelineListeners():void {
-			timeline.addEventListener(SWFEvent.PROGRESS, parseAsyncProgressHandler);
-			timeline.addEventListener(SWFEvent.COMPLETE, parseAsyncCompleteHandler);
-			timeline.addEventListener(SWFErrorEvent.ERROR, parseAsyncErrorHandler);
-		}
-		
-		protected function removeTimelineListeners():void {
-			timeline.removeEventListener(SWFEvent.PROGRESS, parseAsyncProgressHandler);
-			timeline.removeEventListener(SWFEvent.COMPLETE, parseAsyncCompleteHandler);
-			timeline.removeEventListener(SWFErrorEvent.ERROR, parseAsyncErrorHandler);
-		}
-		
-		public function toString():String {
+		override public function toString(indent:uint = 0):String {
 			return "[SWF]\n" +
 				"  Header:\n" +
 				"    Version: " + version + "\n" +
@@ -183,7 +125,7 @@
 				"    FrameSize: " + frameSize.toStringSize() + "\n" +
 				"    FrameRate: " + frameRate + "\n" +
 				"    FrameCount: " + frameCount +
-				timeline.toString();
+				super.toString(indent);
 		}
 	}
 }

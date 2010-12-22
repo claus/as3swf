@@ -42,7 +42,7 @@ package com.codeazur.as3swf
 	import flash.utils.Endian;
 	import flash.utils.getTimer;
 
-	public class SWFTimeline extends SWFEventDispatcher
+	public class SWFTimelineContainer extends SWFEventDispatcher
 	{
 		// We're just being lazy here.
 		public static var TIMEOUT:int = 50;
@@ -57,24 +57,21 @@ package com.codeazur.as3swf
 		protected var _layers:Vector.<Layer>;
 		protected var _soundStream:SoundStream;
 
-		protected var swf:SWF;
-		
 		protected var currentFrame:Frame;
 		protected var frameLabels:Dictionary;
 		protected var hasSoundStream:Boolean = false;
 
 		protected var enterFrameProvider:Sprite;
-		protected var data:SWFData;
-		protected var version:uint;
 		protected var eof:Boolean;
 
-		internal var backgroundColor:uint = 0xffffff;
-		internal var jpegTablesTag:TagJPEGTables;
+		protected var _tmpData:SWFData;
+		protected var _tmpVersion:uint;
+
+		public var backgroundColor:uint = 0xffffff;
+		public var jpegTablesTag:TagJPEGTables;
 		
-		public function SWFTimeline(swf:SWF)
+		public function SWFTimelineContainer()
 		{
-			this.swf = swf;
-			
 			_tags = new Vector.<ITag>();
 			_tagsRaw = new Vector.<SWFRawTag>();
 			_dictionary = new Dictionary();
@@ -94,44 +91,44 @@ package com.codeazur.as3swf
 		public function get soundStream():SoundStream { return _soundStream; }
 		
 		public function getCharacter(characterId:uint):IDefinitionTag {
-			return swf.getCharacter(characterId);
+			return dictionary[characterId] as IDefinitionTag;
 		}
 		
-		public function parse(data:SWFData, version:uint):void {
-			parseInit(data, version);
+		public function parseTags(data:SWFData, version:uint):void {
+			parseTagsInit(data, version);
 			while (parseTag(data)) {};
-			parseFinalize();
+			parseTagsFinalize();
 		}
 		
-		public function parseAsync(data:SWFData, version:uint):void {
-			parseInit(data, version);
-			enterFrameProvider.addEventListener(Event.ENTER_FRAME, parseAsyncHandler);
+		public function parseTagsAsync(data:SWFData, version:uint):void {
+			parseTagsInit(data, version);
+			enterFrameProvider.addEventListener(Event.ENTER_FRAME, parseTagsAsyncHandler);
 		}
 		
-		protected function parseAsyncHandler(event:Event):void {
-			enterFrameProvider.removeEventListener(Event.ENTER_FRAME, parseAsyncHandler);
-			if(dispatchEvent(new SWFEvent(SWFEvent.PROGRESS, data, false, true))) {
-				parseAsyncInternal();
+		protected function parseTagsAsyncHandler(event:Event):void {
+			enterFrameProvider.removeEventListener(Event.ENTER_FRAME, parseTagsAsyncHandler);
+			if(dispatchEvent(new SWFEvent(SWFEvent.PROGRESS, _tmpData, false, true))) {
+				parseTagsAsyncInternal();
 			}
 		}
 		
-		protected function parseAsyncInternal():void {
+		protected function parseTagsAsyncInternal():void {
 			var time:int = getTimer();
-			while (parseTag(data)) {
+			while (parseTag(_tmpData)) {
 				if((getTimer() - time) > TIMEOUT) {
-					enterFrameProvider.addEventListener(Event.ENTER_FRAME, parseAsyncHandler);
+					enterFrameProvider.addEventListener(Event.ENTER_FRAME, parseTagsAsyncHandler);
 					return;
 				}
 			}
-			parseFinalize();
+			parseTagsFinalize();
 			if(eof) {
 				dispatchEvent(new SWFErrorEvent(SWFErrorEvent.ERROR, SWFErrorEvent.REASON_EOF));
 			} else {
-				dispatchEvent(new SWFEvent(SWFEvent.COMPLETE, data));
+				dispatchEvent(new SWFEvent(SWFEvent.COMPLETE, _tmpData));
 			}
 		}
 		
-		protected function parseInit(data:SWFData, version:uint):void {
+		protected function parseTagsInit(data:SWFData, version:uint):void {
 			tags.length = 0;
 			frames.length = 0;
 			layers.length = 0;
@@ -139,8 +136,8 @@ package com.codeazur.as3swf
 			currentFrame = new Frame();
 			frameLabels = new Dictionary();
 			hasSoundStream = false;
-			this.data = data;
-			this.version = version;
+			_tmpData = data;
+			_tmpVersion = version;
 		}
 		
 		protected function parseTag(data:SWFData):Boolean {
@@ -153,9 +150,9 @@ package com.codeazur.as3swf
 			}
 			var tagRaw:SWFRawTag = data.readRawTag();
 			var tagHeader:SWFRecordHeader = tagRaw.header;
-			var tag:ITag = SWFTagFactory.create(tagHeader.type, swf);
+			var tag:ITag = SWFTagFactory.create(tagHeader.type);
 			try {
-				tag.parse(data, tagHeader.contentLength, version);
+				tag.parse(data, tagHeader.contentLength, _tmpVersion);
 			} catch(e:Error) {
 				// If we get here there was a problem parsing this particular tag.
 				// Corrupted SWF, possible SWF exploit, or obfuscated SWF.
@@ -179,7 +176,7 @@ package com.codeazur.as3swf
 			return (tagHeader.type != TagEnd.TYPE);
 		}
 		
-		protected function parseFinalize():void {
+		protected function parseTagsFinalize():void {
 			if(soundStream && soundStream.data.length == 0) {
 				_soundStream = null;
 			}
@@ -189,7 +186,7 @@ package com.codeazur.as3swf
 			}
 		}
 		
-		public function publish(data:SWFData, version:uint):void {
+		public function publishTags(data:SWFData, version:uint):void {
 			// TODO: asyncronous publishing
 			for (var i:uint = 0; i < tags.length; i++) {
 				try {

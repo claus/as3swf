@@ -6,7 +6,7 @@
 	
 	public class SWFTagFactory
 	{
-		public static function create(type:uint, swf:SWF):ITag
+		public static function create(type:uint):ITag
 		{
 			switch(type) {
 				/*   0 */ case TagEnd.TYPE: return new TagEnd();
@@ -40,7 +40,7 @@
 				/*  35 */ case TagDefineBitsJPEG3.TYPE: return new TagDefineBitsJPEG3();
 				/*  36 */ case TagDefineBitsLossless2.TYPE: return new TagDefineBitsLossless2();
 				/*  37 */ case TagDefineEditText.TYPE: return new TagDefineEditText();
-				/*  39 */ case TagDefineSprite.TYPE: return new TagDefineSprite(swf);
+				/*  39 */ case TagDefineSprite.TYPE: return new TagDefineSprite();
 				/*  41 */ case TagProductInfo.TYPE: return new TagProductInfo();
 				/*  43 */ case TagFrameLabel.TYPE: return new TagFrameLabel();
 				/*  45 */ case TagSoundStreamHead2.TYPE: return new TagSoundStreamHead2();

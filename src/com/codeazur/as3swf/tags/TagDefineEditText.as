@@ -45,7 +45,7 @@
 		
 		public function get characterId():uint { return _characterId; }
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			_characterId = data.readUI16();
 			bounds = data.readRECT();
 			var flags1:uint = data.readUI8();

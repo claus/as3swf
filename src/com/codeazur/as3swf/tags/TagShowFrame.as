@@ -8,7 +8,7 @@
 		
 		public function TagShowFrame() {}
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			// Do nothing. The End tag has no body.
 		}
 		

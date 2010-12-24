@@ -21,7 +21,7 @@
 		public function get characterId():uint { return _characterId; }
 		public function get glyphShapeTable():Vector.<SWFShape> { return _glyphShapeTable; }
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			_characterId = data.readUI16();
 			// Because the glyph shape table immediately follows the offset table,
 			// the number of entries in each table (the number of glyphs in the font) can be inferred by

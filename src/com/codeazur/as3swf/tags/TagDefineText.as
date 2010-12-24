@@ -24,7 +24,7 @@
 		public function get characterId():uint { return _characterId; }
 		public function get records():Vector.<SWFTextRecord> { return _records; }
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			_characterId = data.readUI16();
 			textBounds = data.readRECT();
 			textMatrix = data.readMATRIX();

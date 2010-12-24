@@ -8,7 +8,7 @@
 		
 		public function TagRemoveObject2() {}
 		
-		override public function parse(data:SWFData, length:uint, version:uint):void {
+		override public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			depth = data.readUI16();
 		}
 		

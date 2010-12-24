@@ -23,7 +23,7 @@
 		public function get characterId():uint { return _characterId; }
 		public function get fontData():ByteArray { return _fontData; }
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			var pos:uint = data.position;
 			_characterId = data.readUI16();
 			var flags:uint = data.readUI8();

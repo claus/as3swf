@@ -105,8 +105,9 @@ package com.codeazur.as3swf
 		}
 		
 		public function parseTags(data:SWFData, version:uint):void {
+			var tag:ITag;
 			parseTagsInit(data, version);
-			while (parseTag(data)) {};
+			while ((tag = parseTag(data)) && tag.type != TagEnd.TYPE) {};
 			parseTagsFinalize();
 		}
 		
@@ -123,8 +124,9 @@ package com.codeazur.as3swf
 		}
 		
 		protected function parseTagsAsyncInternal():void {
+			var tag:ITag;
 			var time:int = getTimer();
-			while (parseTag(_tmpData)) {
+			while ((tag = parseTag(_tmpData, true)) && tag.type != TagEnd.TYPE) {
 				if((getTimer() - time) > TIMEOUT) {
 					enterFrameProvider.addEventListener(Event.ENTER_FRAME, parseTagsAsyncHandler);
 					return;
@@ -150,22 +152,27 @@ package com.codeazur.as3swf
 			_tmpVersion = version;
 		}
 		
-		protected function parseTag(data:SWFData):Boolean {
+		protected function parseTag(data:SWFData, async:Boolean = false):ITag {
 			var pos:uint = data.position;
 			// Bail out if eof
 			eof = (pos > data.length);
 			if(eof) {
 				trace("WARNING: end of file encountered, no end tag.");
-				return false;
+				return null;
 			}
 			var tagRaw:SWFRawTag = data.readRawTag();
 			var tagHeader:SWFRecordHeader = tagRaw.header;
 			var tag:ITag = tagFactory.create(tagHeader.type);
 			try {
 				if(tag is SWFTimelineContainer) {
-					SWFTimelineContainer(tag).tagFactory = tagFactory;
+					var timelineContainer:SWFTimelineContainer = tag as SWFTimelineContainer;
+					// Currently, the only SWFTimelineContainer (other than the SWF root
+					// itself) is TagDefineSprite (MovieClips have their own timeline).
+					// Inject the current tag factory there.
+					timelineContainer.tagFactory = tagFactory;
 				}
-				tag.parse(data, tagHeader.contentLength, _tmpVersion);
+				// Parse tag
+				tag.parse(data, tagHeader.contentLength, _tmpVersion, async);
 			} catch(e:Error) {
 				// If we get here there was a problem parsing this particular tag.
 				// Corrupted SWF, possible SWF exploit, or obfuscated SWF.
@@ -186,7 +193,7 @@ package com.codeazur.as3swf
 				);
 				data.position = pos + tagHeader.tagLength;
 			}
-			return (tagHeader.type != TagEnd.TYPE);
+			return tag;
 		}
 		
 		protected function parseTagsFinalize():void {

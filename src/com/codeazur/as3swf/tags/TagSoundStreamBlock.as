@@ -16,7 +16,7 @@
 		
 		public function get soundData():ByteArray { return _soundData; }
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			data.readBytes(_soundData, 0, length);
 		}
 		

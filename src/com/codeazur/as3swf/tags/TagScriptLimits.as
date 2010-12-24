@@ -11,7 +11,7 @@
 		
 		public function TagScriptLimits() {}
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			maxRecursionDepth = data.readUI16();
 			scriptTimeoutSeconds = data.readUI16();
 		}

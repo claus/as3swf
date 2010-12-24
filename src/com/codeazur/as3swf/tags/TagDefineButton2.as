@@ -29,7 +29,7 @@
 		public function get characters():Vector.<SWFButtonRecord> { return _characters; }
 		public function get condActions():Vector.<SWFButtonCondAction> { return _condActions; }
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			_characterId = data.readUI16();
 			trackAsMenu = ((data.readUI8() & 0x01) != 0);
 			var actionOffset:uint = data.readUI16();

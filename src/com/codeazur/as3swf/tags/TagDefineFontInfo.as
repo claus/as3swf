@@ -28,7 +28,7 @@
 		
 		public function get codeTable():Vector.<uint> { return _codeTable; }
 		
-		public function parse(data:SWFData, length:uint, version:uint):void
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void
 		{
 			fontId = data.readUI16();
 

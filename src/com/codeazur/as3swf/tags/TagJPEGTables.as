@@ -16,7 +16,7 @@
 		
 		public function get jpegTables():ByteArray { return _jpegTables; }
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			if(length > 0) {
 				data.readBytes(_jpegTables, 0, length);
 			}
@@ -35,7 +35,7 @@
 		public function get level():uint { return 1; }
 	
 		public function toString(indent:uint = 0):String {
-			return Tag.toStringCommon(type, name, indent) + " Length: " + _jpegTables.length;
+			return Tag.toStringCommon(type, name, indent) + "Length: " + _jpegTables.length;
 		}
 	}
 }

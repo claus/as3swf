@@ -20,7 +20,7 @@
 		public function get scenes():Vector.<SWFScene> { return _scenes; }
 		public function get frameLabels():Vector.<SWFFrameLabel> { return _frameLabels; }
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			var i:uint;
 			var sceneCount:uint = data.readEncodedU32();
 			for (i = 0; i < sceneCount; i++) {

@@ -18,7 +18,7 @@
 		
 		public function get reserved():uint { return _reserved; }
 		
-		override public function parse(data:SWFData, length:uint, version:uint):void {
+		override public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			_reserved = data.readUI16(); 
 			if (length > 2) {
 				data.readBytes(_password, 0, length - 2);

@@ -12,7 +12,7 @@
 		
 		public function TagDoInitAction() {}
 		
-		override public function parse(data:SWFData, length:uint, version:uint):void {
+		override public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			spriteId = data.readUI16();
 			var action:IAction;
 			while ((action = data.readACTIONRECORD()) != null) {

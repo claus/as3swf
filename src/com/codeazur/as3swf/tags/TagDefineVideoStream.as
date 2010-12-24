@@ -21,7 +21,7 @@
 		
 		public function get characterId():uint { return _characterId; }
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			_characterId = data.readUI16();
 			numFrames = data.readUI16();
 			width = data.readUI16();

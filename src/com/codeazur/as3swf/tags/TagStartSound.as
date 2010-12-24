@@ -12,7 +12,7 @@
 		
 		public function TagStartSound() {}
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			soundId = data.readUI16();
 			soundInfo = data.readSOUNDINFO();
 		}

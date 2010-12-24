@@ -12,7 +12,7 @@
 		
 		public function TagDefineFontName() {}
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			fontId = data.readUI16();
 			fontName = data.readString();
 			fontCopyright = data.readString();

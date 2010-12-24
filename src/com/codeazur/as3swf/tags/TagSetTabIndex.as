@@ -11,7 +11,7 @@
 		
 		public function TagSetTabIndex() {}
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			depth = data.readUI16();
 			tabIndex = data.readUI16();
 		}

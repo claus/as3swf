@@ -11,7 +11,7 @@
 		
 		public function TagFrameLabel() {}
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			var start:uint = data.position;
 			frameName = data.readString();
 			if ((data.position - start) < length) {

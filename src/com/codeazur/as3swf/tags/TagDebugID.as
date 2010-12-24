@@ -17,7 +17,7 @@
 		
 		public function get uuid():ByteArray { return _uuid; }
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			if(length > 0) {
 				data.readBytes(_uuid, 0, length);
 			}

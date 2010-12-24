@@ -14,7 +14,7 @@
 		
 		public function TagCSMTextSettings() {}
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			textId = data.readUI16();
 			useFlashType = data.readUB(2);
 			gridFit = data.readUB(3);

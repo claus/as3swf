@@ -10,7 +10,7 @@
 		
 		public function TagPlaceObject3() {}
 		
-		override public function parse(data:SWFData, length:uint, version:uint):void {
+		override public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			var flags1:uint = data.readUI8();
 			hasClipActions = (flags1 & 0x80) != 0;
 			hasClipDepth = (flags1 & 0x40) != 0;
@@ -27,7 +27,7 @@
 			hasBlendMode = (flags2 & 0x02) != 0;
 			hasFilterList = (flags2 & 0x01) != 0;
 			depth = data.readUI16();
-			if (hasClassName || (hasImage && hasCharacter)) {
+			if (hasClassName /*|| (hasImage && hasCharacter)*/) {
 				className = data.readString();
 			}
 			if (hasCharacter) {
@@ -43,7 +43,7 @@
 				ratio = data.readUI16();
 			}
 			if (hasName) {
-				objName = data.readString();
+				instanceName = data.readString();
 			}
 			if (hasClipDepth) {
 				clipDepth = data.readUI16();
@@ -101,7 +101,7 @@
 				body.writeUI16(ratio);
 			}
 			if (hasName) {
-				body.writeString(objName);
+				body.writeString(instanceName);
 			}
 			if (hasClipDepth) {
 				body.writeUI16(clipDepth);
@@ -134,12 +134,12 @@
 		override public function toString(indent:uint = 0):String {
 			var str:String = Tag.toStringCommon(type, name, indent) +
 				"Depth: " + depth;
-			if (hasClassName || (hasImage && hasCharacter)) { str += ", ClassName: " + className; }
+			if (hasClassName /*|| (hasImage && hasCharacter)*/) { str += ", ClassName: " + className; }
 			if (hasCharacter) { str += ", CharacterID: " + characterId; }
 			if (hasMatrix) { str += ", Matrix: " + matrix.toString(); }
 			if (hasColorTransform) { str += ", ColorTransform: " + colorTransform; }
 			if (hasRatio) { str += ", Ratio: " + ratio; }
-			if (hasName) { str += ", Name: " + objName; }
+			if (hasName) { str += ", Name: " + instanceName; }
 			if (hasClipDepth) { str += ", ClipDepth: " + clipDepth; }
 			if (hasBlendMode) { str += ", BlendMode: " + BlendMode.toString(blendMode); }
 			if (hasCacheAsBitmap) { str += ", CacheAsBitmap: " + bitmapCache; }

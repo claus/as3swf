@@ -26,7 +26,7 @@
 		
 		public function get zlibBitmapData():ByteArray { return _zlibBitmapData; }
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			_characterId = data.readUI16();
 			bitmapFormat = data.readUI8();
 			bitmapWidth = data.readUI16();

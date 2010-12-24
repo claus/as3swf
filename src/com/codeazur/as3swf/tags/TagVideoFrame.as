@@ -19,7 +19,7 @@
 		
 		public function get videoData():ByteArray { return _videoData; }
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			streamId = data.readUI16();
 			frameNum = data.readUI16();
 			data.readBytes(_videoData, 0, length - 4);

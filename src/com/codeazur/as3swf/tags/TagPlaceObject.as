@@ -31,7 +31,7 @@
 
 		// Forward declarations for TagPlaceObject2
 		public var ratio:uint;
-		public var objName:String;
+		public var instanceName:String;
 		public var clipDepth:uint;
 		public var clipActions:SWFClipActions;
 
@@ -48,7 +48,7 @@
 		
 		public function get surfaceFilterList():Vector.<IFilter> { return _surfaceFilterList; }
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			var pos:uint = data.position;
 			characterId = data.readUI16();
 			depth = data.readUI16();

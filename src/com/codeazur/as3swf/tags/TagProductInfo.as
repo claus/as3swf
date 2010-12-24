@@ -17,7 +17,7 @@
 		
 		public function TagProductInfo() {}
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			productId = data.readUI32();
 			edition = data.readUI32();
 			majorVersion = data.readUI8();

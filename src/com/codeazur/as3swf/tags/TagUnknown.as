@@ -10,7 +10,7 @@
 			_type = type;
 		}
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			data.skipBytes(length);
 		}
 		

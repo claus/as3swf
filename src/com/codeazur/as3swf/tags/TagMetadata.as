@@ -10,7 +10,7 @@
 		
 		public function TagMetadata() {}
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			xmlString = data.readString();
 		}
 		

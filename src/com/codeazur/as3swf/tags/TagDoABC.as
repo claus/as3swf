@@ -29,7 +29,7 @@
 		
 		public function get bytes():ByteArray { return _bytes; }
 
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			var pos:uint = data.position;
 			var flags:uint = data.readUI32();
 			lazyInitializeFlag = ((flags & 0x01) != 0);

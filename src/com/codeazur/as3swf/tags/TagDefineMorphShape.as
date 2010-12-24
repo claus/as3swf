@@ -36,7 +36,7 @@
 		public function get morphFillStyles():Vector.<SWFMorphFillStyle> { return _morphFillStyles; }
 		public function get morphLineStyles():Vector.<SWFMorphLineStyle> { return _morphLineStyles; }
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			_characterId = data.readUI16();
 			startBounds = data.readRECT();
 			endBounds = data.readRECT();

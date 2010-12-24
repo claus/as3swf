@@ -14,7 +14,7 @@
 
 		public function TagFileAttributes() {}
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			var flags:uint = data.readUI8();
 			useDirectBlit = ((flags & 0x40) != 0);
 			useGPU = ((flags & 0x20) != 0);

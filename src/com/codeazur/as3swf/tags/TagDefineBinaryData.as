@@ -18,7 +18,7 @@
 		public function get characterId():uint { return _characterId; }
 		public function get binaryData():ByteArray { return _binaryData; }
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			_characterId = data.readUI16();
 			data.readUI32(); // reserved, always 0
 			if (length > 6) {

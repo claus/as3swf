@@ -18,7 +18,7 @@
 		
 		public function get symbols():Vector.<SWFSymbol> { return _symbols; }
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			url = data.readString();
 			var numSymbols:uint = data.readUI16();
 			for (var i:uint = 0; i < numSymbols; i++) {

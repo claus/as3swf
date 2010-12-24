@@ -16,7 +16,7 @@
 		
 		public function get actions():Vector.<IAction> { return _actions; }
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			var action:IAction;
 			while ((action = data.readACTIONRECORD()) != null) {
 				_actions.push(action);

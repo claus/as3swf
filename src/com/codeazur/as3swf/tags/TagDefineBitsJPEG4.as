@@ -13,7 +13,7 @@
 		
 		public function TagDefineBitsJPEG4() {}
 		
-		override public function parse(data:SWFData, length:uint, version:uint):void {
+		override public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			_characterId = data.readUI16();
 			var alphaDataOffset:uint = data.readUI32();
 			deblockParam = data.readFIXED8();

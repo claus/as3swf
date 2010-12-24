@@ -16,7 +16,7 @@
 		
 		public function get password():ByteArray { return _password; }
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			if (length > 0) {
 				data.readBytes(_password, 0, length);
 			}

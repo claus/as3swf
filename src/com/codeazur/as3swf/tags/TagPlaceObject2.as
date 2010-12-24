@@ -9,7 +9,7 @@
 		
 		public function TagPlaceObject2() {}
 		
-		override public function parse(data:SWFData, length:uint, version:uint):void {
+		override public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			var flags:uint = data.readUI8();
 			hasClipActions = (flags & 0x80) != 0;
 			hasClipDepth = (flags & 0x40) != 0;
@@ -33,7 +33,7 @@
 				ratio = data.readUI16();
 			}
 			if (hasName) {
-				objName = data.readString();
+				instanceName = data.readString();
 			}
 			if (hasClipDepth) {
 				clipDepth = data.readUI16();
@@ -69,7 +69,7 @@
 				body.writeUI16(ratio);
 			}
 			if (hasName) {
-				body.writeString(objName);
+				body.writeString(instanceName);
 			}
 			if (hasClipDepth) {
 				body.writeUI16(clipDepth);
@@ -93,7 +93,7 @@
 			if (hasMatrix) { str += ", Matrix: " + matrix.toString(); }
 			if (hasColorTransform) { str += ", ColorTransform: " + colorTransform; }
 			if (hasRatio) { str += ", Ratio: " + ratio; }
-			if (hasName) { str += ", Name: " + objName; }
+			if (hasName) { str += ", Name: " + instanceName; }
 			if (hasClipDepth) { str += ", ClipDepth: " + clipDepth; }
 			if (hasClipActions && clipActions != null) {
 				str += "\n" + StringUtils.repeat(indent + 2) + clipActions.toString(indent + 2);

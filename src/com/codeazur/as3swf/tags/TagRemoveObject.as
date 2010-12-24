@@ -11,7 +11,7 @@
 		
 		public function TagRemoveObject() {}
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			characterId = data.readUI16();
 			depth = data.readUI16();
 		}

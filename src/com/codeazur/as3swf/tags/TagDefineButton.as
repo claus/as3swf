@@ -32,7 +32,7 @@
 		public function get characters():Vector.<SWFButtonRecord> { return _characters; }
 		public function get actions():Vector.<IAction> { return _actions; }
 		
-		public function parse(data:SWFData, length:uint, version:uint):void {
+		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {
 			_characterId = data.readUI16();
 			var record:SWFButtonRecord;
 			while ((record = data.readBUTTONRECORD()) != null) {

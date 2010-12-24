@@ -85,7 +85,7 @@
 			if (hasFilterList) { flags2 |= 0x01; }
 			body.writeUI8(flags2);
 			body.writeUI16(depth);
-			if (hasClassName || (hasImage && hasCharacter)) {
+			if (hasClassName /*|| (hasImage && hasCharacter)*/) {
 				body.writeString(className);
 			}
 			if (hasCharacter) {

@@ -15,6 +15,8 @@
 		public var bitmapColorTableSize:uint;
 		
 		protected var _characterId:uint;
+		protected var _characterClass:String;
+
 		protected var _zlibBitmapData:ByteArray;
 		
 		public function TagDefineBitsLossless() {
@@ -23,6 +25,9 @@
 		
 		public function get characterId():uint { return _characterId; }
 		public function set characterId(value:uint):void { _characterId = value; }
+		
+		public function get characterClass():String { return _characterClass; }
+		public function set characterClass(value:String):void { _characterClass = value; }
 		
 		public function get zlibBitmapData():ByteArray { return _zlibBitmapData; }
 		

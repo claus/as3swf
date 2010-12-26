@@ -11,6 +11,7 @@
 		public static const TYPE:uint = 10;
 		
 		protected var _characterId:uint;
+		protected var _characterClass:String;
 		
 		protected var _glyphShapeTable:Vector.<SWFShape>;
 		
@@ -19,6 +20,11 @@
 		}
 		
 		public function get characterId():uint { return _characterId; }
+		public function set characterId(value:uint):void { _characterId = value; }
+
+		public function get characterClass():String { return _characterClass; }
+		public function set characterClass(value:String):void { _characterClass = value; }
+		
 		public function get glyphShapeTable():Vector.<SWFShape> { return _glyphShapeTable; }
 		
 		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {

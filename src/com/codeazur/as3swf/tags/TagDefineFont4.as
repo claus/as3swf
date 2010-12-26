@@ -14,6 +14,8 @@
 		public var fontName:String;
 
 		protected var _characterId:uint;
+		protected var _characterClass:String;
+		
 		protected var _fontData:ByteArray;
 		
 		public function TagDefineFont4() {
@@ -21,6 +23,11 @@
 		}
 		
 		public function get characterId():uint { return _characterId; }
+		public function set characterId(value:uint):void { _characterId = value; }
+
+		public function get characterClass():String { return _characterClass; }
+		public function set characterClass(value:String):void { _characterClass = value; }
+		
 		public function get fontData():ByteArray { return _fontData; }
 		
 		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {

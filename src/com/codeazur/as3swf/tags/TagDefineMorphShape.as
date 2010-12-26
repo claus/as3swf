@@ -24,6 +24,8 @@
 		public var endEdges:SWFShape;
 		
 		protected var _characterId:uint;
+		protected var _characterClass:String;
+		
 		protected var _morphFillStyles:Vector.<SWFMorphFillStyle>;
 		protected var _morphLineStyles:Vector.<SWFMorphLineStyle>;
 		
@@ -33,6 +35,11 @@
 		}
 		
 		public function get characterId():uint { return _characterId; }
+		public function set characterId(value:uint):void { _characterId = value; }
+
+		public function get characterClass():String { return _characterClass; }
+		public function set characterClass(value:String):void { _characterClass = value; }
+		
 		public function get morphFillStyles():Vector.<SWFMorphFillStyle> { return _morphFillStyles; }
 		public function get morphLineStyles():Vector.<SWFMorphLineStyle> { return _morphLineStyles; }
 		

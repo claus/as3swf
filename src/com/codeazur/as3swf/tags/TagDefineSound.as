@@ -20,6 +20,8 @@
 		public var soundSampleCount:uint;
 
 		protected var _characterId:uint;
+		protected var _characterClass:String;
+		
 		protected var _soundData:ByteArray;
 		
 		public function TagDefineSound() {
@@ -52,6 +54,11 @@
 		}
 		
 		public function get characterId():uint { return _characterId; }
+		public function set characterId(value:uint):void { _characterId = value; }
+		
+		public function get characterClass():String { return _characterClass; }
+		public function set characterClass(value:String):void { _characterClass = value; }
+		
 		public function get soundData():ByteArray { return _soundData; }
 		
 		public function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void {

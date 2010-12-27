@@ -17,7 +17,6 @@
 		public static const STATE_HIT:String = "hit"; 
 		
 		protected var _characterId:uint;
-		protected var _characterClass:String;
 		
 		protected var _characters:Vector.<SWFButtonRecord>;
 		protected var _actions:Vector.<IAction>;
@@ -33,9 +32,6 @@
 		public function get characterId():uint { return _characterId; }
 		public function set characterId(value:uint):void { _characterId = value; }
 
-		public function get characterClass():String { return _characterClass; }
-		public function set characterClass(value:String):void { _characterClass = value; }
-		
 		public function get characters():Vector.<SWFButtonRecord> { return _characters; }
 		public function get actions():Vector.<IAction> { return _actions; }
 		

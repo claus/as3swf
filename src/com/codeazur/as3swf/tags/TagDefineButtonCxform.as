@@ -29,6 +29,13 @@
 			data.writeBytes(body);
 		}
 		
+		public function clone():IDefinitionTag {
+			var tag:TagDefineButtonCxform = new TagDefineButtonCxform();
+			tag.characterId = characterId;
+			tag.buttonColorTransform = buttonColorTransform.clone();
+			return tag;
+		}
+		
 		public function get type():uint { return TYPE; }
 		public function get name():String { return "DefineButtonCxform"; }
 		public function get version():uint { return 2; }

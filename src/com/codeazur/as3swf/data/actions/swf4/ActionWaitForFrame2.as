@@ -1,7 +1,7 @@
 ﻿package com.codeazur.as3swf.data.actions.swf4
 {
-	import com.codeazur.as3swf.data.actions.*;
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.data.actions.*;
 	
 	public class ActionWaitForFrame2 extends Action implements IAction
 	{
@@ -23,7 +23,13 @@
 			write(data, body);
 		}
 		
-		public function toString(indent:uint = 0):String {
+		override public function clone():IAction {
+			var action:ActionWaitForFrame2 = new ActionWaitForFrame2(code, length);
+			action.skipCount = skipCount;
+			return action;
+		}
+		
+		override public function toString(indent:uint = 0):String {
 			return "[ActionWaitForFrame2] SkipCount: " + skipCount;
 		}
 	}

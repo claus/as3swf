@@ -2,7 +2,7 @@
 {
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.consts.BitmapType;
-
+	
 	import flash.utils.ByteArray;
 	
 	public class TagDefineBitsJPEG3 extends TagDefineBitsJPEG2 implements IDefinitionTag
@@ -46,6 +46,19 @@
 			}
 		}
 		
+		override public function clone():IDefinitionTag {
+			var tag:TagDefineBitsJPEG3 = new TagDefineBitsJPEG3();
+			tag.characterId = characterId;
+			tag.bitmapType = bitmapType;
+			if (_bitmapData.length > 0) {
+				tag.bitmapData.writeBytes(_bitmapData);
+			}
+			if (_bitmapAlphaData.length > 0) {
+				tag.bitmapAlphaData.writeBytes(_bitmapAlphaData);
+			}
+			return tag;
+		}
+		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "DefineBitsJPEG3"; }
 		override public function get version():uint { return (bitmapType == BitmapType.JPEG) ? 3 : 8; }
@@ -55,7 +68,9 @@
 			var str:String = Tag.toStringCommon(type, name, indent) +
 				"ID: " + characterId + ", " +
 				"Type: " + BitmapType.toString(bitmapType) + ", " +
-				"HasAlphaData: " + (_bitmapAlphaData.length > 0);
+				"HasAlphaData: " + (_bitmapAlphaData.length > 0) + ", " +
+				((_bitmapAlphaData.length > 0) ? "BitmapAlphaLength: " + _bitmapAlphaData.length + ", " : "") +
+				"BitmapLength: " + bitmapData.length;
 			return str;
 		}
 	}

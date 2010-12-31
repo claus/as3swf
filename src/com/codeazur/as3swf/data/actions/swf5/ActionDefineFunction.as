@@ -1,7 +1,7 @@
 ﻿package com.codeazur.as3swf.data.actions.swf5
 {
-	import com.codeazur.as3swf.data.actions.*;
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.data.actions.*;
 	import com.codeazur.utils.StringUtils;
 	
 	public class ActionDefineFunction extends Action implements IAction
@@ -48,7 +48,20 @@
 			write(data, body);
 		}
 		
-		public function toString(indent:uint = 0):String {
+		override public function clone():IAction {
+			var i:uint;
+			var action:ActionDefineFunction = new ActionDefineFunction(code, length);
+			action.functionName = functionName;
+			for (i = 0; i < functionParams.length; i++) {
+				action.functionParams.push(functionParams[i]);
+			}
+			for (i = 0; i < functionBody.length; i++) {
+				action.functionBody.push(functionBody[i].clone());
+			}
+			return action;
+		}
+		
+		override public function toString(indent:uint = 0):String {
 			var str:String = "[ActionDefineFunction] " + 
 				((functionName == null || functionName.length == 0) ? "<anonymous>" : functionName) +
 				"(" + functionParams.join(", ") + ")";

@@ -34,7 +34,15 @@
 			write(data, body);
 		}
 		
-		public function toString(indent:uint = 0):String {
+		override public function clone():IAction {
+			var action:ActionWith = new ActionWith(code, length);
+			for (var i:uint = 0; i < withBody.length; i++) {
+				action.withBody.push(withBody[i].clone());
+			}
+			return action;
+		}
+		
+		override public function toString(indent:uint = 0):String {
 			var str:String = "[ActionWith]";
 			for (var i:uint = 0; i < withBody.length; i++) {
 				str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + withBody[i].toString(indent + 4);

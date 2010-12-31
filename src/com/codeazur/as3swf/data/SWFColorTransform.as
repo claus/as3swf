@@ -17,7 +17,7 @@
 		public var hasMultTerms:Boolean;
 		public var hasAddTerms:Boolean;
 		
-		public function SWFColorTransform(data:SWFData) {
+		public function SWFColorTransform(data:SWFData = null) {
 			if (data != null) {
 				parse(data);
 			}
@@ -65,6 +65,19 @@
 				data.writeSB(bits, gAdd);
 				data.writeSB(bits, bAdd);
 			}
+		}
+		
+		public function clone():SWFColorTransform {
+			var colorTransform:SWFColorTransform = new SWFColorTransform();
+			colorTransform.hasAddTerms = hasAddTerms;
+			colorTransform.hasMultTerms = hasMultTerms;
+			colorTransform.rMult = rMult;
+			colorTransform.gMult = gMult;
+			colorTransform.bMult = bMult;
+			colorTransform.rAdd = rAdd;
+			colorTransform.gAdd = gAdd;
+			colorTransform.bAdd = bAdd;
+			return colorTransform;
 		}
 		
 		public function isIdentity():Boolean {

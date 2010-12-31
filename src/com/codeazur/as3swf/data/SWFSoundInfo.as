@@ -78,6 +78,23 @@
 			}
 		}
 		
+		public function clone():SWFSoundInfo {
+			var soundInfo:SWFSoundInfo = new SWFSoundInfo();
+			soundInfo.syncStop = syncStop;
+			soundInfo.syncNoMultiple = syncNoMultiple;
+			soundInfo.hasEnvelope = hasEnvelope;
+			soundInfo.hasLoops = hasLoops;
+			soundInfo.hasOutPoint = hasOutPoint;
+			soundInfo.hasInPoint = hasInPoint;
+			soundInfo.outPoint = outPoint;
+			soundInfo.inPoint = inPoint;
+			soundInfo.loopCount = loopCount;
+			for (var i:uint = 0; i < _envelopeRecords.length; i++) {
+				soundInfo.envelopeRecords.push(_envelopeRecords[i].clone());
+			}
+			return soundInfo;
+		}
+		
 		public function toString():String {
 			return "[SWFSoundInfo]";
 		}

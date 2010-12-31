@@ -24,6 +24,14 @@
 			data.writeUI8(passes << 3);
 		}
 		
+		override public function clone():IFilter {
+			var filter:FilterBlur = new FilterBlur(id);
+			filter.blurX = blurX;
+			filter.blurY = blurY;
+			filter.passes = passes;
+			return filter;
+		}
+		
 		override public function toString(indent:uint = 0):String {
 			return "[BlurFilter] " +
 				"BlurX: " + blurX + ", " +

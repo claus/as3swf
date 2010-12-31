@@ -55,6 +55,19 @@
 			data.writeBytes(body);
 		}
 		
+		public function clone():IDefinitionTag {
+			var tag:TagDefineFont4 = new TagDefineFont4();
+			tag.characterId = characterId;
+			tag.hasFontData = hasFontData;
+			tag.italic = italic;
+			tag.bold = bold;
+			tag.fontName = fontName;
+			if (_fontData.length > 0) {
+				tag.fontData.writeBytes(_fontData);
+			}
+			return tag;
+		}
+		
 		public function get type():uint { return TYPE; }
 		public function get name():String { return "DefineFont4"; }
 		public function get version():uint { return 10; }

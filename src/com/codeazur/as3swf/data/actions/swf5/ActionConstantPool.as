@@ -31,7 +31,15 @@
 			write(data, body);
 		}
 		
-		public function toString(indent:uint = 0):String {
+		override public function clone():IAction {
+			var action:ActionConstantPool = new ActionConstantPool(code, length);
+			for (var i:uint = 0; i < constants.length; i++) {
+				action.constants.push(constants[i]);
+			}
+			return action;
+		}
+		
+		override public function toString(indent:uint = 0):String {
 			var str:String = "[ActionConstantPool] Values: " + constants.length;
 			for (var i:uint = 0; i < constants.length; i++) {
 				str += "\n" + StringUtils.repeat(indent + 4) + i + ": " + StringUtils.simpleEscape(constants[i]);

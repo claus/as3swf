@@ -9,6 +9,7 @@
 		
 		function parse(data:SWFData):void;
 		function publish(data:SWFData):void;
+		function clone():IAction;
 		function toString(indent:uint = 0):String;
 	}
 }

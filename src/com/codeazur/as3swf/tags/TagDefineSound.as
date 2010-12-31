@@ -82,6 +82,20 @@
 			data.writeBytes(body);
 		}
 		
+		public function clone():IDefinitionTag {
+			var tag:TagDefineSound = new TagDefineSound();
+			tag.characterId = characterId;
+			tag.soundFormat = soundFormat;
+			tag.soundRate = soundRate;
+			tag.soundSize = soundSize;
+			tag.soundType = soundType;
+			tag.soundSampleCount = soundSampleCount;
+			if (_soundData.length > 0) {
+				tag.soundData.writeBytes(_soundData);
+			}
+			return tag;
+		}
+		
 		public function get type():uint { return TYPE; }
 		public function get name():String { return "DefineSound"; }
 		public function get version():uint { return 1; }

@@ -20,6 +20,10 @@
 			throw(new Error("Implement in subclasses!"));
 		}
 		
+		public function clone():IFilter {
+			throw(new Error("Implement in subclasses!"));
+		}
+		
 		public function toString(indent:uint = 0):String {
 			return "[Filter]";
 		}

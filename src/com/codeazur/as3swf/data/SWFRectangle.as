@@ -40,6 +40,15 @@
 			data.writeSB(numBits, ymax);
 		}
 		
+		public function clone():SWFRectangle {
+			var rect:SWFRectangle = new SWFRectangle();
+			rect.xmin = xmin;
+			rect.xmax = xmax;
+			rect.ymin = ymin;
+			rect.ymax = ymax;
+			return rect;
+		}
+		
 		public function get rect():Rectangle {
 			_rectangle.left = NumberUtils.roundPixels20(xmin / 20);
 			_rectangle.right = NumberUtils.roundPixels20(xmax / 20);

@@ -75,6 +75,17 @@
 			data.writeBytes(body);
 		}
 		
+		public function clone():IDefinitionTag {
+			var tag:TagDefineText = new TagDefineText();
+			tag.characterId = characterId;
+			tag.textBounds = textBounds.clone();
+			tag.textMatrix = textMatrix.clone();
+			for(var i:uint = 0; i < _records.length; i++) {
+				tag.records.push(_records[i].clone());
+			}
+			return tag;
+		}
+		
 		public function get type():uint { return TYPE; }
 		public function get name():String { return "DefineText"; }
 		public function get version():uint { return 1; }

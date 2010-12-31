@@ -14,7 +14,7 @@
 			}
 		}
 		
-		public function toString(indent:uint = 0):String {
+		override public function toString(indent:uint = 0):String {
 			return "[????] Code: " + _code.toString(16) + ", Length: " + _length;
 		}
 	}

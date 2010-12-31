@@ -42,6 +42,19 @@
 			data.writeUI8(flags);
 		}
 		
+		override public function clone():IFilter {
+			var filter:FilterGlow = new FilterGlow(id);
+			filter.glowColor = glowColor;
+			filter.blurX = blurX;
+			filter.blurY = blurY;
+			filter.strength = strength;
+			filter.passes = passes;
+			filter.innerGlow = innerGlow;
+			filter.knockout = knockout;
+			filter.compositeSource = compositeSource;
+			return filter;
+		}
+		
 		override public function toString(indent:uint = 0):String {
 			var str:String = "[GlowFilter] " +
 				"GlowColor: " + ColorUtils.rgbToString(glowColor) + ", " +

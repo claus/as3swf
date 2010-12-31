@@ -45,6 +45,18 @@
 			data.writeUI8(codecId);
 		}
 		
+		public function clone():IDefinitionTag {
+			var tag:TagDefineVideoStream = new TagDefineVideoStream();
+			tag.characterId = characterId;
+			tag.numFrames = numFrames;
+			tag.width = width;
+			tag.height = height;
+			tag.deblocking = deblocking;
+			tag.smoothing = smoothing;
+			tag.codecId = codecId;
+			return tag;
+		}
+		
 		public function get type():uint { return TYPE; }
 		public function get name():String { return "DefineVideoStream"; }
 		public function get version():uint { return 6; }

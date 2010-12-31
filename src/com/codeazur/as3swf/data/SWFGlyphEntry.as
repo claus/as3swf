@@ -25,6 +25,13 @@
 			data.writeSB(advanceBits, advance);
 		}
 		
+		public function clone():SWFGlyphEntry {
+			var entry:SWFGlyphEntry = new SWFGlyphEntry();
+			entry.index = index;
+			entry.advance = advance;
+			return entry;
+		}
+		
 		public function toString():String {
 			return "[SWFGlyphEntry] Index: " + index.toString() + ", Advance: " + advance.toString();
 		}

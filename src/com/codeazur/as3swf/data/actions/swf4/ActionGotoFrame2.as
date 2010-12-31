@@ -36,7 +36,15 @@
 			write(data, body);
 		}
 		
-		public function toString(indent:uint = 0):String {
+		override public function clone():IAction {
+			var action:ActionGotoFrame2 = new ActionGotoFrame2(code, length);
+			action.sceneBiasFlag = sceneBiasFlag;
+			action.playFlag = playFlag;
+			action.sceneBias = sceneBias;
+			return action;
+		}
+		
+		override public function toString(indent:uint = 0):String {
 			var str:String = "[ActionGotoFrame2] " +
 				"PlayFlag: " + playFlag + ", ";
 				"SceneBiasFlag: " + sceneBiasFlag;

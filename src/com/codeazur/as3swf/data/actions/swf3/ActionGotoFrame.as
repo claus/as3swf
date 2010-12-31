@@ -1,7 +1,7 @@
 ﻿package com.codeazur.as3swf.data.actions.swf3
 {
-	import com.codeazur.as3swf.data.actions.*;
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.data.actions.*;
 	
 	public class ActionGotoFrame extends Action implements IAction
 	{
@@ -23,7 +23,13 @@
 			write(data, body);
 		}
 		
-		public function toString(indent:uint = 0):String {
+		override public function clone():IAction {
+			var action:ActionGotoFrame = new ActionGotoFrame(code, length);
+			action.frame = frame;
+			return action;
+		}
+		
+		override public function toString(indent:uint = 0):String {
 			return "[ActionGotoFrame] Frame: " + frame;
 		}
 	}

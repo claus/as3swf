@@ -64,6 +64,19 @@
 			data.writeBytes(body);
 		}
 		
+		public function clone():IDefinitionTag {
+			var i:uint;
+			var tag:TagDefineButton = new TagDefineButton();
+			tag.characterId = characterId;
+			for(i = 0; i < characters.length; i++) {
+				tag.characters.push(characters[i].clone());
+			}
+			for(i = 0; i < actions.length; i++) {
+				tag.actions.push(actions[i].clone());
+			}
+			return tag;
+		}
+		
 		public function getRecordsByState(state:String):Vector.<SWFButtonRecord> {
 			return frames[state] as Vector.<SWFButtonRecord>;
 		}

@@ -49,7 +49,6 @@
 		}
 		
 		override public function publish(data:SWFData):void {
-			numColors = data.readUI8();
 			data.writeUI8(numColors);
 			var i:uint;
 			for (i = 0; i < numColors; i++) {
@@ -67,6 +66,27 @@
 			if(compositeSource) { flags |= 0x20; }
 			if(onTop) { flags |= 0x10; }
 			data.writeUI8(flags);
+		}
+		
+		override public function clone():IFilter {
+			var filter:FilterGradientGlow = new FilterGradientGlow(id);
+			filter.numColors = numColors;
+			var i:uint;
+			for (i = 0; i < numColors; i++) {
+				filter.gradientColors.push(gradientColors[i]);
+			}
+			for (i = 0; i < numColors; i++) {
+				filter.gradientRatios.push(gradientRatios[i]);
+			}
+			filter.blurX = blurX;
+			filter.blurY = blurY;
+			filter.strength = strength;
+			filter.passes = passes;
+			filter.innerShadow = innerShadow;
+			filter.knockout = knockout;
+			filter.compositeSource = compositeSource;
+			filter.onTop = onTop;
+			return filter;
 		}
 		
 		override public function toString(indent:uint = 0):String {

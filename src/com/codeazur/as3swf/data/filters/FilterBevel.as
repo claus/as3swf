@@ -55,6 +55,23 @@
 			data.writeUI8(flags);
 		}
 		
+		override public function clone():IFilter {
+			var filter:FilterBevel = new FilterBevel(id);
+			filter.shadowColor = shadowColor;
+			filter.highlightColor = highlightColor;
+			filter.blurX = blurX;
+			filter.blurY = blurY;
+			filter.angle = angle;
+			filter.distance = distance;
+			filter.strength = strength;
+			filter.passes = passes;
+			filter.innerShadow = innerShadow;
+			filter.knockout = knockout;
+			filter.compositeSource = compositeSource;
+			filter.onTop = onTop;
+			return filter;
+		}
+		
 		override public function toString(indent:uint = 0):String {
 			var str:String = "[BevelFilter] " +
 				"ShadowColor: " + ColorUtils.rgbToString(shadowColor) + ", " +

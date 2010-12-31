@@ -67,6 +67,25 @@
 			data.writeUI8(0);
 		}
 		
+		public function clone():SWFButtonCondAction {
+			var condAction:SWFButtonCondAction = new SWFButtonCondAction();
+			condAction.condActionSize = condActionSize;
+			condAction.condIdleToOverDown = condIdleToOverDown;
+			condAction.condOutDownToIdle = condOutDownToIdle;
+			condAction.condOutDownToOverDown = condOutDownToOverDown;
+			condAction.condOverDownToOutDown = condOverDownToOutDown;
+			condAction.condOverDownToOverUp = condOverDownToOverUp;
+			condAction.condOverUpToOverDown = condOverUpToOverDown;
+			condAction.condOverUpToIdle = condOverUpToIdle;
+			condAction.condIdleToOverUp = condIdleToOverUp;
+			condAction.condOverDownToIdle = condOverDownToIdle;
+			condAction.condKeyPress = condKeyPress;
+			for(var i:uint = 0; i < actions.length; i++) {
+				condAction.actions.push(actions[i].clone());
+			}
+			return condAction;
+		}
+		
 		public function toString(indent:uint = 0):String {
 			var a:Array = [];
 			if (condIdleToOverDown) { a.push("idleToOverDown"); }

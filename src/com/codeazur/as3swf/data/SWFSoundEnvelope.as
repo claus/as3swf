@@ -26,6 +26,14 @@
 			data.writeUI16(rightLevel);
 		}
 		
+		public function clone():SWFSoundEnvelope {
+			var soundEnvelope:SWFSoundEnvelope = new SWFSoundEnvelope();
+			soundEnvelope.pos44 = pos44;
+			soundEnvelope.leftLevel = leftLevel;
+			soundEnvelope.rightLevel = rightLevel;
+			return soundEnvelope;
+		}
+		
 		public function toString():String {
 			return "[SWFSoundEnvelope]";
 		}

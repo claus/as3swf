@@ -26,6 +26,14 @@
 			}
 		}
 		
+		override public function clone():IFilter {
+			var filter:FilterColorMatrix = new FilterColorMatrix(id);
+			for (var i:uint = 0; i < 20; i++) {
+				filter.colorMatrix.push(colorMatrix[i]);
+			}
+			return filter;
+		}
+		
 		override public function toString(indent:uint = 0):String {
 			var si:String = StringUtils.repeat(indent + 2);
 			return "[ColorMatrixFilter]" + 

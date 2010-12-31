@@ -1,7 +1,7 @@
 ﻿package com.codeazur.as3swf.data.actions.swf5
 {
-	import com.codeazur.as3swf.data.actions.*;
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.data.actions.*;
 	
 	public class ActionStoreRegister extends Action implements IAction
 	{
@@ -23,7 +23,13 @@
 			write(data, body);
 		}
 		
-		public function toString(indent:uint = 0):String {
+		override public function clone():IAction {
+			var action:ActionStoreRegister = new ActionStoreRegister(code, length);
+			action.registerNumber = registerNumber;
+			return action;
+		}
+		
+		override public function toString(indent:uint = 0):String {
 			return "[ActionStoreRegister] RegisterNumber: " + registerNumber;
 		}
 	}

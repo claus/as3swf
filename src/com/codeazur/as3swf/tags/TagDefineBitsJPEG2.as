@@ -20,6 +20,16 @@
 			}
 		}
 		
+		override public function clone():IDefinitionTag {
+			var tag:TagDefineBitsJPEG2 = new TagDefineBitsJPEG2();
+			tag.characterId = characterId;
+			tag.bitmapType = bitmapType;
+			if (_bitmapData.length > 0) {
+				tag.bitmapData.writeBytes(_bitmapData);
+			}
+			return tag;
+		}
+		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "DefineBitsJPEG2"; }
 		override public function get version():uint { return (bitmapType == BitmapType.JPEG) ? 2 : 8; }
@@ -28,7 +38,8 @@
 		override public function toString(indent:uint = 0):String {
 			var str:String = Tag.toStringCommon(type, name, indent) +
 				"ID: " + characterId + ", " +
-				"Type: " + BitmapType.toString(bitmapType);
+				"Type: " + BitmapType.toString(bitmapType) + ", " +
+				"BitmapLength: " + bitmapData.length;
 			return str;
 		}
 	}

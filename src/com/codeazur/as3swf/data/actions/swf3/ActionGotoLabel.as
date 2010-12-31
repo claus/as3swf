@@ -23,7 +23,13 @@
 			write(data, body);
 		}
 		
-		public function toString(indent:uint = 0):String {
+		override public function clone():IAction {
+			var action:ActionGotoLabel = new ActionGotoLabel(code, length);
+			action.label = label;
+			return action;
+		}
+		
+		override public function toString(indent:uint = 0):String {
 			return "[ActionGotoLabel] Label: " + label;
 		}
 	}

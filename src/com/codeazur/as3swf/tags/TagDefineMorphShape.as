@@ -102,6 +102,12 @@
 			data.writeBytes(body);
 		}
 		
+		public function clone():IDefinitionTag {
+			var tag:TagDefineMorphShape = new TagDefineMorphShape();
+			throw(new Error("Not implemented yet."));
+			return tag;
+		}
+		
 		public function export(handler:IShapeExporter = null, ratio:Number = 0):void {
 			var i:uint;
 			var j:uint = 0;

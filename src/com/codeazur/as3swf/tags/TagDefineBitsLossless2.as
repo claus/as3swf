@@ -8,6 +8,18 @@
 		
 		public function TagDefineBitsLossless2() {}
 		
+		override public function clone():IDefinitionTag {
+			var tag:TagDefineBitsLossless2 = new TagDefineBitsLossless2();
+			tag.characterId = characterId;
+			tag.bitmapFormat = bitmapFormat;
+			tag.bitmapWidth = bitmapWidth;
+			tag.bitmapHeight = bitmapHeight;
+			if (_zlibBitmapData.length > 0) {
+				tag.zlibBitmapData.writeBytes(_zlibBitmapData);
+			}
+			return tag;
+		}
+		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "DefineBitsLossless2"; }
 		override public function get version():uint { return 3; }

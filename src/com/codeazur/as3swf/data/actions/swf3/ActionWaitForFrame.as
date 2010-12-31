@@ -26,7 +26,14 @@
 			write(data, body);
 		}
 		
-		public function toString(indent:uint = 0):String {
+		override public function clone():IAction {
+			var action:ActionWaitForFrame = new ActionWaitForFrame(code, length);
+			action.frame = frame;
+			action.skipCount = skipCount;
+			return action;
+		}
+		
+		override public function toString(indent:uint = 0):String {
 			return "[ActionWaitForFrame] Frame: " + frame + ", SkipCount: " + skipCount;
 		}
 	}

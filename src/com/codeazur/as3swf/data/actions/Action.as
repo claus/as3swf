@@ -2,7 +2,7 @@
 {
 	import com.codeazur.as3swf.SWFData;
 	
-	public class Action
+	public class Action implements IAction
 	{
 		protected var _code:uint;
 		protected var _length:uint;
@@ -24,6 +24,10 @@
 			write(data);
 		}
 		
+		public function clone():IAction {
+			return new Action(code, length);
+		}
+		
 		protected function write(data:SWFData, body:SWFData = null):void {
 			data.writeUI8(code);
 			if (code >= 0x80) {
@@ -38,6 +42,10 @@
 			} else {
 				_length = 0;
 			}
+		}
+		
+		public function toString(indent:uint = 0):String {
+			return "[Action] Code: " + _code.toString(16) + ", Length: " + _length;
 		}
 	}
 }

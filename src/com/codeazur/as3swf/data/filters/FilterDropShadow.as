@@ -48,6 +48,21 @@
 			data.writeUI8(flags);
 		}
 		
+		override public function clone():IFilter {
+			var filter:FilterDropShadow = new FilterDropShadow(id);
+			filter.dropShadowColor = dropShadowColor;
+			filter.blurX = blurX;
+			filter.blurY = blurY;
+			filter.angle = angle;
+			filter.distance = distance;
+			filter.strength = strength;
+			filter.passes = passes;
+			filter.innerShadow = innerShadow;
+			filter.knockout = knockout;
+			filter.compositeSource = compositeSource;
+			return filter;
+		}
+		
 		override public function toString(indent:uint = 0):String {
 			var str:String = "[DropShadowFilter] " +
 				"DropShadowColor: " + ColorUtils.rgbToString(dropShadowColor) + ", " +

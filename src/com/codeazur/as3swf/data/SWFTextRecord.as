@@ -105,6 +105,24 @@
 			}
 		}
 		
+		public function clone():SWFTextRecord {
+			var record:SWFTextRecord = new SWFTextRecord();
+			record.type = type;
+			record.hasFont = hasFont;
+			record.hasColor = hasColor;
+			record.hasXOffset = hasXOffset;
+			record.hasYOffset = hasYOffset;
+			record.fontId = fontId;
+			record.textColor = textColor;
+			record.textHeight = textHeight;
+			record.xOffset = xOffset;
+			record.yOffset = yOffset;
+			for (var i:uint = 0; i < _glyphEntries.length; i++) {
+				record.glyphEntries.push(_glyphEntries[i].clone());
+			}
+			return record;
+		}
+		
 		public function toString(indent:uint = 0):String {
 			var params:Array = ["Glyphs: " + _glyphEntries.length.toString()];
 			if (hasFont) { params.push("FontID: " + fontId); params.push("Height: " + textHeight); }

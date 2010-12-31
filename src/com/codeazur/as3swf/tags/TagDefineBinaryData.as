@@ -40,6 +40,15 @@
 			data.writeBytes(body);
 		}
 		
+		public function clone():IDefinitionTag {
+			var tag:TagDefineBinaryData = new TagDefineBinaryData();
+			tag.characterId = characterId;
+			if (_binaryData.length > 0) {
+				tag.binaryData.writeBytes(_binaryData);
+			}
+			return tag;
+		}
+		
 		public function get type():uint { return TYPE; }
 		public function get name():String { return "DefineBinaryData"; }
 		public function get version():uint { return 9; }

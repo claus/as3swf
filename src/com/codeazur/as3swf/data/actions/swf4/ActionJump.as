@@ -23,7 +23,13 @@
 			write(data, body);
 		}
 		
-		public function toString(indent:uint = 0):String {
+		override public function clone():IAction {
+			var action:ActionJump = new ActionJump(code, length);
+			action.branchOffset = branchOffset;
+			return action;
+		}
+		
+		override public function toString(indent:uint = 0):String {
 			return "[ActionJump] BranchOffset: " + branchOffset;
 		}
 	}

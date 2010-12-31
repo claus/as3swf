@@ -149,6 +149,41 @@
 			data.writeBytes(body);
 		}
 		
+		public function clone():IDefinitionTag {
+			var tag:TagDefineEditText = new TagDefineEditText();
+			tag.characterId = characterId;
+			tag.bounds = bounds.clone();
+			tag.variableName = variableName;
+			tag.hasText = hasText;
+			tag.wordWrap = wordWrap;
+			tag.multiline = multiline;
+			tag.password = password;
+			tag.readOnly = readOnly;
+			tag.hasTextColor = hasTextColor;
+			tag.hasMaxLength = hasMaxLength;
+			tag.hasFont = hasFont;
+			tag.hasFontClass = hasFontClass;
+			tag.autoSize = autoSize;
+			tag.hasLayout = hasLayout;
+			tag.noSelect = noSelect;
+			tag.border = border;
+			tag.wasStatic = wasStatic;
+			tag.html = html;
+			tag.useOutlines = useOutlines;
+			tag.fontId = fontId;
+			tag.fontClass = fontClass;
+			tag.fontHeight = fontHeight;
+			tag.textColor = textColor;
+			tag.maxLength = maxLength;
+			tag.align = align;
+			tag.leftMargin = leftMargin;
+			tag.rightMargin = rightMargin;
+			tag.indent = indent;
+			tag.leading = leading;
+			tag.initialText = initialText;
+			return tag;
+		}
+		
 		public function get type():uint { return TYPE; }
 		public function get name():String { return "DefineEditText"; }
 		public function get version():uint { return 4; }

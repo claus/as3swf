@@ -1,11 +1,10 @@
 ﻿package com.codeazur.as3swf.tags
 {
 	import com.codeazur.as3swf.SWFData;
-	import com.codeazur.as3swf.data.SWFFillStyle;
 	import com.codeazur.as3swf.data.SWFShape;
 	import com.codeazur.as3swf.exporters.core.IShapeExporter;
 	import com.codeazur.utils.StringUtils;
-	
+		
 	public class TagDefineFont implements IDefinitionTag
 	{
 		public static const TYPE:uint = 10;
@@ -59,6 +58,12 @@
 			// actual contents out to the provided SWFData instance.
 			data.writeTagHeader(type, body.length);
 			data.writeBytes(body);
+		}
+		
+		public function clone():IDefinitionTag {
+			var tag:TagDefineFont = new TagDefineFont();
+			throw(new Error("Not implemented yet."));
+			return tag;
 		}
 		
 		public function export(handler:IShapeExporter, glyphIndex:uint):void {

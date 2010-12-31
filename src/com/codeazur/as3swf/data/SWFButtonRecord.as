@@ -83,6 +83,27 @@
 			}
 		}
 		
+		public function clone():SWFButtonRecord {
+			var data:SWFButtonRecord = new SWFButtonRecord();
+			data.hasBlendMode = hasBlendMode;
+			data.hasFilterList = hasFilterList;
+			data.stateHitTest = stateHitTest;
+			data.stateDown = stateDown;
+			data.stateOver = stateOver;
+			data.stateUp = stateUp;
+			data.characterId = characterId;
+			data.placeDepth = placeDepth;
+			data.placeMatrix = placeMatrix.clone();
+			if(colorTransform) {
+				data.colorTransform = colorTransform.clone() as SWFColorTransformWithAlpha;
+			}
+			for(var i:uint = 0; i < filterList.length; i++) {
+				data.filterList.push(filterList[i].clone());
+			}
+			data.blendMode = blendMode;
+			return data;
+		}
+		
 		public function toString(indent:uint = 0):String {
 			var str:String = "Depth: " + placeDepth + ", CharacterID: " + characterId + ", States: ";
 			var states:Array = [];

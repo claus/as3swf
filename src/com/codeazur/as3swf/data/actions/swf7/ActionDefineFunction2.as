@@ -86,7 +86,30 @@
 			write(data, body);
 		}
 		
-		public function toString(indent:uint = 0):String {
+		override public function clone():IAction {
+			var i:uint;
+			var action:ActionDefineFunction2 = new ActionDefineFunction2(code, length);
+			action.functionName = functionName;
+			for (i = 0; i < functionParams.length; i++) {
+				action.functionParams.push(functionParams[i]);
+			}
+			for (i = 0; i < functionBody.length; i++) {
+				action.functionBody.push(functionBody[i].clone());
+			}
+			action.registerCount = registerCount;
+			action.preloadParent = preloadParent;
+			action.preloadRoot = preloadRoot;
+			action.preloadSuper = preloadSuper;
+			action.preloadArguments = preloadArguments;
+			action.preloadThis = preloadThis;
+			action.preloadGlobal = preloadGlobal;
+			action.suppressSuper = suppressSuper;
+			action.suppressArguments = suppressArguments;
+			action.suppressThis = suppressThis;
+			return action;
+		}
+		
+		override public function toString(indent:uint = 0):String {
 			var str:String = "[ActionDefineFunction2] " + 
 				((functionName == null || functionName.length == 0) ? "<anonymous>" : functionName) +
 				"(" + functionParams.join(", ") + "), ";

@@ -45,6 +45,12 @@
 			data.writeBytes(body);
 		}
 		
+		public function clone():IDefinitionTag {
+			var tag:TagDefineSprite = new TagDefineSprite();
+			throw(new Error("Not implemented yet."));
+			return tag;
+		}
+		
 		public function get type():uint { return TYPE; }
 		public function get name():String { return "DefineSprite"; }
 		public function get version():uint { return 3; }

@@ -54,6 +54,22 @@
 			data.writeUI8(flags);
 		}
 		
+		override public function clone():IFilter {
+			var filter:FilterConvolution = new FilterConvolution(id);
+			filter.matrixX = matrixX;
+			filter.matrixY = matrixY;
+			filter.divisor = divisor;
+			filter.bias = bias;
+			var len:uint = matrixX * matrixY;
+			for (var i:uint = 0; i < len; i++) {
+				filter.matrix.push(matrix[i]);
+			}
+			filter.defaultColor = defaultColor;
+			filter.clamp = clamp;
+			filter.preserveAlpha = preserveAlpha;
+			return filter;
+		}
+		
 		override public function toString(indent:uint = 0):String {
 			var str:String = "[ConvolutionFilter] " +
 				"DefaultColor: " + ColorUtils.rgbToString(defaultColor) + ", " +

@@ -58,6 +58,21 @@
 			}
 		}
 		
+		override public function clone():SWFColorTransform {
+			var colorTransform:SWFColorTransformWithAlpha = new SWFColorTransformWithAlpha();
+			colorTransform.hasAddTerms = hasAddTerms;
+			colorTransform.hasMultTerms = hasMultTerms;
+			colorTransform.rMult = rMult;
+			colorTransform.gMult = gMult;
+			colorTransform.bMult = bMult;
+			colorTransform.aMult = aMult;
+			colorTransform.rAdd = rAdd;
+			colorTransform.gAdd = gAdd;
+			colorTransform.bAdd = bAdd;
+			colorTransform.aAdd = aAdd;
+			return colorTransform;
+		}
+		
 		override public function toString():String {
 			return rMult + "," + gMult + "," + bMult + "," + aMult + "," + rAdd + "," + gAdd + "," + bAdd + "," + aAdd;
 		}

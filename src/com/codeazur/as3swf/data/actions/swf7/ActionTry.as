@@ -1,7 +1,7 @@
 ﻿package com.codeazur.as3swf.data.actions.swf7
 {
-	import com.codeazur.as3swf.data.actions.*;
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.data.actions.*;
 	import com.codeazur.utils.StringUtils;
 	
 	public class ActionTry extends Action implements IAction
@@ -86,7 +86,27 @@
 			write(data, body);
 		}
 		
-		public function toString(indent:uint = 0):String {
+		override public function clone():IAction {
+			var i:uint;
+			var action:ActionTry = new ActionTry(code, length);
+			action.catchInRegisterFlag = catchInRegisterFlag;
+			action.finallyBlockFlag = finallyBlockFlag;
+			action.catchBlockFlag = catchBlockFlag;
+			action.catchName = catchName;
+			action.catchRegister = catchRegister;
+			for (i = 0; i < tryBody.length; i++) {
+				action.tryBody.push(tryBody[i].clone());
+			}
+			for (i = 0; i < catchBody.length; i++) {
+				action.catchBody.push(catchBody[i].clone());
+			}
+			for (i = 0; i < finallyBody.length; i++) {
+				action.finallyBody.push(finallyBody[i].clone());
+			}
+			return action;
+		}
+		
+		override public function toString(indent:uint = 0):String {
 			var str:String = "[ActionTry] ";
 			str += (catchInRegisterFlag) ? "Register: " + catchRegister : "Name: " + catchName;
 			var i:uint;

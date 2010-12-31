@@ -26,7 +26,14 @@
 			write(data, body);
 		}
 		
-		public function toString(indent:uint = 0):String {
+		override public function clone():IAction {
+			var action:ActionGetURL = new ActionGetURL(code, length);
+			action.urlString = urlString;
+			action.targetString = targetString;
+			return action;
+		}
+		
+		override public function toString(indent:uint = 0):String {
 			return "[ActionGetURL] URL: " + urlString + ", Target: " + targetString;
 		}
 	}

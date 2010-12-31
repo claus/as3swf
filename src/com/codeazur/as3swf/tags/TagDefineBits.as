@@ -42,6 +42,16 @@
 			}
 		}
 		
+		public function clone():IDefinitionTag {
+			var tag:TagDefineBits = new TagDefineBits();
+			tag.characterId = characterId;
+			tag.bitmapType = bitmapType;
+			if (_bitmapData.length > 0) {
+				tag.bitmapData.writeBytes(_bitmapData);
+			}
+			return tag;
+		}
+		
 		protected var loader:Loader;
 		protected var onCompleteCallback:Function;
 		
@@ -67,7 +77,7 @@
 		public function toString(indent:uint = 0):String {
 			return Tag.toStringCommon(type, name, indent) +
 				"ID: " + characterId + ", " +
-				"Length: " + _bitmapData.length;
+				"BitmapLength: " + _bitmapData.length;
 		}
 	}
 }

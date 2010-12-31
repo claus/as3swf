@@ -54,6 +54,18 @@
 			data.writeBytes(body);
 		}
 		
+		public function clone():IDefinitionTag {
+			var tag:TagDefineBitsLossless = new TagDefineBitsLossless();
+			tag.characterId = characterId;
+			tag.bitmapFormat = bitmapFormat;
+			tag.bitmapWidth = bitmapWidth;
+			tag.bitmapHeight = bitmapHeight;
+			if (_zlibBitmapData.length > 0) {
+				tag.zlibBitmapData.writeBytes(_zlibBitmapData);
+			}
+			return tag;
+		}
+		
 		public function get type():uint { return TYPE; }
 		public function get name():String { return "DefineBitsLossless"; }
 		public function get version():uint { return 2; }

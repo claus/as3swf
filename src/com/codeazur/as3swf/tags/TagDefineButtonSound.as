@@ -66,6 +66,20 @@
 			data.writeBytes(body);
 		}
 		
+		public function clone():IDefinitionTag {
+			var tag:TagDefineButtonSound = new TagDefineButtonSound();
+			tag.characterId = characterId;
+			tag.buttonSoundChar0 = buttonSoundChar0;
+			tag.buttonSoundChar1 = buttonSoundChar1;
+			tag.buttonSoundChar2 = buttonSoundChar2;
+			tag.buttonSoundChar3 = buttonSoundChar3;
+			tag.buttonSoundInfo0 = buttonSoundInfo0.clone();
+			tag.buttonSoundInfo1 = buttonSoundInfo1.clone();
+			tag.buttonSoundInfo2 = buttonSoundInfo2.clone();
+			tag.buttonSoundInfo3 = buttonSoundInfo3.clone();
+			return tag;
+		}
+		
 		public function get type():uint { return TYPE; }
 		public function get name():String { return "DefineButtonSound"; }
 		public function get version():uint { return 2; }

@@ -9,7 +9,7 @@
 		public static const TYPE:uint = 82;
 		
 		public var lazyInitializeFlag:Boolean;
-		public var abcName:String;
+		public var abcName:String = "";
 		
 		protected var _bytes:ByteArray;
 		

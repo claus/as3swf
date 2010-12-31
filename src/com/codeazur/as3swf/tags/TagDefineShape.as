@@ -34,6 +34,12 @@
 			data.writeBytes(body);
 		}
 		
+		public function clone():IDefinitionTag {
+			var tag:TagDefineShape = new TagDefineShape();
+			throw(new Error("Not implemented yet."));
+			return tag;
+		}
+		
 		public function export(handler:IShapeExporter = null):void {
 			shapes.export(handler);
 		}

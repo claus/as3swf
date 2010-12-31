@@ -44,6 +44,20 @@
 			}
 		}
 		
+		override public function clone():IDefinitionTag {
+			var tag:TagDefineBitsJPEG4 = new TagDefineBitsJPEG4();
+			tag.characterId = characterId;
+			tag.bitmapType = bitmapType;
+			tag.deblockParam = deblockParam;
+			if (_bitmapData.length > 0) {
+				tag.bitmapData.writeBytes(_bitmapData);
+			}
+			if (_bitmapAlphaData.length > 0) {
+				tag.bitmapAlphaData.writeBytes(_bitmapAlphaData);
+			}
+			return tag;
+		}
+		
 		override public function get type():uint { return TYPE; }
 		override public function get name():String { return "DefineBitsJPEG4"; }
 		override public function get version():uint { return 10; }
@@ -54,7 +68,9 @@
 				"ID: " + characterId + ", " +
 				"Type: " + BitmapType.toString(bitmapType) + ", " +
 				"DeblockParam: " + deblockParam + ", " +
-				"HasAlphaData: " + (_bitmapAlphaData.length > 0);
+				"HasAlphaData: " + (_bitmapAlphaData.length > 0) + ", " +
+				((_bitmapAlphaData.length > 0) ? "BitmapAlphaLength: " + _bitmapAlphaData.length + ", " : "") +
+				"BitmapLength: " + _bitmapData.length;
 			return str;
 		}
 	}

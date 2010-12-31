@@ -31,7 +31,15 @@
 			write(data, body);
 		}
 		
-		public function toString(indent:uint = 0):String {
+		override public function clone():IAction {
+			var action:ActionPush = new ActionPush(code, length);
+			for (var i:uint = 0; i < values.length; i++) {
+				action.values.push(values[i].clone());
+			}
+			return action;
+		}
+		
+		override public function toString(indent:uint = 0):String {
 			return "[ActionPush] " + values.join(", ");
 		}
 	}

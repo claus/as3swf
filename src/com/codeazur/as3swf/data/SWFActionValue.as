@@ -56,6 +56,29 @@
 			}
 		}
 		
+		public function clone():SWFActionValue {
+			var value:SWFActionValue = new SWFActionValue();
+			switch (type) {
+				case ActionValueType.FLOAT:
+				case ActionValueType.DOUBLE:
+					value.number = number;
+					break;
+				case ActionValueType.CONSTANT_8:
+				case ActionValueType.CONSTANT_16:
+					value.constant = constant;
+					break;
+				case ActionValueType.NULL: break;
+				case ActionValueType.UNDEFINED: break;
+				case ActionValueType.STRING: value.string = string; break;
+				case ActionValueType.REGISTER: value.register = register; break;
+				case ActionValueType.BOOLEAN: value.boolean = boolean; break;
+				case ActionValueType.INTEGER: value.integer = integer; break;
+				default:
+					throw(new Error("Unknown ActionValueType: " + type));
+			}
+			return value;
+		}
+		
 		public function toString():String {
 			var str:String = "";
 			switch (type) {

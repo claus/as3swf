@@ -32,7 +32,16 @@
 			write(data, body);
 		}
 		
-		public function toString(indent:uint = 0):String {
+		override public function clone():IAction {
+			var action:ActionGetURL2 = new ActionGetURL2(code, length);
+			action.sendVarsMethod = sendVarsMethod;
+			action.reserved = reserved;
+			action.loadTargetFlag = loadTargetFlag;
+			action.loadVariablesFlag = loadVariablesFlag;
+			return action;
+		}
+		
+		override public function toString(indent:uint = 0):String {
 			return "[ActionGetURL2] " +
 				"SendVarsMethod: " + sendVarsMethod + " (" + sendVarsMethodToString() + "), " +
 				"Reserved: " + reserved + ", " +

@@ -29,6 +29,13 @@
 			data.writeBytes(body);
 		}
 		
+		public function clone():IDefinitionTag {
+			var tag:TagDefineScalingGrid = new TagDefineScalingGrid();
+			tag.characterId = characterId;
+			tag.splitter = splitter.clone();
+			return tag;
+		}
+		
 		public function get type():uint { return TYPE; }
 		public function get name():String { return "DefineScalingGrid"; }
 		public function get version():uint { return 8; }

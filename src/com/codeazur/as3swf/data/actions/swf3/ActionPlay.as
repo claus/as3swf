@@ -11,7 +11,7 @@
 			super(code, length);
 		}
 		
-		public function toString(indent:uint = 0):String {
+		override public function toString(indent:uint = 0):String {
 			return "[ActionPlay]";
 		}
 	}

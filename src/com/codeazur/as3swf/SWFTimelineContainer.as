@@ -101,7 +101,7 @@ package com.codeazur.as3swf
 		public function set tagFactory(value:ISWFTagFactory):void { _tagFactory = value; }
 		
 		public function getCharacter(characterId:uint):IDefinitionTag {
-			return dictionary[characterId] as IDefinitionTag;
+			return tags[dictionary[characterId]] as IDefinitionTag;
 		}
 		
 		public function parseTags(data:SWFData, version:uint):void {

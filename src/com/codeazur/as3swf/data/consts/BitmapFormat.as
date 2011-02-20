@@ -8,9 +8,9 @@
 		
 		public static function toString(bitmapFormat:uint):String {
 			switch(bitmapFormat) {
-				case BIT_8: return "8bit"; break;
-				case BIT_15: return "15bit"; break;
-				case BIT_24: return "24bit"; break;
+				case BIT_8: return "8 BPP"; break;
+				case BIT_15: return "15 BPP"; break;
+				case BIT_24: return "24 BPP"; break;
 				default: return "unknown"; break;
 			}
 		}

@@ -71,6 +71,8 @@ package com.codeazur.as3swf
 
 		protected var _tagFactory:ISWFTagFactory;
 
+		internal var rootTimelineContainer:SWFTimelineContainer;
+		
 		public var backgroundColor:uint = 0xffffff;
 		public var jpegTablesTag:TagJPEGTables;
 		
@@ -84,6 +86,8 @@ package com.codeazur.as3swf
 			_layers = new Vector.<Layer>();
 		
 			_tagFactory = new SWFTagFactory();
+			
+			rootTimelineContainer = this;
 			
 			enterFrameProvider = new Sprite();
 		}
@@ -101,7 +105,7 @@ package com.codeazur.as3swf
 		public function set tagFactory(value:ISWFTagFactory):void { _tagFactory = value; }
 		
 		public function getCharacter(characterId:uint):IDefinitionTag {
-			return tags[dictionary[characterId]] as IDefinitionTag;
+			return rootTimelineContainer.tags[rootTimelineContainer.dictionary[characterId]] as IDefinitionTag;
 		}
 		
 		public function parseTags(data:SWFData, version:uint):void {
@@ -170,6 +174,7 @@ package com.codeazur.as3swf
 					// itself) is TagDefineSprite (MovieClips have their own timeline).
 					// Inject the current tag factory there.
 					timelineContainer.tagFactory = tagFactory;
+					timelineContainer.rootTimelineContainer = this;
 				}
 				// Parse tag
 				tag.parse(data, tagHeader.contentLength, _tmpVersion, async);
@@ -178,6 +183,7 @@ package com.codeazur.as3swf
 				// Corrupted SWF, possible SWF exploit, or obfuscated SWF.
 				// TODO: register errors and warnings
 				trace("WARNING: parse error: " + e.message + ", Tag: " + tag.name + ", Index: " + tags.length);
+				throw(e);
 			}
 			// Register tag
 			tags.push(tag);

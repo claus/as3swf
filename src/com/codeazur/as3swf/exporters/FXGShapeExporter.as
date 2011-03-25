@@ -1,9 +1,10 @@
 package com.codeazur.as3swf.exporters
 {
 	import com.codeazur.as3swf.SWF;
+	import com.codeazur.as3swf.exporters.core.DefaultSVGShapeExporter;
 	import com.codeazur.as3swf.utils.ColorUtils;
 	import com.codeazur.utils.StringUtils;
-	
+
 	import flash.display.CapsStyle;
 	import flash.display.GradientType;
 	import flash.display.InterpolationMethod;
@@ -11,9 +12,6 @@ package com.codeazur.as3swf.exporters
 	import flash.display.LineScaleMode;
 	import flash.display.SpreadMethod;
 	import flash.geom.Matrix;
-	
-	import mx.graphics.SolidColorStroke;
-	import com.codeazur.as3swf.exporters.core.DefaultSVGShapeExporter;
 	
 	public class FXGShapeExporter extends DefaultSVGShapeExporter
 	{

@@ -192,6 +192,9 @@
 		}
 		
 		public function export(handler:IShapeExporter = null):void {
+			// Reset the flag so that shapes can be exported multiple times
+			edgeMapsCreated = false;
+			
 			// Create edge maps
 			createEdgeMaps();
 			// If no handler is passed, default to DefaultShapeExporter (does nothing)

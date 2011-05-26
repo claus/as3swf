@@ -28,8 +28,11 @@
 		protected var _lineStyles:Vector.<SWFLineStyle>;
 		protected var _referencePoint:Point;
 		
-		protected var fillEdgeMap:Dictionary;
-		protected var lineEdgeMap:Dictionary;
+		protected var fillEdgeMaps:Vector.<Dictionary>;
+		protected var lineEdgeMaps:Vector.<Dictionary>;
+		protected var currentFillEdgeMap:Dictionary;
+		protected var currentLineEdgeMap:Dictionary;
+		protected var numGroups:uint;
 		protected var coordMap:Dictionary;
 		
 		protected var unitDivisor:Number;
@@ -193,18 +196,21 @@
 		
 		public function export(handler:IShapeExporter = null):void {
 			// Reset the flag so that shapes can be exported multiple times
+			// TODO: This is a temporary bug fix. edgeMaps shouldn't need to be recreated for subsequent exports
 			edgeMapsCreated = false;
-			
 			// Create edge maps
 			createEdgeMaps();
 			// If no handler is passed, default to DefaultShapeExporter (does nothing)
 			if (handler == null) { handler = new DefaultShapeExporter(null); }
 			// Let the doc handler know that a shape export starts
 			handler.beginShape();
-			// Export fills first
-			exportFillPath(handler);
-			// Export strokes last
-			exportLinePath(handler);
+			// Export fills and strokes for each group separately
+			for (var i:int = 0; i < numGroups; i++) {
+				// Export fills first
+				exportFillPath(handler, i);
+				// Export strokes last
+				exportLinePath(handler, i);
+			}
 			// Let the doc handler know that we're done exporting a shape
 			handler.endShape();
 		}
@@ -222,8 +228,11 @@
 				var currentFillStyleIdx1:uint = 0;
 				var currentLineStyleIdx:uint = 0;
 				var subPath:Vector.<IEdge> = new Vector.<IEdge>();
-				fillEdgeMap = new Dictionary();
-				lineEdgeMap = new Dictionary();
+				numGroups = 0;
+				fillEdgeMaps = new Vector.<Dictionary>();
+				lineEdgeMaps = new Vector.<Dictionary>();
+				currentFillEdgeMap = new Dictionary();
+				currentLineEdgeMap = new Dictionary();
 				for (var i:uint = 0; i < _records.length; i++) {
 					var shapeRecord:SWFShapeRecord = _records[i];
 					switch(shapeRecord.type) {
@@ -239,22 +248,39 @@
 								appendFillStyles(_fillStyles, styleChangeRecord.fillStyles);
 								appendLineStyles(_lineStyles, styleChangeRecord.lineStyles);
 							}
-							if (styleChangeRecord.stateLineStyle) {
-								currentLineStyleIdx = styleChangeRecord.lineStyle;
-								if (currentLineStyleIdx > 0) {
-									currentLineStyleIdx += lineStyleIdxOffset;
+							// Check if all styles are reset to 0.
+							// This (probably) means that a new group starts with the next record
+							if (styleChangeRecord.stateLineStyle && styleChangeRecord.lineStyle == 0 &&
+								styleChangeRecord.stateFillStyle0 && styleChangeRecord.fillStyle0 == 0 &&
+								styleChangeRecord.stateFillStyle1 && styleChangeRecord.fillStyle1 == 0) {
+									cleanEdgeMap(currentFillEdgeMap);
+									cleanEdgeMap(currentLineEdgeMap);
+									fillEdgeMaps.push(currentFillEdgeMap);
+									lineEdgeMaps.push(currentLineEdgeMap);
+									currentFillEdgeMap = new Dictionary();
+									currentLineEdgeMap = new Dictionary();
+									currentLineStyleIdx = 0;
+									currentFillStyleIdx0 = 0;
+									currentFillStyleIdx1 = 0;
+									numGroups++;
+							} else {
+								if (styleChangeRecord.stateLineStyle) {
+									currentLineStyleIdx = styleChangeRecord.lineStyle;
+									if (currentLineStyleIdx > 0) {
+										currentLineStyleIdx += lineStyleIdxOffset;
+									}
 								}
-							}
-							if (styleChangeRecord.stateFillStyle0) {
-								currentFillStyleIdx0 = styleChangeRecord.fillStyle0;
-								if (currentFillStyleIdx0 > 0) {
-									currentFillStyleIdx0 += fillStyleIdxOffset;
+								if (styleChangeRecord.stateFillStyle0) {
+									currentFillStyleIdx0 = styleChangeRecord.fillStyle0;
+									if (currentFillStyleIdx0 > 0) {
+										currentFillStyleIdx0 += fillStyleIdxOffset;
+									}
 								}
-							}
-							if (styleChangeRecord.stateFillStyle1) {
-								currentFillStyleIdx1 = styleChangeRecord.fillStyle1;
-								if (currentFillStyleIdx1 > 0) {
-									currentFillStyleIdx1 += fillStyleIdxOffset;
+								if (styleChangeRecord.stateFillStyle1) {
+									currentFillStyleIdx1 = styleChangeRecord.fillStyle1;
+									if (currentFillStyleIdx1 > 0) {
+										currentFillStyleIdx1 += fillStyleIdxOffset;
+									}
 								}
 							}
 							if (styleChangeRecord.stateMoveTo) {
@@ -292,39 +318,41 @@
 						case SWFShapeRecord.TYPE_END:
 							// We're done. Process the last subpath, if any
 							processSubPath(subPath, currentLineStyleIdx, currentFillStyleIdx0, currentFillStyleIdx1);
+							cleanEdgeMap(currentFillEdgeMap);
+							cleanEdgeMap(currentLineEdgeMap);
+							fillEdgeMaps.push(currentFillEdgeMap);
+							lineEdgeMaps.push(currentLineEdgeMap);
+							numGroups++;
 							break;
 					}
 				}
-				cleanEdgeMap(fillEdgeMap);
-				cleanEdgeMap(lineEdgeMap);
 				edgeMapsCreated = true;
 			}
 		}
 		
 		protected function processSubPath(subPath:Vector.<IEdge>, lineStyleIdx:uint, fillStyleIdx0:uint, fillStyleIdx1:uint):void {
 			var path:Vector.<IEdge>;
-			var hasDuplicates:Boolean = (fillStyleIdx0 != 0 && fillStyleIdx1 != 0);
 			if (fillStyleIdx0 != 0) {
-				path = fillEdgeMap[fillStyleIdx0] as Vector.<IEdge>;
-				if(path == null) { path = fillEdgeMap[fillStyleIdx0] = new Vector.<IEdge>(); }
+				path = currentFillEdgeMap[fillStyleIdx0] as Vector.<IEdge>;
+				if(path == null) { path = currentFillEdgeMap[fillStyleIdx0] = new Vector.<IEdge>(); }
 				for (var j:int = subPath.length - 1; j >= 0; j--) {
 					path.push(subPath[j].reverseWithNewFillStyle(fillStyleIdx0));
 				}
 			}
 			if (fillStyleIdx1 != 0) {
-				path = fillEdgeMap[fillStyleIdx1] as Vector.<IEdge>;
-				if(path == null) { path = fillEdgeMap[fillStyleIdx1] = new Vector.<IEdge>(); }
+				path = currentFillEdgeMap[fillStyleIdx1] as Vector.<IEdge>;
+				if(path == null) { path = currentFillEdgeMap[fillStyleIdx1] = new Vector.<IEdge>(); }
 				appendEdges(path, subPath);
 			}
 			if (lineStyleIdx != 0) {
-				path = lineEdgeMap[lineStyleIdx] as Vector.<IEdge>;
-				if(path == null) { path = lineEdgeMap[lineStyleIdx] = new Vector.<IEdge>(); }
+				path = currentLineEdgeMap[lineStyleIdx] as Vector.<IEdge>;
+				if(path == null) { path = currentLineEdgeMap[lineStyleIdx] = new Vector.<IEdge>(); }
 				appendEdges(path, subPath);
 			}
 		}
 		
-		protected function exportFillPath(handler:IShapeExporter):void {
-			var path:Vector.<IEdge> = createPathFromEdgeMap(fillEdgeMap);
+		protected function exportFillPath(handler:IShapeExporter, groupIndex:uint):void {
+			var path:Vector.<IEdge> = createPathFromEdgeMap(fillEdgeMaps[groupIndex]);
 			var pos:Point = new Point(Number.MAX_VALUE, Number.MAX_VALUE);
 			var fillStyleIdx:uint = uint.MAX_VALUE;
 			if(path.length > 0) {
@@ -405,8 +433,8 @@
 			}
 		}
 		
-		protected function exportLinePath(handler:IShapeExporter):void {
-			var path:Vector.<IEdge> = createPathFromEdgeMap(lineEdgeMap);
+		protected function exportLinePath(handler:IShapeExporter, groupIndex:uint):void {
+			var path:Vector.<IEdge> = createPathFromEdgeMap(lineEdgeMaps[groupIndex]);
 			var pos:Point = new Point(Number.MAX_VALUE, Number.MAX_VALUE);
 			var lineStyleIdx:uint = uint.MAX_VALUE;
 			var lineStyle:SWFLineStyle;

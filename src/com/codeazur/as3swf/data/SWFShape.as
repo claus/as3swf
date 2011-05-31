@@ -400,9 +400,9 @@
 								case 0x42:
 								case 0x43:
 									// Bitmap fill
-									matrix = fillStyle.bitmapMatrix.matrix.clone();
-									matrix.tx /= 20;
-									matrix.ty /= 20;
+									var m:SWFMatrix = fillStyle.bitmapMatrix;
+									matrix = new Matrix();
+									matrix.createBox(m.xscale / 20, m.yscale / 20, m.rotation, m.translateX / 20, m.translateY / 20);
 									handler.beginBitmapFill(
 										fillStyle.bitmapId,
 										matrix,

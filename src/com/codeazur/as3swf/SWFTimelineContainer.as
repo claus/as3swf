@@ -105,7 +105,11 @@ package com.codeazur.as3swf
 		public function set tagFactory(value:ISWFTagFactory):void { _tagFactory = value; }
 		
 		public function getCharacter(characterId:uint):IDefinitionTag {
-			return rootTimelineContainer.tags[rootTimelineContainer.dictionary[characterId]] as IDefinitionTag;
+			var tagIndex:int = rootTimelineContainer.dictionary[characterId];
+			if(tagIndex >= 0 && tagIndex < rootTimelineContainer.tags.length) {
+				return rootTimelineContainer.tags[tagIndex] as IDefinitionTag;
+			}
+			return null;
 		}
 		
 		public function parseTags(data:SWFData, version:uint):void {
@@ -387,7 +391,6 @@ package com.codeazur.as3swf
 
 			depthsAvailable.sort(Array.NUMERIC);
 
-			var curClipDepth:uint = 0;
 			for(i = 0; i < depthsAvailable.length; i++) {
 				var layer:Layer = new Layer(depthsAvailable[i], frames.length);
 				var frameIndices:Array = depths[depthsAvailable[i].toString()];

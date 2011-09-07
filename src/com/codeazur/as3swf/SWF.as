@@ -1,11 +1,14 @@
 ﻿package com.codeazur.as3swf
 {
 	import com.codeazur.as3swf.data.SWFRectangle;
-	import com.codeazur.as3swf.events.SWFEvent;
-	
-	import flash.utils.ByteArray;
+	import com.codeazur.as3swf.events.SWFParsingEvent;
+import com.codeazur.as3swf.events.SWFPublishEvent;
+
+import flash.events.Event;
+
+import flash.utils.ByteArray;
 	import flash.utils.IDataOutput;
-	
+
 	public class SWF extends SWFTimelineContainer
 	{
 		public var version:int;
@@ -60,7 +63,7 @@
 		public function parseAsync(data:SWFData):void {
 			bytes = data;
 			parseHeader();
-			if(dispatchEvent(new SWFEvent(SWFEvent.HEADER, data, false, true))) {
+			if(dispatchEvent(new SWFParsingEvent(SWFParsingEvent.HEADER, data, false, true))) {
 				parseTagsAsync(data, version);
 			}
 		}
@@ -74,7 +77,15 @@
 		}
 		
 		public function publishAsync(ba:ByteArray):void {
-			// TODO
+			var data:SWFData = new SWFData();
+			publishHeader(data);
+			publishTagsAsync(data, version);
+			addEventListener(SWFPublishEvent.TAGS_PUBLISHED, function(event:SWFPublishEvent):void {
+				removeEventListener(SWFPublishEvent.TAGS_PUBLISHED, arguments.callee);
+				publishFinalize(data);
+				ba.writeBytes(data);
+				dispatchEvent(new SWFPublishEvent(SWFPublishEvent.PUBLISH_COMPLETE, 0, 0));
+			});
 		}
 		
 		protected function parseHeader():void {
@@ -116,7 +127,7 @@
 			data.writeFIXED8(frameRate);
 			data.writeUI16(frameCount); // TODO: get the real number of frames from the tags
 		}
-		
+
 		protected function publishFinalize(data:SWFData):void {
 			fileLength = fileLengthCompressed = data.length;
 			if (compressed) {
@@ -129,7 +140,7 @@
 			data.writeUI32(fileLength);
 			data.position = 0;
 		}
-		
+
 		override public function toString(indent:uint = 0):String {
 			return "[SWF]\n" +
 				"  Header:\n" +

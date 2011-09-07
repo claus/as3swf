@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <repositories>
+        <repository>
+            <id>sonatype</id>
+            <url>http://repository.sonatype.org/content/groups/flexgroup/</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>sonatype</id>
+            <url>http://repository.sonatype.org/content/groups/flexgroup/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <groupId>com.codeazur</groupId>
+    <artifactId>as3swf</artifactId>
+    <version>1.1-yelbota</version>
+    <packaging>swc</packaging>
+
+    <properties>
+        <flex.sdk.version>4.5.1.21328</flex.sdk.version>
+        <flexmojos.version>4.0-beta-7</flexmojos.version>
+	<flashplayer.version>10.2</flashplayer.version>
+    </properties>
+
+    <build>
+        <sourceDirectory>src</sourceDirectory>
+        <plugins>
+            <plugin>
+                <groupId>org.sonatype.flexmojos</groupId>
+                <artifactId>flexmojos-maven-plugin</artifactId>
+                <version>${flexmojos.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <storepass/>
+                    <filesToTrust>
+                        <file>${build.outputDirectory}/${build.finalName}</file>
+                    </filesToTrust>
+                    <sourceFile>Main.as</sourceFile>
+                    <targetPlayer>${flashplayer.version}</targetPlayer>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.adobe.flex</groupId>
+                        <artifactId>compiler</artifactId>
+                        <version>${flex.sdk.version}</version>
+                        <type>pom</type>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>playerglobal</artifactId>
+            <version>${flex.sdk.version}</version>
+            <classifier>${flashplayer.version}</classifier>
+            <scope>provided</scope>
+            <type>swc</type>
+        </dependency>
+    </dependencies>
+
+    <distributionManagement>
+        <repository>
+	    <id>mercurail.local</id>
+	    <url>file://repository</url>
+        </repository>
+    </distributionManagement>
+</project>

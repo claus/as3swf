@@ -6,17 +6,15 @@ package com.codeazur.as3swf
 	import com.codeazur.as3swf.data.SWFScene;
 	import com.codeazur.as3swf.data.consts.SoundCompression;
 	import com.codeazur.as3swf.events.SWFErrorEvent;
-	import com.codeazur.as3swf.events.SWFParsingEvent;
 	import com.codeazur.as3swf.events.SWFEventDispatcher;
-import com.codeazur.as3swf.events.SWFPublishEvent;
-import com.codeazur.as3swf.factories.ISWFTagFactory;
+	import com.codeazur.as3swf.events.SWFProgressEvent;
+	import com.codeazur.as3swf.factories.ISWFTagFactory;
 	import com.codeazur.as3swf.factories.SWFTagFactory;
 	import com.codeazur.as3swf.tags.IDefinitionTag;
 	import com.codeazur.as3swf.tags.IDisplayListTag;
 	import com.codeazur.as3swf.tags.ITag;
 	import com.codeazur.as3swf.tags.TagDefineMorphShape;
 	import com.codeazur.as3swf.tags.TagDefineSceneAndFrameLabelData;
-	import com.codeazur.as3swf.tags.TagDefineSprite;
 	import com.codeazur.as3swf.tags.TagEnd;
 	import com.codeazur.as3swf.tags.TagFrameLabel;
 	import com.codeazur.as3swf.tags.TagJPEGTables;
@@ -128,7 +126,7 @@ import com.codeazur.as3swf.factories.ISWFTagFactory;
 		
 		protected function parseTagsAsyncHandler(event:Event):void {
 			enterFrameProvider.removeEventListener(Event.ENTER_FRAME, parseTagsAsyncHandler);
-			if(dispatchEvent(new SWFParsingEvent(SWFParsingEvent.PROGRESS, _tmpData, false, true))) {
+			if(dispatchEvent(new SWFProgressEvent(SWFProgressEvent.PROGRESS, _tmpData.position, _tmpData.length, false, true))) {
 				parseTagsAsyncInternal();
 			}
 		}
@@ -146,7 +144,8 @@ import com.codeazur.as3swf.factories.ISWFTagFactory;
 			if(eof) {
 				dispatchEvent(new SWFErrorEvent(SWFErrorEvent.ERROR, SWFErrorEvent.REASON_EOF));
 			} else {
-				dispatchEvent(new SWFParsingEvent(SWFParsingEvent.COMPLETE, _tmpData));
+				dispatchEvent(new SWFProgressEvent(SWFProgressEvent.PROGRESS, _tmpData.position, _tmpData.length));
+				dispatchEvent(new SWFProgressEvent(SWFProgressEvent.COMPLETE, _tmpData.position, _tmpData.length));
 			}
 		}
 		
@@ -233,7 +232,7 @@ import com.codeazur.as3swf.factories.ISWFTagFactory;
 
 		protected function publishTagsAsyncHandler(event:Event):void {
 			enterFrameProvider.removeEventListener(Event.ENTER_FRAME, publishTagsAsyncHandler);
-			if(dispatchEvent(new SWFPublishEvent(SWFPublishEvent.PUBLISHING_PROGRESS, _tmpTagIterator, tags.length))) {
+			if(dispatchEvent(new SWFProgressEvent(SWFProgressEvent.PROGRESS, _tmpTagIterator, tags.length))) {
 				publishTagsAsyncInternal();
 			}
 		}
@@ -241,7 +240,6 @@ import com.codeazur.as3swf.factories.ISWFTagFactory;
 		protected function publishTagsAsyncInternal():void {
 			var tag:ITag;
 			var time:int = getTimer();
-
 			do {
 				tag = tags[_tmpTagIterator];
 				publishTag(_tmpData, tag, tagsRaw[_tmpTagIterator], _tmpVersion);
@@ -252,8 +250,8 @@ import com.codeazur.as3swf.factories.ISWFTagFactory;
 				}
 			}
 			while (tag.type != TagEnd.TYPE);
-
-			dispatchEvent(new SWFPublishEvent(SWFPublishEvent.TAGS_PUBLISHED, 0, 0));
+			dispatchEvent(new SWFProgressEvent(SWFProgressEvent.PROGRESS, _tmpTagIterator, tags.length));
+			dispatchEvent(new SWFProgressEvent(SWFProgressEvent.COMPLETE, _tmpTagIterator, tags.length));
 		}
 
 		public function publishTag(data:SWFData, tag:ITag, rawTag:SWFRawTag, version:uint):void {

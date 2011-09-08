@@ -1,13 +1,9 @@
 ﻿package com.codeazur.as3swf
 {
 	import com.codeazur.as3swf.data.SWFRectangle;
-	import com.codeazur.as3swf.events.SWFParsingEvent;
-import com.codeazur.as3swf.events.SWFPublishEvent;
-
-import flash.events.Event;
-
-import flash.utils.ByteArray;
-	import flash.utils.IDataOutput;
+	import com.codeazur.as3swf.events.SWFProgressEvent;
+	
+	import flash.utils.ByteArray;
 
 	public class SWF extends SWFTimelineContainer
 	{
@@ -63,9 +59,7 @@ import flash.utils.ByteArray;
 		public function parseAsync(data:SWFData):void {
 			bytes = data;
 			parseHeader();
-			if(dispatchEvent(new SWFParsingEvent(SWFParsingEvent.HEADER, data, false, true))) {
-				parseTagsAsync(data, version);
-			}
+			parseTagsAsync(data, version);
 		}
 		
 		public function publish(ba:ByteArray):void {
@@ -80,12 +74,11 @@ import flash.utils.ByteArray;
 			var data:SWFData = new SWFData();
 			publishHeader(data);
 			publishTagsAsync(data, version);
-			addEventListener(SWFPublishEvent.TAGS_PUBLISHED, function(event:SWFPublishEvent):void {
-				removeEventListener(SWFPublishEvent.TAGS_PUBLISHED, arguments.callee);
+			addEventListener(SWFProgressEvent.COMPLETE, function(event:SWFProgressEvent):void {
+				removeEventListener(SWFProgressEvent.COMPLETE, arguments.callee);
 				publishFinalize(data);
 				ba.writeBytes(data);
-				dispatchEvent(new SWFPublishEvent(SWFPublishEvent.PUBLISH_COMPLETE, 0, 0));
-			});
+			}, false, int.MAX_VALUE);
 		}
 		
 		protected function parseHeader():void {

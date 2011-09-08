@@ -6,8 +6,8 @@ package com.codeazur.as3swf
 	import com.codeazur.as3swf.data.SWFScene;
 	import com.codeazur.as3swf.data.consts.SoundCompression;
 	import com.codeazur.as3swf.events.SWFErrorEvent;
-	import com.codeazur.as3swf.events.SWFEvent;
 	import com.codeazur.as3swf.events.SWFEventDispatcher;
+	import com.codeazur.as3swf.events.SWFProgressEvent;
 	import com.codeazur.as3swf.factories.ISWFTagFactory;
 	import com.codeazur.as3swf.factories.SWFTagFactory;
 	import com.codeazur.as3swf.tags.IDefinitionTag;
@@ -15,7 +15,6 @@ package com.codeazur.as3swf
 	import com.codeazur.as3swf.tags.ITag;
 	import com.codeazur.as3swf.tags.TagDefineMorphShape;
 	import com.codeazur.as3swf.tags.TagDefineSceneAndFrameLabelData;
-	import com.codeazur.as3swf.tags.TagDefineSprite;
 	import com.codeazur.as3swf.tags.TagEnd;
 	import com.codeazur.as3swf.tags.TagFrameLabel;
 	import com.codeazur.as3swf.tags.TagJPEGTables;
@@ -68,6 +67,7 @@ package com.codeazur.as3swf
 
 		protected var _tmpData:SWFData;
 		protected var _tmpVersion:uint;
+		protected var _tmpTagIterator:int = 0;
 
 		protected var _tagFactory:ISWFTagFactory;
 
@@ -75,7 +75,7 @@ package com.codeazur.as3swf
 		
 		public var backgroundColor:uint = 0xffffff;
 		public var jpegTablesTag:TagJPEGTables;
-		
+
 		public function SWFTimelineContainer()
 		{
 			_tags = new Vector.<ITag>();
@@ -126,7 +126,7 @@ package com.codeazur.as3swf
 		
 		protected function parseTagsAsyncHandler(event:Event):void {
 			enterFrameProvider.removeEventListener(Event.ENTER_FRAME, parseTagsAsyncHandler);
-			if(dispatchEvent(new SWFEvent(SWFEvent.PROGRESS, _tmpData, false, true))) {
+			if(dispatchEvent(new SWFProgressEvent(SWFProgressEvent.PROGRESS, _tmpData.position, _tmpData.length, false, true))) {
 				parseTagsAsyncInternal();
 			}
 		}
@@ -144,7 +144,8 @@ package com.codeazur.as3swf
 			if(eof) {
 				dispatchEvent(new SWFErrorEvent(SWFErrorEvent.ERROR, SWFErrorEvent.REASON_EOF));
 			} else {
-				dispatchEvent(new SWFEvent(SWFEvent.COMPLETE, _tmpData));
+				dispatchEvent(new SWFProgressEvent(SWFProgressEvent.PROGRESS, _tmpData.position, _tmpData.length));
+				dispatchEvent(new SWFProgressEvent(SWFProgressEvent.COMPLETE, _tmpData.position, _tmpData.length));
 			}
 		}
 		
@@ -215,20 +216,54 @@ package com.codeazur.as3swf
 				buildLayers();
 			}
 		}
-		
+
 		public function publishTags(data:SWFData, version:uint):void {
-			// TODO: asyncronous publishing
 			for (var i:uint = 0; i < tags.length; i++) {
-				try {
-					tags[i].publish(data, version);
-				}
-				catch (e:Error) {
-					trace("WARNING: publish error: " + e.message + " (tag: " + tags[i].name + ", index: " + i + ")");
-					tagsRaw[i].publish(data);
-				}
+				publishTag(data, tags[i], tagsRaw[i], version);
 			}
 		}
-		
+
+		public function publishTagsAsync(data:SWFData, version:uint):void {
+			_tmpData = data;
+			_tmpVersion = version;
+			_tmpTagIterator = 0;
+			enterFrameProvider.addEventListener(Event.ENTER_FRAME, publishTagsAsyncHandler);
+		}
+
+		protected function publishTagsAsyncHandler(event:Event):void {
+			enterFrameProvider.removeEventListener(Event.ENTER_FRAME, publishTagsAsyncHandler);
+			if(dispatchEvent(new SWFProgressEvent(SWFProgressEvent.PROGRESS, _tmpTagIterator, tags.length))) {
+				publishTagsAsyncInternal();
+			}
+		}
+
+		protected function publishTagsAsyncInternal():void {
+			var tag:ITag;
+			var time:int = getTimer();
+			do {
+				tag = tags[_tmpTagIterator];
+				publishTag(_tmpData, tag, tagsRaw[_tmpTagIterator], _tmpVersion);
+				_tmpTagIterator++;
+				if((getTimer() - time) > TIMEOUT) {
+					enterFrameProvider.addEventListener(Event.ENTER_FRAME, publishTagsAsyncHandler);
+					return;
+				}
+			}
+			while (tag.type != TagEnd.TYPE);
+			dispatchEvent(new SWFProgressEvent(SWFProgressEvent.PROGRESS, _tmpTagIterator, tags.length));
+			dispatchEvent(new SWFProgressEvent(SWFProgressEvent.COMPLETE, _tmpTagIterator, tags.length));
+		}
+
+		public function publishTag(data:SWFData, tag:ITag, rawTag:SWFRawTag, version:uint):void {
+			try {
+				tag.publish(data, version);
+			}
+			catch (e:Error) {
+				trace("WARNING: publish error: " + e.message + " (tag: " + tag.name + ")");
+				rawTag.publish(data);
+			}
+		}
+
 		protected function processTag(tag:ITag):void {
 			var currentTagIndex:uint = tags.length - 1;
 			if(tag is IDefinitionTag) {

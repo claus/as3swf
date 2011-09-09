@@ -218,8 +218,12 @@ package com.codeazur.as3swf
 		}
 
 		public function publishTags(data:SWFData, version:uint):void {
+			var tag:ITag;
+			var tagRaw:SWFRawTag;
 			for (var i:uint = 0; i < tags.length; i++) {
-				publishTag(data, tags[i], tagsRaw[i], version);
+				tag = tags[i];
+				tagRaw = (i < tagsRaw.length) ? tagsRaw[i] : null;
+				publishTag(data, tag, tagRaw, version);
 			}
 		}
 
@@ -239,10 +243,12 @@ package com.codeazur.as3swf
 
 		protected function publishTagsAsyncInternal():void {
 			var tag:ITag;
+			var tagRaw:SWFRawTag;
 			var time:int = getTimer();
 			do {
-				tag = tags[_tmpTagIterator];
-				publishTag(_tmpData, tag, tagsRaw[_tmpTagIterator], _tmpVersion);
+				tag = (_tmpTagIterator < tags.length) ? tags[_tmpTagIterator] : null;
+				tagRaw = (_tmpTagIterator < tagsRaw.length) ? tagsRaw[_tmpTagIterator] : null;
+				publishTag(_tmpData, tag, tagRaw, _tmpVersion);
 				_tmpTagIterator++;
 				if((getTimer() - time) > TIMEOUT) {
 					enterFrameProvider.addEventListener(Event.ENTER_FRAME, publishTagsAsyncHandler);
@@ -260,7 +266,11 @@ package com.codeazur.as3swf
 			}
 			catch (e:Error) {
 				trace("WARNING: publish error: " + e.message + " (tag: " + tag.name + ")");
-				rawTag.publish(data);
+				if(rawTag) {
+					rawTag.publish(data);
+				} else {
+					trace("FATAL: publish error: No raw tag fallback");
+				}
 			}
 		}
 

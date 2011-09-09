@@ -77,6 +77,7 @@
 			addEventListener(SWFProgressEvent.COMPLETE, function(event:SWFProgressEvent):void {
 				removeEventListener(SWFProgressEvent.COMPLETE, arguments.callee);
 				publishFinalize(data);
+				ba.length = 0;
 				ba.writeBytes(data);
 			}, false, int.MAX_VALUE);
 		}

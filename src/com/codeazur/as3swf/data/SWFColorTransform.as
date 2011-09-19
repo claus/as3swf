@@ -1,5 +1,6 @@
 ﻿package com.codeazur.as3swf.data
 {
+	import flash.geom.ColorTransform;
 	import com.codeazur.as3swf.SWFData;
 	
 	public class SWFColorTransform
@@ -21,6 +22,10 @@
 			if (data != null) {
 				parse(data);
 			}
+		}
+		
+		public function get colorTransform():ColorTransform {
+			return new ColorTransform(rMult, gMult, bMult, aMult, rAdd, gAdd, bAdd, aAdd);
 		}
 		
 		public function parse(data:SWFData):void {

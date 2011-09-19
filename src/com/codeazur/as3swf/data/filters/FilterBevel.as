@@ -2,7 +2,10 @@
 {
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.utils.ColorUtils;
-	import com.codeazur.utils.StringUtils;
+
+	import flash.filters.BevelFilter;
+	import flash.filters.BitmapFilter;
+	import flash.filters.BitmapFilterType;
 	
 	public class FilterBevel extends Filter implements IFilter
 	{
@@ -21,6 +24,29 @@
 		
 		public function FilterBevel(id:uint) {
 			super(id);
+		}
+		
+		override public function get filter():BitmapFilter {
+			var filterType:String;
+			if(onTop) {
+				filterType = BitmapFilterType.FULL;
+			} else {
+				filterType = (innerShadow) ? BitmapFilterType.INNER : BitmapFilterType.OUTER;
+			}
+			return new BevelFilter(
+				distance,
+				angle,
+				ColorUtils.rgb(highlightColor),
+				ColorUtils.alpha(highlightColor),
+				ColorUtils.rgb(shadowColor),
+				ColorUtils.alpha(shadowColor),
+				blurX,
+				blurY,
+				strength,
+				passes,
+				filterType,
+				knockout
+			);
 		}
 		
 		override public function parse(data:SWFData):void {

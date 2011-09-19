@@ -1,6 +1,8 @@
 ﻿package com.codeazur.as3swf.data.filters
 {
 	import com.codeazur.as3swf.SWFData;
+
+	import flash.filters.BitmapFilter;
 	
 	public class Filter implements IFilter
 	{
@@ -11,6 +13,10 @@
 		}
 
 		public function get id():uint { return _id; }
+		
+		public function get filter():BitmapFilter {
+			throw(new Error("Implement in subclasses!"));
+		}
 		
 		public function parse(data:SWFData):void {
 			throw(new Error("Implement in subclasses!"));

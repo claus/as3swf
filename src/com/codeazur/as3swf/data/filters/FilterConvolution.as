@@ -3,6 +3,9 @@
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.utils.ColorUtils;
 	import com.codeazur.utils.StringUtils;
+
+	import flash.filters.BitmapFilter;
+	import flash.filters.ConvolutionFilter;
 	
 	public class FilterConvolution extends Filter implements IFilter
 	{
@@ -23,6 +26,24 @@
 		
 		public function get matrix():Vector.<Number> { return _matrix; }
 
+		override public function get filter():BitmapFilter {
+			var convolutionMatrix:Array = [];
+			for (var i:int = 0; i < _matrix.length; i++) {
+				convolutionMatrix.push(_matrix[i]);
+			}
+			return new ConvolutionFilter(
+				matrixX,
+				matrixY,
+				convolutionMatrix,
+				divisor,
+				bias,
+				preserveAlpha,
+				clamp,
+				ColorUtils.rgb(defaultColor),
+				ColorUtils.alpha(defaultColor)
+			);
+		}
+		
 		override public function parse(data:SWFData):void {
 			matrixX = data.readUI8();
 			matrixY = data.readUI8();

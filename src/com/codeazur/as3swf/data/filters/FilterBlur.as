@@ -1,6 +1,9 @@
 ﻿package com.codeazur.as3swf.data.filters
 {
 	import com.codeazur.as3swf.SWFData;
+
+	import flash.filters.BitmapFilter;
+	import flash.filters.BlurFilter;
 	
 	public class FilterBlur extends Filter implements IFilter
 	{
@@ -10,6 +13,14 @@
 		
 		public function FilterBlur(id:uint) {
 			super(id);
+		}
+		
+		override public function get filter():BitmapFilter {
+			return new BlurFilter(
+				blurX,
+				blurY,
+				passes
+			);
 		}
 		
 		override public function parse(data:SWFData):void {

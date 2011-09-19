@@ -2,6 +2,9 @@
 {
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.utils.ColorUtils;
+
+	import flash.filters.BitmapFilter;
+	import flash.filters.DropShadowFilter;
 	
 	public class FilterDropShadow extends Filter implements IFilter
 	{
@@ -18,6 +21,21 @@
 		
 		public function FilterDropShadow(id:uint) {
 			super(id);
+		}
+		
+		override public function get filter():BitmapFilter {
+			return new DropShadowFilter(
+				distance,
+				angle,
+				ColorUtils.rgb(dropShadowColor),
+				ColorUtils.alpha(dropShadowColor),
+				blurX,
+				blurY,
+				strength,
+				passes,
+				innerShadow,
+				knockout
+			);
 		}
 		
 		override public function parse(data:SWFData):void {

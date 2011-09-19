@@ -2,6 +2,9 @@
 {
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.utils.StringUtils;
+
+	import flash.filters.BitmapFilter;
+	import flash.filters.ColorMatrixFilter;
 	
 	public class FilterColorMatrix extends Filter implements IFilter
 	{
@@ -14,6 +17,15 @@
 		
 		public function get colorMatrix():Vector.<Number> { return _colorMatrix; }
 
+		override public function get filter():BitmapFilter {
+			return new ColorMatrixFilter([
+				colorMatrix[0], colorMatrix[1], colorMatrix[2], colorMatrix[3], colorMatrix[4], 
+				colorMatrix[5], colorMatrix[6], colorMatrix[7], colorMatrix[8], colorMatrix[9], 
+				colorMatrix[10], colorMatrix[11], colorMatrix[12], colorMatrix[13], colorMatrix[14], 
+				colorMatrix[15], colorMatrix[16], colorMatrix[17], colorMatrix[18], colorMatrix[19] 
+			]);
+		}
+		
 		override public function parse(data:SWFData):void {
 			for (var i:uint = 0; i < 20; i++) {
 				colorMatrix.push(data.readFLOAT());

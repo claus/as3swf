@@ -2,6 +2,9 @@
 {
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.utils.ColorUtils;
+
+	import flash.filters.BitmapFilter;
+	import flash.filters.GlowFilter;
 	
 	public class FilterGlow extends Filter implements IFilter
 	{
@@ -16,6 +19,19 @@
 		
 		public function FilterGlow(id:uint) {
 			super(id);
+		}
+		
+		override public function get filter():BitmapFilter {
+			return new GlowFilter(
+				ColorUtils.rgb(glowColor),
+				ColorUtils.alpha(glowColor),
+				blurX,
+				blurY,
+				strength,
+				passes,
+				innerGlow,
+				knockout
+			);
 		}
 		
 		override public function parse(data:SWFData):void {

@@ -3,12 +3,18 @@
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.utils.ColorUtils;
 	import com.codeazur.utils.StringUtils;
+
+	import flash.filters.BitmapFilter;
+	import flash.filters.BitmapFilterType;
+	import flash.filters.GradientGlowFilter;
 	
 	public class FilterGradientGlow extends Filter implements IFilter
 	{
 		public var numColors:uint;
 		public var blurX:Number;
 		public var blurY:Number;
+		public var angle:Number;
+		public var distance:Number;
 		public var strength:Number;
 		public var innerShadow:Boolean;
 		public var knockout:Boolean;
@@ -28,6 +34,36 @@
 		public function get gradientColors():Vector.<uint> { return _gradientColors; }
 		public function get gradientRatios():Vector.<uint> { return _gradientRatios; }
 		
+		override public function get filter():BitmapFilter {
+			var gradientGlowColors:Array = [];
+			var gradientGlowAlphas:Array = [];
+			var gradientGlowRatios:Array = [];
+			for (var i:int = 0; i < numColors; i++) {
+				gradientGlowColors.push(ColorUtils.rgb(gradientColors[i]));
+				gradientGlowAlphas.push(ColorUtils.alpha(gradientColors[i]));
+				gradientGlowRatios.push(gradientRatios[i]);
+			}
+			var filterType:String;
+			if(onTop) {
+				filterType = BitmapFilterType.FULL;
+			} else {
+				filterType = (innerShadow) ? BitmapFilterType.INNER : BitmapFilterType.OUTER;
+			}
+			return new GradientGlowFilter(
+				distance,
+				angle,
+				gradientGlowColors,
+				gradientGlowAlphas,
+				gradientGlowRatios,
+				blurX,
+				blurY,
+				strength,
+				passes,
+				filterType,
+				knockout
+			);
+		}
+		
 		override public function parse(data:SWFData):void {
 			numColors = data.readUI8();
 			var i:uint;
@@ -39,6 +75,8 @@
 			}
 			blurX = data.readFIXED();
 			blurY = data.readFIXED();
+			angle = data.readFIXED();
+			distance = data.readFIXED();
 			strength = data.readFIXED8();
 			var flags:uint = data.readUI8();
 			innerShadow = ((flags & 0x80) != 0);
@@ -59,6 +97,8 @@
 			}
 			data.writeFIXED(blurX);
 			data.writeFIXED(blurY);
+			data.writeFIXED(angle);
+			data.writeFIXED(distance);
 			data.writeFIXED8(strength);
 			var flags:uint = (passes & 0x0f);
 			if(innerShadow) { flags |= 0x80; }
@@ -80,6 +120,8 @@
 			}
 			filter.blurX = blurX;
 			filter.blurY = blurY;
+			filter.angle = angle;
+			filter.distance = distance;
 			filter.strength = strength;
 			filter.passes = passes;
 			filter.innerShadow = innerShadow;
@@ -94,6 +136,8 @@
 			var str:String = "[" + filterName + "] " +
 				"BlurX: " + blurX + ", " +
 				"BlurY: " + blurY + ", " +
+				"Angle: " + angle + ", " +
+				"Distance: " + distance + ", " +
 				"Strength: " + strength + ", " +
 				"Passes: " + passes;
 			var flags:Array = [];

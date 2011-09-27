@@ -16,6 +16,62 @@ package com.codeazur.as3swf.exporters
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	
+	//
+	// Exports Shape data to a JSON format as follows (example):
+	//
+	// "shape": {
+	//   "bounds": {
+	//  	"origin": [ 0, 0],
+	//		"size": [23.35, 31.5]
+	//	 },
+	//  "groups": [{
+	// 		"fills": [{
+	// 			"fill": {
+	//				"path": [
+	//					{
+	//						"move_to": [10.95, 31]
+	//					},
+	//					{
+	//						"quadratic_curve_to": [0.25, 22.6, 0, 13.8]
+	//					},
+	//					....
+	//					....
+	//					....
+	//					{
+	//						"line_to": [10.95, 31]
+	//					}],
+	//				"fill_rgba": [0.5098039215686274, 0.5098039215686274, 0.5098039215686274, 1]
+	//			}
+	//		}],
+	//		"strokes": [{
+	//			"stroke": {
+	//				"path": [
+	//					{
+	//						"move_to": [11.45, 13.8]
+	//					},
+	//					{
+	//						"quadratic_curve_to": [16, 15.7, 22.85, 20.15]
+	//					},
+	//					....
+	//					....
+	//					....
+	//					{
+	//						"line_to": [4.3, 10.8]
+	//					}],
+	//				"line_cap": "round",
+	//				"line_join": "round",
+	//				"line_width": 0.5,
+	//				"stroke_rgba": [0, 0, 0, 0.4]
+	//			}
+	//		}]
+	//	}]
+	//	} // end shape 
+	//
+	//
+	// Gradient fills are supported
+	// Bitmap fills are not supported
+	//
+	
 	public class JSONShapeExporter extends DefaultShapeExporter
 	{
 		// state
@@ -32,6 +88,9 @@ package com.codeazur.as3swf.exporters
 		protected var fills:Vector.<String>;
 		protected var strokes:Vector.<String>;
 		
+		protected var groups:Array;
+		protected var groupIndex:uint;
+				
 		protected var geometry:Array;
 		protected var prefix:Array;
 		protected var suffix:Array;
@@ -66,31 +125,22 @@ package com.codeazur.as3swf.exporters
 			return output.join(lineSep);
 		}
 		
-		override public function beginShape():void {
+		override public function beginShape():void {			
 			var shapeInfo:Array;
 			shapeInfo = ['"bounds": ' + CGRectJSONFromSWFRect(_tag.shapeBounds)];
 			_js += '{ "shape": {' + shapeInfo.join("," + lineSep) + ",";
+			
+			groups = [];
+			groupIndex = 0;
 		}
 		
 		
 		override public function beginFills():void {
 			fills = new Vector.<String>();
+			groups[groupIndex] = [];
 		}
 		
 		override public function endFills():void {
-		}
-		
-		
-		override public function beginLines():void {
-			strokes = new Vector.<String>();
-		}
-		
-		override public function endLines():void {
-			processPreviousStroke();
-		}
-		
-		
-		override public function endShape():void {
 			var i:uint;
 			var fill_lines:Array = [];
 			var stroke_lines:Array = [];
@@ -103,35 +153,72 @@ package com.codeazur.as3swf.exporters
 							'} }');
 					}
 				}
+				
+				groups[groupIndex].push('"fills": [' + fill_lines.join(',' + lineSep) + ']');
 			}
+			
+			fills = null;
+		}
+		
+		
+		override public function beginLines():void {
+			strokes = new Vector.<String>();
+		}
+		
+		override public function endLines():void {
+			processPreviousStroke();
+			
+			var i:uint;
+			var stroke_lines:Array = [];
 			
 			if (strokes != null) {
 				for (i = 0; i < strokes.length; i++) {
 					if ( strokes[i].length > 0 ) {
 						stroke_lines.push('{ "stroke": {' +
-											strokes[i] +
-											'} }');
+							strokes[i] +
+							'} }');
 					}
 				}
+				
+				if ( !groups[groupIndex] )
+					groups[groupIndex] = [];
+				
+				groups[groupIndex].push('"strokes": [' + stroke_lines.join(',' + lineSep) + ']');
 			}
 			
-			var lines:Array = [];
+			strokes = null;
 			
-			if ( fill_lines.length > 0 ) {
-				lines.push('"fills": [' + fill_lines.join(',' + lineSep) + ']');
-			}
-			
-			if ( stroke_lines.length > 0 ) {
-				lines.push('"strokes": [' + stroke_lines.join(',' + lineSep) + ']');
-			}
-			
-			// close shape
-			if ( lines.length > 0 ) {
-				_js += lines.join("," + lineSep) + "}" + lineSep + "}";
-			} else {
-				// no shape info to export
+			// increment group index
+			groupIndex++;
+		}
+		
+		
+		override public function endShape():void {
+			if ( groups.length == 0 )
+			{
+				// empty shape info => bail
 				_js = "";
+				fills = null;
+				strokes = null;
+				return;
 			}
+			
+			// print groups
+			_js += '"groups": [';
+			
+			var i:uint;
+			for ( i = 0; i < groups.length; i++ )
+			{
+				var recordSep:String = (i < (groups.length - 1)) ? "," : "";
+				var group:Array = groups[i];
+				_js += '{' + group.join(',' + lineSep) + '}' + recordSep;
+			}
+			
+			_js += ']';
+			
+			// close shape record
+			_js += "}" + lineSep + "}";
+
 			fills = null;
 			strokes = null;
 		}

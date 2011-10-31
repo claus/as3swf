@@ -15,9 +15,9 @@ package com.codeazur.as3swf
 
 		// Whether this is a keyframe or not
 		public var isKeyframe:Boolean;
-		// The index of the layer this object resides on 
+		// The index of the layer this object resides on
 		public var layer:int = -1;
-		
+
 		public function SWFFrameObject(depth:uint, characterId:uint, placedAtIndex:uint, lastModifiedAtIndex:uint = 0, isKeyframe:Boolean = false)
 		{
 			this.depth = depth;
@@ -27,11 +27,11 @@ package com.codeazur.as3swf
 			this.isKeyframe = isKeyframe;
 			this.layer = -1;
 		}
-		
+
 		public function clone():SWFFrameObject {
 			return new SWFFrameObject(depth, characterId, placedAtIndex, lastModifiedAtIndex, false);
 		}
-		
+
 		public function toString(indent:uint = 0):String {
 			var str:String = "\n" + StringUtils.repeat(indent + 2) +
 				"Depth: " + depth + (layer > -1 ? " (Layer " + layer + ")" : "") + ", " +

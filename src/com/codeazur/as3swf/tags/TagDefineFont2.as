@@ -21,8 +21,8 @@
 		public var bold:Boolean;
 		public var languageCode:uint;
 		public var fontName:String;
-		public var ascent:int;
-		public var descent:int;
+		public var ascent:uint;
+		public var descent:uint;
 		public var leading:int;
 
 		protected var _codeTable:Vector.<uint>;
@@ -71,8 +71,8 @@
 				_codeTable.push(wideCodes ? data.readUI16() : data.readUI8());
 			}
 			if (hasLayout) {
-				ascent = data.readSI16();
-				descent = data.readSI16();
+				ascent = data.readUI16();
+				descent = data.readUI16();
 				leading = data.readSI16();
 				for (i = 0; i < numGlyphs; i++) {
 					_fontAdvanceTable.push(data.readSI16());
@@ -142,8 +142,8 @@
 				}
 			}
 			if (hasLayout) {
-				body.writeSI16(ascent);
-				body.writeSI16(descent);
+				body.writeUI16(ascent);
+				body.writeUI16(descent);
 				body.writeSI16(leading);
 				for (i = 0; i < numGlyphs; i++) {
 					body.writeSI16(fontAdvanceTable[i]);

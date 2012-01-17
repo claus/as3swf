@@ -2,6 +2,7 @@
 {
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.consts.BlendMode;
+	import com.codeazur.as3swf.utils.ColorUtils;
 	import com.codeazur.utils.StringUtils;
 	
 	public class TagPlaceObject3 extends TagPlaceObject2 implements IDisplayListTag
@@ -21,13 +22,15 @@
 			hasCharacter = (flags1 & 0x02) != 0;
 			hasMove = (flags1 & 0x01) != 0;
 			var flags2:uint = data.readUI8();
+			hasBitmapBackgroundColor = (flags2 & 0x40) != 0; // Undocumented feature (SWF11)
+			hasVisibility = (flags2 & 0x20) != 0; // Undocumented feature (SWF11)
 			hasImage = (flags2 & 0x10) != 0;
 			hasClassName = (flags2 & 0x08) != 0;
 			hasCacheAsBitmap = (flags2 & 0x04) != 0;
 			hasBlendMode = (flags2 & 0x02) != 0;
 			hasFilterList = (flags2 & 0x01) != 0;
 			depth = data.readUI16();
-			if (hasClassName /*|| (hasImage && hasCharacter)*/) {
+			if (hasClassName) {
 				className = data.readString();
 			}
 			if (hasCharacter) {
@@ -63,6 +66,14 @@
 			if (hasClipActions) {
 				clipActions = data.readCLIPACTIONS(version);
 			}
+			// Undocumented feature (SWF11)
+			if (hasBitmapBackgroundColor) {
+				bitmapBackgroundColor = data.readARGB();
+			}
+			// Undocumented feature (SWF11)
+			if (hasVisibility) {
+				visibility = data.readUI8();
+			}
 		}
 		
 		override public function publish(data:SWFData, version:uint):void {
@@ -85,7 +96,7 @@
 			if (hasFilterList) { flags2 |= 0x01; }
 			body.writeUI8(flags2);
 			body.writeUI16(depth);
-			if (hasClassName /*|| (hasImage && hasCharacter)*/) {
+			if (hasClassName) {
 				body.writeString(className);
 			}
 			if (hasCharacter) {
@@ -122,6 +133,14 @@
 			if (hasClipActions) {
 				body.writeCLIPACTIONS(clipActions, version);
 			}
+			// Undocumented feature (SWF11)
+			if (hasBitmapBackgroundColor) {
+				body.writeARGB(bitmapBackgroundColor);
+			}
+			// Undocumented feature (SWF11)
+			if (hasVisibility) {
+				body.writeUI8(visibility);
+			}
 			data.writeTagHeader(type, body.length);
 			data.writeBytes(body);
 		}
@@ -143,6 +162,8 @@
 			if (hasClipDepth) { str += ", ClipDepth: " + clipDepth; }
 			if (hasBlendMode) { str += ", BlendMode: " + BlendMode.toString(blendMode); }
 			if (hasCacheAsBitmap) { str += ", CacheAsBitmap: " + bitmapCache; }
+			if (hasVisibility) { str += ", Visibility: " + visibility; }
+			if (hasBitmapBackgroundColor) { str += ", BitmapBackgroundColor: " + ColorUtils.argbToString(bitmapBackgroundColor); }
 			if (hasFilterList) {
 				str += "\n" + StringUtils.repeat(indent + 2) + "Filters:"
 				for(var i:uint = 0; i < surfaceFilterList.length; i++) {

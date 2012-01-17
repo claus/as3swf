@@ -18,6 +18,8 @@
 		public var hasMatrix:Boolean;
 		public var hasCharacter:Boolean;
 		public var hasMove:Boolean;
+		public var hasBitmapBackgroundColor:Boolean; // Undocumented feature (SWF11)
+		public var hasVisibility:Boolean; // Undocumented feature (SWF11)
 		public var hasImage:Boolean;
 		public var hasClassName:Boolean;
 		public var hasCacheAsBitmap:Boolean;
@@ -28,7 +30,7 @@
 		public var depth:uint;
 		public var matrix:SWFMatrix;
 		public var colorTransform:SWFColorTransform;
-
+		
 		// Forward declarations for TagPlaceObject2
 		public var ratio:uint;
 		public var instanceName:String;
@@ -39,6 +41,8 @@
 		public var className:String;
 		public var blendMode:uint;
 		public var bitmapCache:uint;
+		public var bitmapBackgroundColor:uint; // Undocumented feature (SWF11)
+		public var visibility:uint; // Undocumented feature (SWF11)
 		
 		protected var _surfaceFilterList:Vector.<IFilter>;
 		

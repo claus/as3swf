@@ -3,6 +3,7 @@
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.consts.LineCapsStyle;
 	import com.codeazur.as3swf.data.consts.LineJointStyle;
+	import com.codeazur.as3swf.utils.ColorUtils;
 	
 	public class SWFLineStyle2 extends SWFLineStyle
 	{
@@ -56,11 +57,15 @@
 			var str:String = "[SWFLineStyle2] Width: " + width + ", " +
 				"StartCaps: " + LineCapsStyle.toString(startCapsStyle) + ", " +
 				"EndCaps: " + LineCapsStyle.toString(endCapsStyle) + ", " +
-				"Joint: " + LineJointStyle.toString(jointStyle);
+				"Joint: " + LineJointStyle.toString(jointStyle) + ", ";
+			if(noClose) { str += "NoClose, "; }
+			if(noHScaleFlag) { str += "NoHScale, "; }
+			if(noVScaleFlag) { str += "NoVScale, "; }
+			if(pixelHintingFlag) { str += "PixelHinting, "; }
 			if (hasFillFlag) {
-				str += ", Fill: " + fillType.toString();
+				str += "Fill: " + fillType.toString();
 			} else {
-				str += ", Color: " + color.toString(16);
+				str += "Color: " + ColorUtils.rgbaToString(color);
 			}
 			return str;
 		}

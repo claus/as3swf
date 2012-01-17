@@ -32,8 +32,7 @@
 		public function get level():uint { return 1; }
 
 		public function toString(indent:uint = 0):String {
-			return Tag.toStringCommon(type, name, indent) +
-				"Color: " + ColorUtils.rgbToString(color);
+			return Tag.toStringCommon(type, name, indent) + "Color: " + ColorUtils.rgbToString(color);
 		}
 	}
 }

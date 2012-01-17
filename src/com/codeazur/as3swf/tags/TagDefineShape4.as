@@ -2,6 +2,7 @@
 {
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.SWFRectangle;
+	import com.codeazur.utils.StringUtils;
 	
 	public class TagDefineShape4 extends TagDefineShape3 implements IDefinitionTag
 	{
@@ -46,10 +47,11 @@
 		override public function get level():uint { return 4; }
 		
 		override public function toString(indent:uint = 0):String {
-			var str:String = Tag.toStringCommon(type, name, indent) +
-				"ID: " + characterId + ", " +
-				"ShapeBounds: " + shapeBounds + ", " +
-				"EdgeBounds: " + edgeBounds;
+			var str:String = Tag.toStringCommon(type, name, indent) + "ID: " + characterId + ", ";
+			if(usesFillWindingRule) { str += "UsesFillWindingRule, "; }
+			if(usesNonScalingStrokes) { str += "UsesNonScalingStrokes, "; }
+			if(usesScalingStrokes) { str += "UsesScalingStrokes, "; }
+			str += "ShapeBounds: " + shapeBounds + ", EdgeBounds: " + edgeBounds;
 			str += shapes.toString(indent + 2);
 			return str;
 		}

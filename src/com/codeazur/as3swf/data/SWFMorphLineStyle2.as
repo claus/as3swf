@@ -3,6 +3,7 @@
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.consts.LineCapsStyle;
 	import com.codeazur.as3swf.data.consts.LineJointStyle;
+	import com.codeazur.as3swf.utils.ColorUtils;
 	
 	public class SWFMorphLineStyle2 extends SWFMorphLineStyle
 	{
@@ -66,8 +67,8 @@
 			if (hasFillFlag) {
 				str += ", Fill: " + fillType.toString();
 			} else {
-				str += ", StartColor: " + startColor.toString(16);
-				str += ", EndColor: " + endColor.toString(16);
+				str += ", StartColor: " + ColorUtils.rgbaToString(startColor);
+				str += ", EndColor: " + ColorUtils.rgbaToString(endColor);
 			}
 			return str;
 		}

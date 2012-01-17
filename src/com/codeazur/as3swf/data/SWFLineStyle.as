@@ -3,11 +3,14 @@
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.consts.LineCapsStyle;
 	import com.codeazur.as3swf.data.consts.LineJointStyle;
+	import com.codeazur.as3swf.utils.ColorUtils;
 	
 	public class SWFLineStyle
 	{
 		public var width:uint;
 		public var color:uint;
+
+		public var _level:uint;
 		
 		// Forward declaration of SWFLineStyle2 properties
 		public var startCapsStyle:uint = LineCapsStyle.ROUND;
@@ -28,6 +31,7 @@
 		}
 		
 		public function parse(data:SWFData, level:uint = 1):void {
+			_level = level;
 			width = data.readUI16();
 			color = (level <= 2) ? data.readRGB() : data.readRGBA();
 		}
@@ -59,7 +63,7 @@
 		}
 		
 		public function toString():String {
-			return "[SWFLineStyle] Width: " + width + " Color: " + color.toString(16);
+			return "[SWFLineStyle] Width: " + width + " Color: " + ((_level <= 2) ? ColorUtils.rgbToString(color) : ColorUtils.rgbaToString(color));
 		}
 	}
 }

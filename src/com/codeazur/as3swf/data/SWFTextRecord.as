@@ -1,6 +1,7 @@
 ﻿package com.codeazur.as3swf.data
 {
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.utils.ColorUtils;
 	import com.codeazur.utils.StringUtils;
 	
 	public class SWFTextRecord
@@ -18,6 +19,8 @@
 		public var yOffset:int;
 		
 		protected var _glyphEntries:Vector.<SWFGlyphEntry>;
+
+		protected var _level:uint;
 		
 		public function SWFTextRecord(data:SWFData = null, glyphBits:uint = 0, advanceBits:uint = 0, previousRecord:SWFTextRecord = null, level:uint = 1) {
 			_glyphEntries = new Vector.<SWFGlyphEntry>();
@@ -29,6 +32,7 @@
 		public function get glyphEntries():Vector.<SWFGlyphEntry> { return _glyphEntries; }
 		
 		public function parse(data:SWFData, glyphBits:uint, advanceBits:uint, previousRecord:SWFTextRecord = null, level:uint = 1):void {
+			_level = level;
 			var styles:uint = data.readUI8();
 			type = styles >> 7;
 			hasFont = ((styles & 0x08) != 0);
@@ -126,7 +130,7 @@
 		public function toString(indent:uint = 0):String {
 			var params:Array = ["Glyphs: " + _glyphEntries.length.toString()];
 			if (hasFont) { params.push("FontID: " + fontId); params.push("Height: " + textHeight); }
-			if (hasColor) { params.push("Color: " + textColor.toString(16)); }
+			if (hasColor) { params.push("Color: " + ((_level <= 2) ? ColorUtils.rgbToString(textColor) : ColorUtils.rgbaToString(textColor))); }
 			if (hasXOffset) { params.push("XOffset: " + xOffset); }
 			if (hasYOffset) { params.push("YOffset: " + yOffset); }
 			var str:String = params.join(", ");

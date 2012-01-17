@@ -1,5 +1,7 @@
 ﻿package com.codeazur.as3swf.utils
 {
+	import com.codeazur.utils.StringUtils;
+
 	public class ColorUtils
 	{
 		public static function alpha(color:uint):Number {
@@ -34,10 +36,19 @@
 			return bi | (gi << 8) | (ri << 16) | (alphai << 24);
 		}
 		
-		public static function rgbToString(color:uint):String {
-			var result:String = rgb(color).toString(16).toUpperCase();
-			while (result.length < 6) { result = "0" + result; }
-			return "#" + result;
+		public static function rgbToString(color:uint):String
+		{
+			return StringUtils.printf("#%06x", (color & 0xffffff));
+		}
+		
+		public static function rgbaToString(color:uint):String
+		{
+			return StringUtils.printf("#%06x(%02x)", (color & 0xffffff), (color >>> 24));
+		}
+		
+		public static function argbToString(color:uint):String
+		{
+			return StringUtils.printf("#(%02x)%06x", (color >>> 24), (color & 0xffffff));
 		}
 	}
 }

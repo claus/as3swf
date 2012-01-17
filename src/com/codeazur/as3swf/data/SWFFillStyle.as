@@ -1,6 +1,8 @@
 ﻿package com.codeazur.as3swf.data
 {
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.utils.ColorUtils;
+	import com.codeazur.utils.StringUtils;
 	
 	public class SWFFillStyle
 	{
@@ -11,6 +13,8 @@
 		public var gradientMatrix:SWFMatrix;
 		public var bitmapId:uint;
 		public var bitmapMatrix:SWFMatrix;
+
+		protected var _level:uint;
 		
 		public function SWFFillStyle(data:SWFData = null, level:uint = 1) {
 			if (data != null) {
@@ -19,6 +23,7 @@
 		}
 		
 		public function parse(data:SWFData, level:uint = 1):void {
+			_level = level;
 			type = data.readUI8();
 			switch(type) {
 				case 0x00:
@@ -85,9 +90,9 @@
 		}
 		
 		public function toString():String {
-			var str:String = "[SWFFillStyle] Type: " + type.toString(16);
+			var str:String = "[SWFFillStyle] Type: " + StringUtils.printf("%02x", type);
 			switch(type) {
-				case 0x00: str += " (solid), Color: " + rgb.toString(16); break;
+				case 0x00: str += " (solid), Color: " + ((_level <= 2) ? ColorUtils.rgbToString(rgb) : ColorUtils.rgbaToString(rgb)); break;
 				case 0x10: str += " (linear gradient), Gradient: " + gradient + ", Matrix: " + gradientMatrix; break;
 				case 0x12: str += " (radial gradient), Gradient: " + gradient + ", Matrix: " + gradientMatrix; break;
 				case 0x13: str += " (focal radial gradient), Gradient: " + gradient + ", Matrix: " + gradientMatrix + ", FocalPoint: " + gradient.focalPoint; break;

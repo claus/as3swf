@@ -101,7 +101,7 @@
 		public function toString():String {
 			var str:String = "[SWFMorphFillStyle] Type: " + type.toString(16);
 			switch(type) {
-				case 0x00: str += " (solid), StartColor: " + startColor.toString(16) + ", EndColor: " + endColor.toString(16); break;
+				case 0x00: str += " (solid), StartColor: " + ColorUtils.rgbaToString(startColor) + ", EndColor: " + ColorUtils.rgbaToString(endColor); break;
 				case 0x10: str += " (linear gradient), Gradient: " + gradient; break;
 				case 0x12: str += " (radial gradient), Gradient: " + gradient; break;
 				case 0x40: str += " (repeating bitmap), BitmapID: " + bitmapId; break;

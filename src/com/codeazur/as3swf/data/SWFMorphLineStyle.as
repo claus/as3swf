@@ -68,8 +68,8 @@
 			return "[SWFMorphLineStyle] " +
 				"StartWidth: " + startWidth + ", " +
 				"EndWidth: " + endWidth + ", " +
-				"StartColor: " + startColor.toString(16) + ", " +
-				"EndColor: " + endColor.toString(16);
+				"StartColor: " + ColorUtils.rgbaToString(startColor) + ", " +
+				"EndColor: " + ColorUtils.rgbaToString(endColor);
 		}
 	}
 }

@@ -38,7 +38,7 @@
 		}
 		
 		public function toString():String {
-			return "[" + startRatio + "," + startColor.toString(16) + "," + endRatio + "," + endColor.toString(16) + "]";
+			return "[" + startRatio + "," + ColorUtils.rgbaToString(startColor) + "," + endRatio + "," + ColorUtils.rgbaToString(endColor) + "]";
 		}
 	}
 }

@@ -135,7 +135,7 @@
 			if (hasYOffset) { params.push("YOffset: " + yOffset); }
 			var str:String = params.join(", ");
 			for (var i:uint = 0; i < _glyphEntries.length; i++) {
-				str += "\n" + StringUtils.repeat(indent + 2) + _glyphEntries[i].toString();
+				str += "\n" + StringUtils.repeat(indent + 2) + "[" + i + "] " + _glyphEntries[i].toString();
 			}
 			return str;
 		}

@@ -57,7 +57,7 @@
 		public function get level():uint { return 1; }
 	
 		override public function toString(indent:uint = 0):String {
-			return Tag.toStringCommon(type, name, indent) +
+			return Tag.toStringCommon(type, name, indent) + 
 				"ID: " + characterId + ", " +
 				"FrameCount: " + frameCount +
 				super.toString(indent);

@@ -53,7 +53,7 @@
 			}
 			str += ":";
 			for (var i:uint = 0; i < _actions.length; i++) {
-				str += "\n" + StringUtils.repeat(indent + 2) + _actions[i].toString(indent + 2);
+				str += "\n" + StringUtils.repeat(indent + 2) + "[" + i + "] " + _actions[i].toString(indent + 2);
 			}
 			return str;
 		}

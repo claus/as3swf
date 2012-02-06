@@ -60,6 +60,7 @@
 				/*  69 */ case TagFileAttributes.TYPE: return createTagFileAttributes();
 				/*  70 */ case TagPlaceObject3.TYPE: return createTagPlaceObject3();
 				/*  71 */ case TagImportAssets2.TYPE: return createTagImportAssets2();
+				/*  72 */ case TagDoABCDeprecated.TYPE: return createTagDoABCDeprecated();
 				/*  73 */ case TagDefineFontAlignZones.TYPE: return createTagDefineFontAlignZones();
 				/*  74 */ case TagCSMTextSettings.TYPE: return createTagCSMTextSettings();
 				/*  75 */ case TagDefineFont3.TYPE: return createTagDefineFont3();
@@ -141,6 +142,7 @@
 		protected function createTagMetadata():ITag { return new TagMetadata(); }
 		protected function createTagDefineScalingGrid():ITag { return new TagDefineScalingGrid(); }
 		protected function createTagDoABC():ITag { return new TagDoABC(); }
+		protected function createTagDoABCDeprecated():ITag { return new TagDoABCDeprecated(); }
 		protected function createTagDefineShape4():ITag { return new TagDefineShape4(); }
 		protected function createTagDefineMorphShape2():ITag { return new TagDefineMorphShape2(); }
 		protected function createTagDefineSceneAndFrameLabelData():ITag { return new TagDefineSceneAndFrameLabelData(); }

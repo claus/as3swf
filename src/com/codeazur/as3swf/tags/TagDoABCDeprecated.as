@@ -4,18 +4,18 @@ package com.codeazur.as3swf.tags
 
 	import flash.utils.ByteArray;
 	
-	public class TagDoEmbeddedABC implements ITag
+	public class TagDoABCDeprecated implements ITag
 	{
 		public static const TYPE:uint = 72;
 
 		protected var _bytes:ByteArray;
 
-		public function TagDoEmbeddedABC() {
+		public function TagDoABCDeprecated() {
 			_bytes = new ByteArray();
 		}
 
-		public static function create(abcData:ByteArray = null):TagDoEmbeddedABC {
-			var doABC:TagDoEmbeddedABC = new TagDoEmbeddedABC();
+		public static function create(abcData:ByteArray = null):TagDoABCDeprecated {
+			var doABC:TagDoABCDeprecated = new TagDoABCDeprecated();
 			if (abcData != null && abcData.length > 0) {
 				doABC.bytes.writeBytes(abcData);
 			}

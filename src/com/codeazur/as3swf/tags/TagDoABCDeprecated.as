@@ -39,7 +39,7 @@ package com.codeazur.as3swf.tags
 		}
 
 		public function get type():uint { return TYPE; }
-		public function get name():String { return "DoABC"; }
+		public function get name():String { return "DoABCDeprecated"; }
 		public function get version():uint { return 9; }
 		public function get level():uint { return 1; }
 

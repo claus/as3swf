@@ -621,6 +621,14 @@
 			value.publish(this, level);
 		}
 		
+		public function readMORPHFOCALGRADIENT(level:uint = 1):SWFMorphFocalGradient {
+			return new SWFMorphFocalGradient(this, level);
+		}
+		
+		public function writeMORPHFOCALGRADIENT(value:SWFMorphFocalGradient, level:uint = 1):void {
+			value.publish(this, level);
+		}
+		
 		public function readMORPHGRADIENTRECORD():SWFMorphGradientRecord {
 			return new SWFMorphGradientRecord(this);
 		}

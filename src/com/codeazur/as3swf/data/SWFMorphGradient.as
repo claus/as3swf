@@ -4,6 +4,10 @@
 	
 	public class SWFMorphGradient
 	{
+		// Forward declarations of properties in SWFMorphFocalGradient
+		public var startFocalPoint:Number = 0.0;
+		public var endFocalPoint:Number = 0.0;
+		
 		protected var _records:Vector.<SWFMorphGradientRecord>;
 		
 		public function SWFMorphGradient(data:SWFData = null, level:uint = 1) {

@@ -32,9 +32,10 @@
 					break;
 				case 0x10:
 				case 0x12:
+				case 0x13:
 					startGradientMatrix = data.readMATRIX();
 					endGradientMatrix = data.readMATRIX();
-					gradient = data.readMORPHGRADIENT(level);
+					gradient = (type == 0x13) ? data.readMORPHFOCALGRADIENT(level) : data.readMORPHGRADIENT(level);
 					break;
 				case 0x40:
 				case 0x41:
@@ -104,6 +105,7 @@
 				case 0x00: str += " (solid), StartColor: " + ColorUtils.rgbaToString(startColor) + ", EndColor: " + ColorUtils.rgbaToString(endColor); break;
 				case 0x10: str += " (linear gradient), Gradient: " + gradient; break;
 				case 0x12: str += " (radial gradient), Gradient: " + gradient; break;
+				case 0x13: str += " (focal radial gradient), Gradient: " + gradient; break;
 				case 0x40: str += " (repeating bitmap), BitmapID: " + bitmapId; break;
 				case 0x41: str += " (clipped bitmap), BitmapID: " + bitmapId; break;
 				case 0x42: str += " (non-smoothed repeating bitmap), BitmapID: " + bitmapId; break;

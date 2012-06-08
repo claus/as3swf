@@ -1,6 +1,8 @@
 ﻿package com.codeazur.as3swf.exporters
 {
 	import com.codeazur.as3swf.SWF;
+	import com.codeazur.as3swf.exporters.core.DefaultShapeExporter;
+	import com.codeazur.as3swf.utils.NumberUtils;
 	import com.codeazur.utils.StringUtils;
 	
 	import flash.display.CapsStyle;
@@ -9,7 +11,6 @@
 	import flash.display.LineScaleMode;
 	import flash.display.SpreadMethod;
 	import flash.geom.Matrix;
-	import com.codeazur.as3swf.exporters.core.DefaultShapeExporter;
 	
 	public class AS3ShapeExporter extends DefaultShapeExporter
 	{
@@ -162,15 +163,26 @@
 		}
 		
 		override public function moveTo(x:Number, y:Number):void {
-			_actionScript += StringUtils.printf("graphics.moveTo(%f, %f);\r", x, y);
+			_actionScript += StringUtils.printf("graphics.moveTo(%s, %s);\r",
+				NumberUtils.roundPixels400(x),
+				NumberUtils.roundPixels400(y)
+			);
 		}
 		
 		override public function lineTo(x:Number, y:Number):void {
-			_actionScript += StringUtils.printf("graphics.lineTo(%f, %f);\r", x, y);
+			_actionScript += StringUtils.printf("graphics.lineTo(%s, %s);\r",
+				NumberUtils.roundPixels400(x),
+				NumberUtils.roundPixels400(y)
+			);
 		}
 		
 		override public function curveTo(controlX:Number, controlY:Number, anchorX:Number, anchorY:Number):void {
-			_actionScript += StringUtils.printf("graphics.curveTo(%f, %f, %f, %f);\r", controlX, controlY, anchorX, anchorY);
+			_actionScript += StringUtils.printf("graphics.curveTo(%s, %s, %s, %s);\r",
+				NumberUtils.roundPixels400(controlX),
+				NumberUtils.roundPixels400(controlY),
+				NumberUtils.roundPixels400(anchorX),
+				NumberUtils.roundPixels400(anchorY)
+			);
 		}
 	}
 }

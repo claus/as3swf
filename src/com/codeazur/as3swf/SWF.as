@@ -36,7 +36,7 @@
 				frameSize = new SWFRectangle();
 				frameRate = 50;
 				frameCount = 1;
-				compression = COMPRESSION_LZMA;
+				compression = COMPRESSION_ZLIB;
 			}
 		}
 		

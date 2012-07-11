@@ -2,7 +2,6 @@
 {
 	import com.codeazur.as3swf.data.SWFRectangle;
 	import com.codeazur.as3swf.events.SWFProgressEvent;
-	import flash.system.Capabilities;
 	
 	import flash.utils.ByteArray;
 

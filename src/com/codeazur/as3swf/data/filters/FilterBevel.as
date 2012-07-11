@@ -35,7 +35,7 @@
 			}
 			return new BevelFilter(
 				distance,
-				angle,
+				angle * 180 / Math.PI,
 				ColorUtils.rgb(highlightColor),
 				ColorUtils.alpha(highlightColor),
 				ColorUtils.rgb(shadowColor),

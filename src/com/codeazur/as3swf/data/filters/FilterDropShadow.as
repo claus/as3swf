@@ -26,7 +26,7 @@
 		override public function get filter():BitmapFilter {
 			return new DropShadowFilter(
 				distance,
-				angle,
+				angle * 180 / Math.PI,
 				ColorUtils.rgb(dropShadowColor),
 				ColorUtils.alpha(dropShadowColor),
 				blurX,

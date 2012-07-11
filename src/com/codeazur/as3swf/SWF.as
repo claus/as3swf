@@ -123,8 +123,7 @@
 			var firstHeaderByte:uint = 0x46;
 			if (compression == COMPRESSION_ZLIB) {
 				firstHeaderByte = 0x43;
-			}
-			else if (compression == COMPRESSION_LZMA) {
+			} else if (compression == COMPRESSION_LZMA) {
 				firstHeaderByte = 0x5A;
 			}
 			data.writeUI8(firstHeaderByte);

@@ -51,7 +51,7 @@
 			}
 			return new GradientGlowFilter(
 				distance,
-				angle,
+				angle * 180 / Math.PI,
 				gradientGlowColors,
 				gradientGlowAlphas,
 				gradientGlowRatios,

@@ -778,7 +778,7 @@
 			readBytes(ba);
 			ba.position = 0;
 			
-			if(compression == SWF.COMPRESSION_ZLIB) {
+			if(compression == SWF.COMPRESSION_METHOD_ZLIB) {
 			   ba.uncompress();
 			} else {
 			   ba.uncompress(compression);
@@ -795,7 +795,7 @@
 			readBytes(ba);
 			ba.position = 0;
 			
-			if(compression == SWF.COMPRESSION_ZLIB) {
+			if(compression == SWF.COMPRESSION_METHOD_ZLIB) {
 			   ba.compress();
 			} else {
 			   ba.compress(compression);

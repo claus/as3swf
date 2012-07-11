@@ -6,6 +6,7 @@
 	import com.codeazur.as3swf.factories.*;
 	import com.codeazur.utils.BitArray;
 	import com.codeazur.utils.HalfPrecisionWriter;
+	import flash.utils.CompressionAlgorithm;
 	
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
@@ -771,23 +772,35 @@
 		// SWF Compression
 		/////////////////////////////////////////////////////////
 		
-		public function swfUncompress():void {
+		public function swfUncompress(compression:String):void {
 			var pos:uint = position;
 			var ba:ByteArray = new ByteArray();
 			readBytes(ba);
 			ba.position = 0;
-			ba.uncompress();
+			
+			if(compression == SWF.COMPRESSION_ZLIB) {
+			   ba.uncompress();
+			} else {
+			   ba.uncompress(compression);
+			}
+			
 			length = position = pos;
 			writeBytes(ba);
 			position = pos;
 		}
 		
-		public function swfCompress():void {
+		public function swfCompress(compression:String):void {
 			var pos:uint = position;
 			var ba:ByteArray = new ByteArray();
 			readBytes(ba);
 			ba.position = 0;
-			ba.compress();
+			
+			if(compression == SWF.COMPRESSION_ZLIB) {
+			   ba.compress();
+			} else {
+			   ba.compress(compression);
+			}
+			
 			length = position = pos;
 			writeBytes(ba);
 		}

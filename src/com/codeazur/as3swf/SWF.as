@@ -14,9 +14,13 @@
 		public var frameRate:Number;
 		public var frameCount:uint;
 		
-		public var compressed:Boolean;
+		public var compression:String = COMPRESSION_NONE;
 		
 		protected var bytes:SWFData;
+		
+		public static const COMPRESSION_NONE:String = "none";
+		public static const COMPRESSION_ZLIB:String = "zlib";
+		public static const COMPRESSION_LZMA:String = "lzma";
 		
 		protected static const FILE_LENGTH_POS:uint = 4;
 		protected static const COMPRESSION_START_POS:uint = 8;
@@ -32,7 +36,7 @@
 				frameSize = new SWFRectangle();
 				frameRate = 50;
 				frameCount = 1;
-				compressed = true;
+				compression = COMPRESSION_LZMA;
 			}
 		}
 		
@@ -83,13 +87,15 @@
 		}
 		
 		protected function parseHeader():void {
-			compressed = false;
+			compression = COMPRESSION_NONE;
 			bytes.position = 0;
 			var signatureByte:uint = bytes.readUI8();
 			if (signatureByte == 0x43) {
-				compressed = true;
+				compression = COMPRESSION_ZLIB;
+			} else if (signatureByte == 0x5A) {
+				compression = COMPRESSION_LZMA;
 			} else if (signatureByte != 0x46) {
-				throw(new Error("Not a SWF. First signature byte is 0x" + signatureByte.toString(16) + " (expected: 0x43 or 0x46)"));
+				throw(new Error("Not a SWF. First signature byte is 0x" + signatureByte.toString(16) + " (expected: 0x43 or 0x5A or 0x46)"));
 			}
 			signatureByte = bytes.readUI8();
 			if (signatureByte != 0x57) {
@@ -102,17 +108,26 @@
 			version = bytes.readUI8();
 			fileLength = bytes.readUI32();
 			fileLengthCompressed = bytes.length;
-			if (compressed) {
-				// The following data (up to end of file) is compressed, if header has CWS signature
-				bytes.swfUncompress();
+			
+			if (compression != COMPRESSION_NONE) {
+				// The following data (up to end of file) is compressed, if header has CWS or ZWS signature
+				bytes.swfUncompress(compression);
 			}
+			
 			frameSize = bytes.readRECT();
 			frameRate = bytes.readFIXED8();
 			frameCount = bytes.readUI16();
 		}
 		
 		protected function publishHeader(data:SWFData):void {
-			data.writeUI8(compressed ? 0x43 : 0x46);
+			var firstHeaderByte:uint = 0x46;
+			if (compression == COMPRESSION_ZLIB) {
+				firstHeaderByte = 0x43;
+			}
+			else if (compression == COMPRESSION_LZMA) {
+				firstHeaderByte = 0x5A;
+			}
+			data.writeUI8(firstHeaderByte);
 			data.writeUI8(0x57);
 			data.writeUI8(0x53);
 			data.writeUI8(version);
@@ -124,9 +139,9 @@
 
 		protected function publishFinalize(data:SWFData):void {
 			fileLength = fileLengthCompressed = data.length;
-			if (compressed) {
+			if (compression != COMPRESSION_NONE) {
 				data.position = COMPRESSION_START_POS;
-				data.swfCompress();
+				data.swfCompress(compression);
 				fileLengthCompressed = data.length;
 			}
 			var endPos:uint = data.position;

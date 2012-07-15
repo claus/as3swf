@@ -360,6 +360,9 @@
 				for (var i:uint = 0; i < path.length; i++) {
 					var e:IEdge = path[i];
 					if (fillStyleIdx != e.fillStyleIdx) {
+						if(fillStyleIdx != uint.MAX_VALUE) {
+							handler.endFill();
+						}
 						fillStyleIdx = e.fillStyleIdx;
 						pos = new Point(Number.MAX_VALUE, Number.MAX_VALUE);
 						try {
@@ -428,7 +431,9 @@
 					}
 					pos = e.to;
 				}
-				handler.endFill();
+				if(fillStyleIdx != uint.MAX_VALUE) {
+					handler.endFill();
+				}
 				handler.endFills();
 			}
 		}

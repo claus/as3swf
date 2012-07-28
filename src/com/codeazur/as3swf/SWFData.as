@@ -6,7 +6,6 @@
 	import com.codeazur.as3swf.factories.*;
 	import com.codeazur.utils.BitArray;
 	import com.codeazur.utils.HalfPrecisionWriter;
-	import flash.utils.CompressionAlgorithm;
 	
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
@@ -772,16 +771,48 @@
 		// SWF Compression
 		/////////////////////////////////////////////////////////
 		
-		public function swfUncompress(compression:String):void {
+		public function swfUncompress(compressionMethod:String, uncompressedLength:uint = 0):void {
 			var pos:uint = position;
 			var ba:ByteArray = new ByteArray();
-			readBytes(ba);
-			ba.position = 0;
 			
-			if(compression == SWF.COMPRESSION_METHOD_ZLIB) {
-			   ba.uncompress();
+			if(compressionMethod == SWF.COMPRESSION_METHOD_ZLIB) {
+				readBytes(ba);
+				ba.position = 0;
+				ba.uncompress();
+			} else if(compressionMethod == SWF.COMPRESSION_METHOD_LZMA) {
+
+				// LZMA compressed SWF:
+				//   0000 5A 57 53 0F   (ZWS, Version 15)
+				//   0004 DF 52 00 00   (Uncompressed size: 21215)
+				//   0008 94 3B 00 00   (Compressed size: 15252)
+				//   000C 5D 00 00 00 01   (LZMA Properties)
+				//   0011 00 3B FF FC A6 14 16 5A ...   (15252 bytes of LZMA Compressed Data, until EOF)
+				// 7z LZMA format:
+				//   0000 5D 00 00 00 01   (LZMA Properties)
+				//   0005 D7 52 00 00 00 00 00 00   (Uncompressed size: 21207, 64 bit)
+				//   000D 00 3B FF FC A6 14 16 5A ...   (15252 bytes of LZMA Compressed Data, until EOF)
+				// (see also https://github.com/claus/as3swf/pull/23#issuecomment-7203861)
+
+				// Write LZMA properties
+				for(var i:uint = 0; i < 5; i++) {
+					ba.writeByte(this[i + 12]);
+				}
+				
+				// Write uncompressed length (64 bit)
+				ba.endian = Endian.LITTLE_ENDIAN;
+				ba.writeUnsignedInt(uncompressedLength - 8);
+				ba.writeUnsignedInt(0);
+				
+				// Write compressed data
+				position = 17;
+				readBytes(ba, 13);
+				
+				// Uncompress
+				ba.position = 0;
+				ba.uncompress(compressionMethod);
+				
 			} else {
-			   ba.uncompress(compression);
+				throw(new Error("Unknown compression method: " + compressionMethod));
 			}
 			
 			length = position = pos;
@@ -789,16 +820,34 @@
 			position = pos;
 		}
 		
-		public function swfCompress(compression:String):void {
+		public function swfCompress(compressionMethod:String):void {
 			var pos:uint = position;
 			var ba:ByteArray = new ByteArray();
-			readBytes(ba);
-			ba.position = 0;
 			
-			if(compression == SWF.COMPRESSION_METHOD_ZLIB) {
-			   ba.compress();
+			if(compressionMethod == SWF.COMPRESSION_METHOD_ZLIB) {
+				readBytes(ba);
+				ba.position = 0;
+				ba.compress();
+			} else if(compressionMethod == SWF.COMPRESSION_METHOD_LZMA) {
+				// Never should get here (unfortunately)
+				// We're forcing ZLIB compression on publish, see CSS.as line 145
+				throw(new Error("Can't publish LZMA compressed SWFs"));
+				// This should be correct, but doesn't seem to work:
+				var lzma:ByteArray = new ByteArray();
+				readBytes(lzma);
+				lzma.position = 0;
+				lzma.compress(compressionMethod);
+				// Write compressed length
+				ba.endian = Endian.LITTLE_ENDIAN;
+				ba.writeUnsignedInt(lzma.length - 13);
+				// Write LZMA properties
+				for(var i:uint = 0; i < 5; i++) {
+					ba.writeByte(lzma[i]);
+				}
+				// Write compressed data
+				ba.writeBytes(lzma, 13);
 			} else {
-			   ba.compress(compression);
+				throw(new Error("Unknown compression method: " + compressionMethod));
 			}
 			
 			length = position = pos;
@@ -817,22 +866,22 @@
 			position += length;
 		}
 		
-		public function dump(length:uint, offset:int = 0):void {
-			var pos:uint = position;
-			position += offset;
-			var str:String = "bitsPending: " + bitsPending;
+		public static function dump(ba:ByteArray, length:uint, offset:int = 0):void {
+			var posOrig:uint = ba.position;
+			var pos:uint = ba.position = Math.min(Math.max(posOrig + offset, 0), ba.length - length);
+			var str:String = "[Dump] total length: " + ba.length + ", original position: " + posOrig;
 			for (var i:uint = 0; i < length; i++) {
-				var b:String = readUnsignedByte().toString(16);
+				var b:String = ba.readUnsignedByte().toString(16);
 				if(b.length == 1) { b = "0" + b; }
 				if(i % 16 == 0) {
-					var addr:String = (pos + offset + i).toString(16);
+					var addr:String = (pos + i).toString(16);
 					addr = "00000000".substr(0, 8 - addr.length) + addr;
 					str += "\r" + addr + ": ";
 				}
 				b += " ";
 				str += b;
 			}
-			position = pos;
+			ba.position = posOrig;
 			trace(str);
 		}
 	}

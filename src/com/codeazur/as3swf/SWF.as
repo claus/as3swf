@@ -113,7 +113,7 @@
 			fileLengthCompressed = bytes.length;
 			if (compressed) {
 				// The following data (up to end of file) is compressed, if header has CWS or ZWS signature
-				bytes.swfUncompress(compressionMethod);
+				bytes.swfUncompress(compressionMethod, fileLength);
 			}
 			frameSize = bytes.readRECT();
 			frameRate = bytes.readFIXED8();
@@ -142,6 +142,7 @@
 		protected function publishFinalize(data:SWFData):void {
 			fileLength = fileLengthCompressed = data.length;
 			if (compressed) {
+				compressionMethod = SWF.COMPRESSION_METHOD_ZLIB; // Force ZLIB compression. LZMA doesn't seem to work when publishing.
 				data.position = COMPRESSION_START_POS;
 				data.swfCompress(compressionMethod);
 				fileLengthCompressed = data.length;

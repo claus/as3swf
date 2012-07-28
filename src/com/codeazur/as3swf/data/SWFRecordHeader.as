@@ -16,5 +16,9 @@
 		public function get tagLength():uint {
 			return headerLength + contentLength;
 		}
+		
+		public function toString():String {
+			return "[SWFRecordHeader] type: " + type + ", headerLength: " + headerLength + ", contentlength: " + contentLength;
+		}
 	}
 }

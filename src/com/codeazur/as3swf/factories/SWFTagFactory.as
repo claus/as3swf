@@ -77,6 +77,9 @@
 				/*  90 */ case TagDefineBitsJPEG4.TYPE: return createTagDefineBitsJPEG4();
 				/*  91 */ case TagDefineFont4.TYPE: return createTagDefineFont4();
 
+				/*  93 */ case TagEnableTelemetry.TYPE: return createTagEnableTelemetry();
+				/*  94 */ case TagPlaceObject4.TYPE: return createTagPlaceObject4();
+
 				/* 253 */ case TagSWFEncryptActions.TYPE: return createTagSWFEncryptActions();
 				/* 255 */ case TagSWFEncryptSignature.TYPE: return createTagSWFEncryptSignature();
 
@@ -151,6 +154,8 @@
 		protected function createTagStartSound2():ITag { return new TagStartSound2(); }
 		protected function createTagDefineBitsJPEG4():ITag { return new TagDefineBitsJPEG4(); }
 		protected function createTagDefineFont4():ITag { return new TagDefineFont4(); }
+		protected function createTagEnableTelemetry():ITag { return new TagEnableTelemetry(); }
+		protected function createTagPlaceObject4():ITag { return new TagPlaceObject4(); }
 		
 		protected function createTagSWFEncryptActions():ITag { return new TagSWFEncryptActions(); }
 		protected function createTagSWFEncryptSignature():ITag { return new TagSWFEncryptSignature(); }

@@ -43,6 +43,9 @@
 		public var bitmapCache:uint;
 		public var bitmapBackgroundColor:uint; // Undocumented feature (SWF11)
 		public var visibility:uint; // Undocumented feature (SWF11)
+
+		// Forward declarations for TagPlaceObject4
+		public var metaData:Object;
 		
 		protected var _surfaceFilterList:Vector.<IFilter>;
 		

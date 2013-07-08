@@ -76,7 +76,7 @@
 			}
 		}
 		
-		override public function publish(data:SWFData, version:uint):void {
+		protected function prepareBody():SWFData {
 			var body:SWFData = new SWFData();
 			var flags1:uint = 0;
 			if (hasClipActions) { flags1 |= 0x80; }
@@ -141,6 +141,13 @@
 			if (hasVisibility) {
 				body.writeUI8(visibility);
 			}
+			
+			return body;
+		}
+		
+		override public function publish(data:SWFData, version:uint):void {
+			var body:SWFData = prepareBody();
+			
 			data.writeTagHeader(type, body.length);
 			data.writeBytes(body);
 		}

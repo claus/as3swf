@@ -87,9 +87,9 @@ package com.codeazur.as3swf.exporters
 			prefix = ["c.save();"];
 			geometry = ["c.beginPath();"];
 			suffix = ["c.fillStyle=\"rgba(" + 
-				ColorUtils.r(color) * 255 + "," +
-				ColorUtils.g(color) * 255 + "," +
-				ColorUtils.b(color) * 255 + "," +
+				ColorUtils.r(color) * 255 + ", " +
+				ColorUtils.g(color) * 255 + ", " +
+				ColorUtils.b(color) * 255 + ", " +
 				alpha +
 				")\";",
 				"c.fill();", 
@@ -177,26 +177,26 @@ package com.codeazur.as3swf.exporters
 			active = STROKE_ACTIVE;
 			prefix = ["c.save();"];
 			if (startCaps == null || startCaps == CapsStyle.ROUND) {
-				prefix.push("c.lineCap=\"round\";");
+				prefix.push("c.lineCap = \"round\";");
 			} else if (startCaps == CapsStyle.SQUARE) {
-				prefix.push("c.lineCap=\"square\";");
+				prefix.push("c.lineCap = \"square\";");
 			}
 			if (joints == null || joints == JointStyle.ROUND) {
-				prefix.push("c.lineJoin=\"round\";");
+				prefix.push("c.lineJoin = \"round\";");
 			} else if (joints == JointStyle.BEVEL) {
-				prefix.push("c.lineJoin=\"miter\";");
-				prefix.push("c.miterLimit=" + miterLimit + ";");
+				prefix.push("c.lineJoin = \"miter\";");
+				prefix.push("c.miterLimit = " + miterLimit + ";");
 			} else {
-				prefix.push("c.miterLimit=" + miterLimit + ";");
+				prefix.push("c.miterLimit = " + miterLimit + ";");
 			}
 			geometry = ["c.beginPath();"];
 			suffix = ["c.strokeStyle=\"rgba(" + 
-				ColorUtils.r(color) * 255 + "," +
-				ColorUtils.g(color) * 255 + "," +
-				ColorUtils.b(color) * 255 + "," +
+				ColorUtils.r(color) * 255 + ", " +
+				ColorUtils.g(color) * 255 + ", " +
+				ColorUtils.b(color) * 255 + ", " +
 				alpha +
 				")\";",
-				"c.lineWidth=" + thickness + ";",
+				"c.lineWidth = " + thickness + ";",
 				"c.stroke();",
 				"c.restore();"];
 		}
@@ -204,7 +204,7 @@ package com.codeazur.as3swf.exporters
 		override public function moveTo(x:Number, y:Number):void {
 			if (active != NOT_ACTIVE && active != BITMAP_FILL_ACTIVE) {
 				geometry.push("c.moveTo(" + 
-					NumberUtils.roundPixels20(x) + "," + 
+					NumberUtils.roundPixels20(x) + ", " + 
 					NumberUtils.roundPixels20(y) + ");");
 			}
 		}
@@ -212,7 +212,7 @@ package com.codeazur.as3swf.exporters
 		override public function lineTo(x:Number, y:Number):void {
 			if (active != NOT_ACTIVE && active != BITMAP_FILL_ACTIVE) {
 				geometry.push("c.lineTo(" + 
-					NumberUtils.roundPixels20(x) + "," + 
+					NumberUtils.roundPixels20(x) + ", " + 
 					NumberUtils.roundPixels20(y) + ");");
 			}
 		}
@@ -220,9 +220,9 @@ package com.codeazur.as3swf.exporters
 		override public function curveTo(controlX:Number, controlY:Number, anchorX:Number, anchorY:Number):void {
 			if (active != NOT_ACTIVE && active != BITMAP_FILL_ACTIVE) {
 				geometry.push("c.quadraticCurveTo(" + 
-					NumberUtils.roundPixels20(controlX) + "," + 
-					NumberUtils.roundPixels20(controlY) + "," + 
-					NumberUtils.roundPixels20(anchorX) + "," + 
+					NumberUtils.roundPixels20(controlX) + ", " + 
+					NumberUtils.roundPixels20(controlY) + ", " + 
+					NumberUtils.roundPixels20(anchorX) + ", " + 
 					NumberUtils.roundPixels20(anchorY) + ");");
 			}
 		}

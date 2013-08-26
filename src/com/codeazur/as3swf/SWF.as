@@ -7,6 +7,7 @@
 
 	public class SWF extends SWFTimelineContainer
 	{
+		public var signature:String;
 		public var version:int;
 		public var fileLength:uint;
 		public var fileLengthCompressed:uint;
@@ -88,6 +89,7 @@
 		}
 		
 		protected function parseHeader():void {
+			signature = "";
 			compressed = false;
 			compressionMethod = COMPRESSION_METHOD_ZLIB;
 			bytes.position = 0;
@@ -100,14 +102,17 @@
 			} else if (signatureByte != 0x46) {
 				throw(new Error("Not a SWF. First signature byte is 0x" + signatureByte.toString(16) + " (expected: 0x43 or 0x5A or 0x46)"));
 			}
+			signature += String.fromCharCode(signatureByte);
 			signatureByte = bytes.readUI8();
 			if (signatureByte != 0x57) {
 				throw(new Error("Not a SWF. Second signature byte is 0x" + signatureByte.toString(16) + " (expected: 0x57)"));
 			}
+			signature += String.fromCharCode(signatureByte);
 			signatureByte = bytes.readUI8();
 			if (signatureByte != 0x53) {
 				throw(new Error("Not a SWF. Third signature byte is 0x" + signatureByte.toString(16) + " (expected: 0x53)"));
 			}
+			signature += String.fromCharCode(signatureByte);
 			version = bytes.readUI8();
 			fileLength = bytes.readUI32();
 			fileLengthCompressed = bytes.length;

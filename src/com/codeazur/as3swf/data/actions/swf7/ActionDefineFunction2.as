@@ -71,7 +71,7 @@
 			if (suppressThis) { flags1 |= 0x02; }
 			if (preloadThis) { flags1 |= 0x01; }
 			body.writeUI8(flags1);
-			var flags2:uint = data.readUI8();
+			var flags2:uint = 0;
 			if (preloadGlobal) { flags2 |= 0x01; }
 			body.writeUI8(flags2);
 			for (i = 0; i < functionParams.length; i++) {

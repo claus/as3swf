@@ -54,7 +54,7 @@
 		}
 
 		public function toString():String {
-			return "(" + _records.join(",") + ")";
+			return "(" + _records.join(",") + "), SpreadMode: " + spreadMode + ", InterpolationMode: " + interpolationMode;
 		}
 	}
 }

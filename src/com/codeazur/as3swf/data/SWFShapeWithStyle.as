@@ -30,9 +30,9 @@
 			for (i = 0; i < lineStylesLen; i++) {
 				initialLineStyles.push(level <= 3 ? data.readLINESTYLE(level) : data.readLINESTYLE2(level));
 			}
+			data.resetBitsPending();
 			var numFillBits:uint = data.readUB(4);
 			var numLineBits:uint = data.readUB(4);
-			data.resetBitsPending();
 			readShapeRecords(data, numFillBits, numLineBits, level);
 		}
 		
@@ -51,9 +51,9 @@
 			}
 			var fillBits:uint = data.calculateMaxBits(false, [getMaxFillStyleIndex()]);
 			var lineBits:uint = data.calculateMaxBits(false, [getMaxLineStyleIndex()]);
+			data.resetBitsPending();
 			data.writeUB(4, fillBits);
 			data.writeUB(4, lineBits);
-			data.resetBitsPending();
 			writeShapeRecords(data, fillBits, lineBits, level);
 		}
 				

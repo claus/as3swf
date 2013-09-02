@@ -59,9 +59,14 @@
 					break;
 				case 0x10:
 				case 0x12:
+				case 0x13:
 					data.writeMATRIX(startGradientMatrix);
 					data.writeMATRIX(endGradientMatrix);
-					data.writeMORPHGRADIENT(gradient, level);
+					if (type == 0x13) {
+						data.writeMORPHFOCALGRADIENT(SWFMorphFocalGradient(gradient), level);
+					} else {
+						data.writeMORPHGRADIENT(gradient, level);
+					}
 					break;
 				case 0x40:
 				case 0x41:

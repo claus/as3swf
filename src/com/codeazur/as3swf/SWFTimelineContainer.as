@@ -164,7 +164,7 @@ package com.codeazur.as3swf
 		protected function parseTag(data:SWFData, async:Boolean = false):ITag {
 			var pos:uint = data.position;
 			// Bail out if eof
-			eof = (pos > data.length);
+			eof = (pos >= data.length);
 			if(eof) {
 				trace("WARNING: end of file encountered, no end tag.");
 				return null;

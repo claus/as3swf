@@ -1,7 +1,8 @@
 ﻿package com.codeazur.as3swf.data.actions.swf5
 {
 	import com.codeazur.as3swf.SWFData;
-	import com.codeazur.as3swf.data.actions.*;
+	import com.codeazur.as3swf.data.actions.Action;
+	import com.codeazur.as3swf.data.actions.IAction;
 	import com.codeazur.utils.StringUtils;
 	
 	public class ActionDefineFunction extends Action implements IAction
@@ -44,8 +45,8 @@
 				bodyActions.writeACTIONRECORD(functionBody[i]);
 			}
 			body.writeUI16(bodyActions.length);
-			body.writeBytes(bodyActions);
 			write(data, body);
+			data.writeBytes(bodyActions);
 		}
 		
 		override public function clone():IAction {

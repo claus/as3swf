@@ -82,7 +82,7 @@
 			innerShadow = ((flags & 0x80) != 0);
 			knockout = ((flags & 0x40) != 0);
 			compositeSource = ((flags & 0x20) != 0);
-			onTop = ((flags & 0x20) != 0);
+			onTop = ((flags & 0x10) != 0);
 			passes = flags & 0x0f;
 		}
 		

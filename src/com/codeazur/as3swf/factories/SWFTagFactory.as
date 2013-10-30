@@ -41,6 +41,7 @@
 				/*  36 */ case TagDefineBitsLossless2.TYPE: return createTagDefineBitsLossless2();
 				/*  37 */ case TagDefineEditText.TYPE: return createTagDefineEditText();
 				/*  39 */ case TagDefineSprite.TYPE: return createTagDefineSprite();
+				/*  40 */ case TagNameCharacter.TYPE: return createTagNameCharacter();
 				/*  41 */ case TagProductInfo.TYPE: return createTagProductInfo();
 				/*  43 */ case TagFrameLabel.TYPE: return createTagFrameLabel();
 				/*  45 */ case TagSoundStreamHead2.TYPE: return createTagSoundStreamHead2();
@@ -119,6 +120,7 @@
 		protected function createTagDefineBitsLossless2():ITag { return new TagDefineBitsLossless2(); }
 		protected function createTagDefineEditText():ITag { return new TagDefineEditText(); }
 		protected function createTagDefineSprite():ITag { return new TagDefineSprite(); }
+		protected function createTagNameCharacter():ITag { return new TagNameCharacter(); }
 		protected function createTagProductInfo():ITag { return new TagProductInfo(); }
 		protected function createTagFrameLabel():ITag { return new TagFrameLabel(); }
 		protected function createTagSoundStreamHead2():ITag { return new TagSoundStreamHead2(); }

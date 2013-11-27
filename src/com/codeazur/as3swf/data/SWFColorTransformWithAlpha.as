@@ -18,10 +18,10 @@
 			bMult = 1;
 			aMult = 1;
 			if (hasMultTerms) {
-				rMult = data.readSB(bits);
-				gMult = data.readSB(bits);
-				bMult = data.readSB(bits);
-				aMult = data.readSB(bits);
+				rMult = Number(data.readSB(bits)) / 256;
+				gMult = Number(data.readSB(bits)) / 256;
+				bMult = Number(data.readSB(bits)) / 256;
+				aMult = Number(data.readSB(bits)) / 256;
 			}
 			rAdd = 0;
 			gAdd = 0;
@@ -45,10 +45,10 @@
 			var bits:uint = (hasMultTerms || hasAddTerms) ? data.calculateMaxBits(true, values) : 1;
 			data.writeUB(4, bits);
 			if (hasMultTerms) {
-				data.writeSB(bits, rMult);
-				data.writeSB(bits, gMult);
-				data.writeSB(bits, bMult);
-				data.writeSB(bits, aMult);
+				data.writeSB(bits, rMult * 256);
+				data.writeSB(bits, gMult * 256);
+				data.writeSB(bits, bMult * 256);
+				data.writeSB(bits, aMult * 256);
 			}
 			if (hasAddTerms) {
 				data.writeSB(bits, rAdd);

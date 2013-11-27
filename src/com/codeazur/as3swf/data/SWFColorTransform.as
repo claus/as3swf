@@ -5,14 +5,14 @@
 	
 	public class SWFColorTransform
 	{
-		public var rMult:int = 1;
-		public var gMult:int = 1;
-		public var bMult:int = 1;
+		public var rMult:Number = 1;
+		public var gMult:Number = 1;
+		public var bMult:Number = 1;
 		public var rAdd:int = 0;
 		public var gAdd:int = 0;
 		public var bAdd:int = 0;
 
-		public var aMult:int = 1;
+		public var aMult:Number = 1;
 		public var aAdd:int = 0;
 		
 		public var hasMultTerms:Boolean;
@@ -37,9 +37,9 @@
 			gMult = 1;
 			bMult = 1;
 			if (hasMultTerms) {
-				rMult = data.readSB(bits);
-				gMult = data.readSB(bits);
-				bMult = data.readSB(bits);
+				rMult = Number(data.readSB(bits)) / 256;
+				gMult = Number(data.readSB(bits)) / 256;
+				bMult = Number(data.readSB(bits)) / 256;
 			}
 			rAdd = 0;
 			gAdd = 0;
@@ -61,9 +61,9 @@
 			var bits:uint = data.calculateMaxBits(true, values);
 			data.writeUB(4, bits);
 			if (hasMultTerms) {
-				data.writeSB(bits, rMult);
-				data.writeSB(bits, gMult);
-				data.writeSB(bits, bMult);
+				data.writeSB(bits, rMult * 256);
+				data.writeSB(bits, gMult * 256);
+				data.writeSB(bits, bMult * 256);
 			}
 			if (hasAddTerms) {
 				data.writeSB(bits, rAdd);

@@ -8,6 +8,7 @@ package com.codeazur.as3swf
 	import com.codeazur.as3swf.events.SWFErrorEvent;
 	import com.codeazur.as3swf.events.SWFEventDispatcher;
 	import com.codeazur.as3swf.events.SWFProgressEvent;
+	import com.codeazur.as3swf.events.SWFWarningEvent;
 	import com.codeazur.as3swf.factories.ISWFTagFactory;
 	import com.codeazur.as3swf.factories.SWFTagFactory;
 	import com.codeazur.as3swf.tags.IDefinitionTag;
@@ -197,11 +198,31 @@ package com.codeazur.as3swf
 			processTag(tag);
 			// Adjust position (just in case the parser under- or overflows)
 			if(data.position != pos + tagHeader.tagLength) {
-				trace("WARNING: excess bytes: " + 
-					(data.position - (pos + tagHeader.tagLength)) + ", " +
-					"Tag: " + tag.name + ", " +
-					"Index: " + (tags.length - 1)
-				);
+				var index:uint = tags.length - 1;
+				var excessBytes:int = data.position - (pos + tagHeader.tagLength);
+				var eventType:String = (excessBytes < 0) ? SWFWarningEvent.UNDERFLOW : SWFWarningEvent.OVERFLOW;
+				var eventData:Object = {
+					pos: pos,
+					bytes: (excessBytes < 0) ? -excessBytes : excessBytes
+				};
+				if(rootTimelineContainer == this) {
+					trace("WARNING: excess bytes: " + excessBytes + ", " +
+						"Tag: " + tag.name + ", " +
+						"Index: " + index
+					);
+				} else {
+					eventData.indexRoot = rootTimelineContainer.tags.length;
+					trace("WARNING: excess bytes: " + excessBytes + ", " +
+						"Tag: " + tag.name + ", " +
+						"Index: " + index + ", " +
+						"IndexRoot: " + eventData.indexRoot
+					);
+				}
+				var event:SWFWarningEvent = new SWFWarningEvent(eventType, index, eventData, false, true);
+				var cancelled:Boolean = !dispatchEvent(event);
+				if (cancelled) {
+					tag = null;
+				}
 				data.position = pos + tagHeader.tagLength;
 			}
 			return tag;

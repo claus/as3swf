@@ -21,7 +21,7 @@ package com.codeazur.as3swf.events
 		}
 		
 		override public function toString():String {
-			return "[SWFParseErrorEvent] reason: " + reason;
+			return "[SWFErrorEvent] reason: " + reason;
 		}
 	}
 }

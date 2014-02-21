@@ -13,8 +13,8 @@
 		public var functionParams:Vector.<String>;
 		public var functionBody:Vector.<IAction>;
 		
-		public function ActionDefineFunction(code:uint, length:uint) {
-			super(code, length);
+		public function ActionDefineFunction(code:uint, length:uint, pos:uint) {
+			super(code, length, pos);
 			functionParams = new Vector.<String>();
 			functionBody = new Vector.<IAction>();
 		}
@@ -30,6 +30,7 @@
 			while (data.position < bodyEndPosition) {
 				functionBody.push(data.readACTIONRECORD());
 			}
+			Action.resolveOffsets(functionBody);
 		}
 		
 		override public function publish(data:SWFData):void {
@@ -51,7 +52,7 @@
 		
 		override public function clone():IAction {
 			var i:uint;
-			var action:ActionDefineFunction = new ActionDefineFunction(code, length);
+			var action:ActionDefineFunction = new ActionDefineFunction(code, length, pos);
 			action.functionName = functionName;
 			for (i = 0; i < functionParams.length; i++) {
 				action.functionParams.push(functionParams[i]);

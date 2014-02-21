@@ -10,8 +10,8 @@
 		
 		public var constants:Vector.<String>;
 		
-		public function ActionConstantPool(code:uint, length:uint) {
-			super(code, length);
+		public function ActionConstantPool(code:uint, length:uint, pos:uint) {
+			super(code, length, pos);
 			constants = new Vector.<String>();
 		}
 		
@@ -32,7 +32,7 @@
 		}
 		
 		override public function clone():IAction {
-			var action:ActionConstantPool = new ActionConstantPool(code, length);
+			var action:ActionConstantPool = new ActionConstantPool(code, length, pos);
 			for (var i:uint = 0; i < constants.length; i++) {
 				action.constants.push(constants[i]);
 			}

@@ -10,8 +10,8 @@
 		public var frame:uint;
 		public var skipCount:uint;
 		
-		public function ActionWaitForFrame(code:uint, length:uint) {
-			super(code, length);
+		public function ActionWaitForFrame(code:uint, length:uint, pos:uint) {
+			super(code, length, pos);
 		}
 		
 		override public function parse(data:SWFData):void {
@@ -27,7 +27,7 @@
 		}
 		
 		override public function clone():IAction {
-			var action:ActionWaitForFrame = new ActionWaitForFrame(code, length);
+			var action:ActionWaitForFrame = new ActionWaitForFrame(code, length, pos);
 			action.frame = frame;
 			action.skipCount = skipCount;
 			return action;

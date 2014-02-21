@@ -25,8 +25,8 @@
 		public var suppressArguments:Boolean;
 		public var suppressThis:Boolean;
 		
-		public function ActionDefineFunction2(code:uint, length:uint) {
-			super(code, length);
+		public function ActionDefineFunction2(code:uint, length:uint, pos:uint) {
+			super(code, length, pos);
 			functionParams = new Vector.<SWFRegisterParam>();
 			functionBody = new Vector.<IAction>();
 		}
@@ -54,6 +54,7 @@
 			while (data.position < bodyEndPosition) {
 				functionBody.push(data.readACTIONRECORD());
 			}
+			Action.resolveOffsets(functionBody);
 		}
 		
 		override public function publish(data:SWFData):void {
@@ -89,7 +90,7 @@
 		
 		override public function clone():IAction {
 			var i:uint;
-			var action:ActionDefineFunction2 = new ActionDefineFunction2(code, length);
+			var action:ActionDefineFunction2 = new ActionDefineFunction2(code, length, pos);
 			action.functionName = functionName;
 			for (i = 0; i < functionParams.length; i++) {
 				action.functionParams.push(functionParams[i]);

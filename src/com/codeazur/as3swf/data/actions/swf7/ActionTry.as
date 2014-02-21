@@ -17,9 +17,9 @@
 		public var catchBody:Vector.<IAction>;
 		public var finallyBody:Vector.<IAction>;
 		
-		public function ActionTry(code:uint, length:uint)
+		public function ActionTry(code:uint, length:uint, pos:uint)
 		{
-			super(code, length);
+			super(code, length, pos);
 			tryBody = new Vector.<IAction>();
 			catchBody = new Vector.<IAction>();
 			finallyBody = new Vector.<IAction>();
@@ -50,6 +50,9 @@
 			while (data.position < finallyEndPosition) {
 				finallyBody.push(data.readACTIONRECORD());
 			}
+			Action.resolveOffsets(tryBody);
+			Action.resolveOffsets(catchBody);
+			Action.resolveOffsets(finallyBody);
 		}
 		
 		override public function publish(data:SWFData):void {
@@ -88,7 +91,7 @@
 		
 		override public function clone():IAction {
 			var i:uint;
-			var action:ActionTry = new ActionTry(code, length);
+			var action:ActionTry = new ActionTry(code, length, pos);
 			action.catchInRegisterFlag = catchInRegisterFlag;
 			action.finallyBlockFlag = finallyBlockFlag;
 			action.catchBlockFlag = catchBlockFlag;

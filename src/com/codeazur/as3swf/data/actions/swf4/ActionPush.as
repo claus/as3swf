@@ -11,8 +11,8 @@
 		
 		public var values:Vector.<SWFActionValue>;
 		
-		public function ActionPush(code:uint, length:uint) {
-			super(code, length);
+		public function ActionPush(code:uint, length:uint, pos:uint) {
+			super(code, length, pos);
 			values = new Vector.<SWFActionValue>();
 		}
 		
@@ -32,7 +32,7 @@
 		}
 		
 		override public function clone():IAction {
-			var action:ActionPush = new ActionPush(code, length);
+			var action:ActionPush = new ActionPush(code, length, pos);
 			for (var i:uint = 0; i < values.length; i++) {
 				action.values.push(values[i].clone());
 			}

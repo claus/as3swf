@@ -6,8 +6,8 @@
 	{
 		public static const CODE:uint = 0x51;
 		
-		public function ActionDecrement(code:uint, length:uint) {
-			super(code, length);
+		public function ActionDecrement(code:uint, length:uint, pos:uint) {
+			super(code, length, pos);
 		}
 		
 		override public function toString(indent:uint = 0):String {

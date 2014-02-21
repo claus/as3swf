@@ -10,8 +10,8 @@
 		
 		public var withBody:Vector.<IAction>;
 		
-		public function ActionWith(code:uint, length:uint) {
-			super(code, length);
+		public function ActionWith(code:uint, length:uint, pos:uint) {
+			super(code, length, pos);
 			withBody = new Vector.<IAction>();
 		}
 		
@@ -21,6 +21,7 @@
 			while (data.position < bodyEndPosition) {
 				withBody.push(data.readACTIONRECORD());
 			}
+			Action.resolveOffsets(withBody);
 		}
 		
 		override public function publish(data:SWFData):void {
@@ -35,7 +36,7 @@
 		}
 		
 		override public function clone():IAction {
-			var action:ActionWith = new ActionWith(code, length);
+			var action:ActionWith = new ActionWith(code, length, pos);
 			for (var i:uint = 0; i < withBody.length; i++) {
 				action.withBody.push(withBody[i].clone());
 			}

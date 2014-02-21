@@ -9,8 +9,8 @@
 		
 		public var frame:uint;
 		
-		public function ActionGotoFrame(code:uint, length:uint) {
-			super(code, length);
+		public function ActionGotoFrame(code:uint, length:uint, pos:uint) {
+			super(code, length, pos);
 		}
 		
 		override public function parse(data:SWFData):void {
@@ -24,7 +24,7 @@
 		}
 		
 		override public function clone():IAction {
-			var action:ActionGotoFrame = new ActionGotoFrame(code, length);
+			var action:ActionGotoFrame = new ActionGotoFrame(code, length, pos);
 			action.frame = frame;
 			return action;
 		}

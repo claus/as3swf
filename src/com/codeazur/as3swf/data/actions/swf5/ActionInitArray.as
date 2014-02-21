@@ -6,8 +6,8 @@
 	{
 		public static const CODE:uint = 0x42;
 		
-		public function ActionInitArray(code:uint, length:uint) {
-			super(code, length);
+		public function ActionInitArray(code:uint, length:uint, pos:uint) {
+			super(code, length, pos);
 		}
 		
 		override public function toString(indent:uint = 0):String {

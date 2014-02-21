@@ -642,11 +642,12 @@
 		/////////////////////////////////////////////////////////
 		
 		public function readACTIONRECORD():IAction {
+			var pos:uint = position;
 			var action:IAction;
 			var actionCode:uint = readUI8();
 			if (actionCode != 0) {
 				var actionLength:uint = (actionCode >= 0x80) ? readUI16() : 0;
-				action = SWFActionFactory.create(actionCode, actionLength);
+				action = SWFActionFactory.create(actionCode, actionLength, pos);
 				action.parse(this);
 			}
 			return action;

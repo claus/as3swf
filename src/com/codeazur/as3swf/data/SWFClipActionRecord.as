@@ -1,6 +1,7 @@
 ﻿package com.codeazur.as3swf.data
 {
 	import com.codeazur.as3swf.SWFData;
+	import com.codeazur.as3swf.data.actions.Action;
 	import com.codeazur.as3swf.data.actions.IAction;
 	import com.codeazur.utils.StringUtils;
 	
@@ -30,6 +31,7 @@
 			while ((action = data.readACTIONRECORD()) != null) {
 				_actions.push(action);
 			}
+			Action.resolveOffsets(_actions);
 		}
 		
 		public function publish(data:SWFData, version:uint):void {

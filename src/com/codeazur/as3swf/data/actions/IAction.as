@@ -6,6 +6,8 @@
 	{
 		function get code():uint;
 		function get length():uint;
+		function get lengthWithHeader():uint;
+		function get pos():uint;
 		
 		function parse(data:SWFData):void;
 		function publish(data:SWFData):void;

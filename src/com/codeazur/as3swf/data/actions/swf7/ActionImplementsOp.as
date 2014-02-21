@@ -6,8 +6,8 @@
 	{
 		public static const CODE:uint = 0x2c;
 		
-		public function ActionImplementsOp(code:uint, length:uint) {
-			super(code, length);
+		public function ActionImplementsOp(code:uint, length:uint, pos:uint) {
+			super(code, length, pos);
 		}
 		
 		override public function toString(indent:uint = 0):String {

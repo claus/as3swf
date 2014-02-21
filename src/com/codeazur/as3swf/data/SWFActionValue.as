@@ -4,6 +4,9 @@
 	import com.codeazur.as3swf.data.consts.ActionValueType;
 	import com.codeazur.utils.StringUtils;
 	
+	import flash.utils.ByteArray;
+	import flash.utils.Endian;
+	
 	public class SWFActionValue
 	{
 		public var type:uint;
@@ -13,6 +16,15 @@
 		public var boolean:Boolean;
 		public var integer:uint;
 		public var constant:uint;
+
+		private static var ba:ByteArray = initTmpBuffer();
+
+		private static function initTmpBuffer():ByteArray {
+			var baTmp:ByteArray = new ByteArray();
+			baTmp.endian = Endian.LITTLE_ENDIAN;
+			baTmp.length = 8;
+			return baTmp;
+		}
 
 		public function SWFActionValue(data:SWFData = null) {
 			if (data != null) {
@@ -29,7 +41,18 @@
 				case ActionValueType.UNDEFINED: break;
 				case ActionValueType.REGISTER: register = data.readUI8(); break;
 				case ActionValueType.BOOLEAN: boolean = (data.readUI8() != 0); break;
-				case ActionValueType.DOUBLE: number = data.readDOUBLE(); break;
+				case ActionValueType.DOUBLE:
+					ba.position = 0;
+					ba[4] = data.readUI8();
+					ba[5] = data.readUI8();
+					ba[6] = data.readUI8();
+					ba[7] = data.readUI8();
+					ba[0] = data.readUI8();
+					ba[1] = data.readUI8();
+					ba[2] = data.readUI8();
+					ba[3] = data.readUI8();
+					number = ba.readDouble();
+					break;
 				case ActionValueType.INTEGER: integer = data.readUI32(); break;
 				case ActionValueType.CONSTANT_8: constant = data.readUI8(); break;
 				case ActionValueType.CONSTANT_16: constant = data.readUI16(); break;
@@ -47,7 +70,18 @@
 				case ActionValueType.UNDEFINED: break;
 				case ActionValueType.REGISTER: data.writeUI8(register); break;
 				case ActionValueType.BOOLEAN: data.writeUI8(boolean ? 1 : 0); break;
-				case ActionValueType.DOUBLE: data.writeDOUBLE(number); break;
+				case ActionValueType.DOUBLE:
+					ba.position = 0;
+					ba.writeDouble(number);
+					data.writeUI8(ba[4]);
+					data.writeUI8(ba[5]);
+					data.writeUI8(ba[6]);
+					data.writeUI8(ba[7]);
+					data.writeUI8(ba[0]);
+					data.writeUI8(ba[1]);
+					data.writeUI8(ba[2]);
+					data.writeUI8(ba[3]);
+					break;
 				case ActionValueType.INTEGER: data.writeUI32(integer); break;
 				case ActionValueType.CONSTANT_8: data.writeUI8(constant); break;
 				case ActionValueType.CONSTANT_16: data.writeUI16(constant); break;
@@ -83,17 +117,15 @@
 			var str:String = "";
 			switch (type) {
 				case ActionValueType.STRING: str = StringUtils.simpleEscape(string) + " (string)"; break;
-				case ActionValueType.FLOAT: str = number + " (number)"; break;
+				case ActionValueType.FLOAT: str = number + " (float)"; break;
 				case ActionValueType.NULL: str = "null";  break;
 				case ActionValueType.UNDEFINED: str = "undefined";  break;
 				case ActionValueType.REGISTER: str = register + " (register)"; break;
 				case ActionValueType.BOOLEAN: str = boolean + " (boolean)"; break;
 				case ActionValueType.DOUBLE: str = number + " (double)"; break;
 				case ActionValueType.INTEGER: str = integer + " (integer)"; break;
-				case ActionValueType.CONSTANT_8:
-				case ActionValueType.CONSTANT_16:
-					str = constant + " (constant)";
-					break;
+				case ActionValueType.CONSTANT_8: str = constant + " (constant8)"; break;
+				case ActionValueType.CONSTANT_16: str = constant + " (constant16)"; break;
 				default:
 					str = "unknown";
 					break;

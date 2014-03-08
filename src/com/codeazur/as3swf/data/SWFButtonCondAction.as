@@ -1,7 +1,9 @@
 ﻿package com.codeazur.as3swf.data
 {
+	import com.codeazur.as3swf.SWF;
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.actions.Action;
+	import com.codeazur.as3swf.data.actions.ActionExecutionContext;
 	import com.codeazur.as3swf.data.actions.IAction;
 	import com.codeazur.utils.StringUtils;
 	
@@ -20,6 +22,8 @@
 		public var condKeyPress:uint;
 
 		protected var _actions:Vector.<IAction>;
+		
+		protected var labelCount:uint;
 		
 		public function SWFButtonCondAction(data:SWFData = null) {
 			_actions = new Vector.<IAction>();
@@ -46,7 +50,7 @@
 			while ((action = data.readACTIONRECORD()) != null) {
 				_actions.push(action);
 			}
-			Action.resolveOffsets(_actions);
+			labelCount = Action.resolveOffsets(_actions);
 		}
 		
 		public function publish(data:SWFData):void {
@@ -88,7 +92,7 @@
 			return condAction;
 		}
 		
-		public function toString(indent:uint = 0):String {
+		public function toString(indent:uint = 0, flags:uint = 0):String {
 			var a:Array = [];
 			if (condIdleToOverDown) { a.push("idleToOverDown"); }
 			if (condOutDownToIdle) { a.push("outDownToIdle"); }
@@ -99,9 +103,22 @@
 			if (condOverUpToIdle) { a.push("overUpToIdle"); }
 			if (condIdleToOverUp) { a.push("idleToOverUp"); }
 			if (condOverDownToIdle) { a.push("overDownToIdle"); }
-			var str:String = "Cond: (" + a.join(",") + "), KeyPress: " + condKeyPress;
-			for (var i:uint = 0; i < _actions.length; i++) {
-				str += "\n" + StringUtils.repeat(indent + 2) + "[" + i + "] " + _actions[i].toString(indent + 2);
+			var str:String = "CondActionRecord (" + a.join(", ") + ")";
+			if (condKeyPress > 0) {
+				str += ", KeyPress: " + condKeyPress;
+			}
+			if ((flags & SWF.TOSTRING_FLAG_AVM1_BYTECODE) == 0) {
+				for (var i:uint = 0; i < _actions.length; i++) {
+					str += "\n" + StringUtils.repeat(indent + 2) + "[" + i + "] " + _actions[i].toString(indent + 2);
+				}
+			} else {
+				var context:ActionExecutionContext = new ActionExecutionContext(_actions, [], labelCount);
+				for (i = 0; i < _actions.length; i++) {
+					str += "\n" + StringUtils.repeat(indent + 4) + _actions[i].toBytecode(indent + 4, context);
+				}
+				if(context.endLabel != null) {
+					str += "\n" + StringUtils.repeat(indent + 4) + context.endLabel + ":";
+				}
 			}
 			return str;
 		}

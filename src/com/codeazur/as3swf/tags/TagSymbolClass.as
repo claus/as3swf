@@ -1,7 +1,6 @@
 ﻿package com.codeazur.as3swf.tags
 {
 	import com.codeazur.as3swf.SWFData;
-	import com.codeazur.as3swf.data.SWFRecordHeader;
 	import com.codeazur.as3swf.data.SWFSymbol;
 	import com.codeazur.utils.StringUtils;
 	
@@ -40,7 +39,7 @@
 		public function get version():uint { return 9; } // educated guess (not specified in SWF10 spec)
 		public function get level():uint { return 1; }
 	
-		public function toString(indent:uint = 0):String {
+		public function toString(indent:uint = 0, flags:uint = 0):String {
 			var str:String = Tag.toStringCommon(type, name, indent);
 			if (_symbols.length > 0) {
 				str += "\n" + StringUtils.repeat(indent + 2) + "Symbols:";

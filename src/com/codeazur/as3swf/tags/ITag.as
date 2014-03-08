@@ -11,6 +11,6 @@
 		
 		function parse(data:SWFData, length:uint, version:uint, async:Boolean = false):void;
 		function publish(data:SWFData, version:uint):void;
-		function toString(indent:uint = 0):String;
+		function toString(indent:uint = 0, flags:uint = 0):String;
 	}
 }

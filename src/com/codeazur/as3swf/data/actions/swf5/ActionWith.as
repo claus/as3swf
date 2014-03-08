@@ -10,9 +10,12 @@
 		
 		public var withBody:Vector.<IAction>;
 		
+		protected var labelCount:uint;
+		
 		public function ActionWith(code:uint, length:uint, pos:uint) {
 			super(code, length, pos);
 			withBody = new Vector.<IAction>();
+			labelCount = 0;
 		}
 		
 		override public function parse(data:SWFData):void {
@@ -21,7 +24,7 @@
 			while (data.position < bodyEndPosition) {
 				withBody.push(data.readACTIONRECORD());
 			}
-			Action.resolveOffsets(withBody);
+			labelCount = Action.resolveOffsets(withBody);
 		}
 		
 		override public function publish(data:SWFData):void {
@@ -48,6 +51,21 @@
 			for (var i:uint = 0; i < withBody.length; i++) {
 				str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + withBody[i].toString(indent + 4);
 			}
+			return str;
+		}
+		
+		override public function toBytecode(indent:uint, context:ActionExecutionContext):String {
+			var str:String = toBytecodeLabel(indent) + "with {"; 
+			var context:ActionExecutionContext = new ActionExecutionContext(withBody, context.cpool.concat(), labelCount);
+			for (var i:uint = 0; i < withBody.length; i++) {
+				if(withBody[i]) {
+					str += "\n" + StringUtils.repeat(indent + 4) + withBody[i].toBytecode(indent + 4, context);
+				}
+			}
+			if(context.endLabel != null) {
+				str += "\n" + StringUtils.repeat(indent + 4) + context.endLabel + ":";
+			}
+			str += "\n" + StringUtils.repeat(indent + 2) + "}";
 			return str;
 		}
 	}

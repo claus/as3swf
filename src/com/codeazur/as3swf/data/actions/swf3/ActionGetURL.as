@@ -36,5 +36,9 @@
 		override public function toString(indent:uint = 0):String {
 			return "[ActionGetURL] URL: " + urlString + ", Target: " + targetString;
 		}
+		
+		override public function toBytecode(indent:uint, context:ActionExecutionContext):String {
+			return toBytecodeLabel(indent) + "getURL \"" + urlString + "\", \"" + targetString + "\"";
+		}
 	}
 }

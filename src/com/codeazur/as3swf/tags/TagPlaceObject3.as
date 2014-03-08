@@ -157,7 +157,7 @@
 		override public function get version():uint { return 8; }
 		override public function get level():uint { return 3; }
 
-		override public function toString(indent:uint = 0):String {
+		override public function toString(indent:uint = 0, flags:uint = 0):String {
 			var str:String = Tag.toStringCommon(type, name, indent) +
 				"Depth: " + depth;
 			if (hasClassName /*|| (hasImage && hasCharacter)*/) { str += ", ClassName: " + className; }

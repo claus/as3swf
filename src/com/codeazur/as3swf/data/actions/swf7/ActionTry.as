@@ -16,13 +16,20 @@
 		public var tryBody:Vector.<IAction>;
 		public var catchBody:Vector.<IAction>;
 		public var finallyBody:Vector.<IAction>;
-		
+
+		protected var labelCountTry:uint;
+		protected var labelCountCatch:uint;
+		protected var labelCountFinally:uint;
+
 		public function ActionTry(code:uint, length:uint, pos:uint)
 		{
 			super(code, length, pos);
 			tryBody = new Vector.<IAction>();
 			catchBody = new Vector.<IAction>();
 			finallyBody = new Vector.<IAction>();
+			labelCountTry = 0;
+			labelCountCatch = 0;
+			labelCountFinally = 0;
 		}
 		
 		override public function parse(data:SWFData):void {
@@ -50,9 +57,9 @@
 			while (data.position < finallyEndPosition) {
 				finallyBody.push(data.readACTIONRECORD());
 			}
-			Action.resolveOffsets(tryBody);
-			Action.resolveOffsets(catchBody);
-			Action.resolveOffsets(finallyBody);
+			labelCountTry = Action.resolveOffsets(tryBody);
+			labelCountCatch = Action.resolveOffsets(catchBody);
+			labelCountFinally = Action.resolveOffsets(finallyBody);
 		}
 		
 		override public function publish(data:SWFData):void {
@@ -130,6 +137,48 @@
 				for (i = 0; i < finallyBody.length; i++) {
 					str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + finallyBody[i].toString(indent + 4);
 				}
+			}
+			return str;
+		}
+		
+		override public function toBytecode(indent:uint, context:ActionExecutionContext):String {
+			var str:String = lbl ? lbl + ":\n" : "";
+			var lf:String = "";
+			var i:uint;
+			if (tryBody.length) {
+				str += lf + StringUtils.repeat(indent + 2) + "try {";
+				var contextTry:ActionExecutionContext = new ActionExecutionContext(tryBody, context.cpool.concat(), labelCountTry);
+				for (i = 0; i < tryBody.length; i++) {
+					str += "\n" + StringUtils.repeat(indent + 4) + tryBody[i].toBytecode(indent + 4, contextTry);
+				}
+				if(contextTry.endLabel != null) {
+					str += "\n" + StringUtils.repeat(indent + 4) + contextTry.endLabel + ":";
+				}
+				str += "\n" + StringUtils.repeat(indent + 2) + "}";
+				lf = "\n";
+			}
+			if (catchBody.length) {
+				str += lf + StringUtils.repeat(indent + 2) + "catch(" + ((catchInRegisterFlag) ? "$" + catchRegister : catchName) + ") {";
+				var contextCatch:ActionExecutionContext = new ActionExecutionContext(catchBody, context.cpool.concat(), labelCountCatch);
+				for (i = 0; i < catchBody.length; i++) {
+					str += "\n" + StringUtils.repeat(indent + 4) + catchBody[i].toBytecode(indent + 4, contextCatch);
+				}
+				if(contextCatch.endLabel != null) {
+					str += "\n" + StringUtils.repeat(indent + 4) + contextCatch.endLabel + ":";
+				}
+				str += "\n" + StringUtils.repeat(indent + 2) + "}";
+				lf = "\n";
+			}
+			if (finallyBody.length) {
+				str += lf + StringUtils.repeat(indent + 2) + "finally {";
+				var contextFinally:ActionExecutionContext = new ActionExecutionContext(finallyBody, context.cpool.concat(), labelCountFinally);
+				for (i = 0; i < finallyBody.length; i++) {
+					str += "\n" + StringUtils.repeat(indent + 4) + finallyBody[i].toBytecode(indent + 4, contextFinally);
+				}
+				if(contextFinally.endLabel != null) {
+					str += "\n" + StringUtils.repeat(indent + 4) + contextFinally.endLabel + ":";
+				}
+				str += "\n" + StringUtils.repeat(indent + 2) + "}";
 			}
 			return str;
 		}

@@ -50,5 +50,17 @@
 			bi += "]";
 			return "[ActionJump] BranchOffset: " + branchOffset + bi;
 		}
+		
+		override public function toBytecode(indent:uint, context:ActionExecutionContext):String {
+			var ls:String = "";
+			if (_branchIndex >= 0) {
+				ls += context.actions[_branchIndex].lbl;
+			} else if (_branchIndex == -1) {
+				ls += "L" + (context.labelCount + 1);
+			} else {
+				ls += "ILLEGAL BRANCH";
+			}
+			return toBytecodeLabel(indent) + "jump " + ls;
+		}
 	}
 }

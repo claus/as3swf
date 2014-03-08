@@ -1,7 +1,6 @@
 package com.codeazur.as3swf.tags
 {
 	import com.codeazur.as3swf.SWFData;
-	import com.codeazur.utils.StringUtils;
 	
 	import flash.utils.ByteArray;
 	
@@ -53,7 +52,7 @@ package com.codeazur.as3swf.tags
 		public function get version():uint { return 3; }
 		public function get level():uint { return 1; }
 
-		public function toString(indent:uint = 0):String {
+		public function toString(indent:uint = 0, flags:uint = 0):String {
 			var str:String = Tag.toStringCommon(type, name, indent) +
 				"ID: " + characterId;
 			if (binaryData.length > 0) {

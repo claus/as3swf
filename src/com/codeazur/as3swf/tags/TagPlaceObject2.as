@@ -86,7 +86,7 @@
 		override public function get version():uint { return 3; }
 		override public function get level():uint { return 2; }
 
-		override public function toString(indent:uint = 0):String {
+		override public function toString(indent:uint = 0, flags:uint = 0):String {
 			var str:String = Tag.toStringCommon(type, name, indent) +
 				"Depth: " + depth;
 			if (hasCharacter) { str += ", CharacterID: " + characterId; }
@@ -96,7 +96,7 @@
 			if (hasName) { str += ", Name: " + instanceName; }
 			if (hasClipDepth) { str += ", ClipDepth: " + clipDepth; }
 			if (hasClipActions && clipActions != null) {
-				str += "\n" + StringUtils.repeat(indent + 2) + clipActions.toString(indent + 2);
+				str += "\n" + StringUtils.repeat(indent + 2) + clipActions.toString(indent + 2, flags);
 			}
 			return str;
 		}

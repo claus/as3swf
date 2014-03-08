@@ -2,6 +2,7 @@
 {
 	import com.codeazur.as3swf.data.SWFRectangle;
 	import com.codeazur.as3swf.events.SWFProgressEvent;
+	import com.codeazur.utils.StringUtils;
 	
 	import flash.utils.ByteArray;
 
@@ -22,6 +23,9 @@
 		
 		public static const COMPRESSION_METHOD_ZLIB:String = "zlib";
 		public static const COMPRESSION_METHOD_LZMA:String = "lzma";
+		
+		public static const TOSTRING_FLAG_TIMELINE_STRUCTURE:uint = 0x01;  
+		public static const TOSTRING_FLAG_AVM1_BYTECODE:uint = 0x02;
 		
 		protected static const FILE_LENGTH_POS:uint = 4;
 		protected static const COMPRESSION_START_POS:uint = 8;
@@ -158,11 +162,14 @@
 			data.position = 0;
 		}
 
-		override public function toString(indent:uint = 0):String {
-			var s:String = "[SWF]\n" +
-				"  Header:\n" +
-				"    Version: " + version + "\n" +
-				"    Compression: ";
+		override public function toString(indent:uint = 0, flags:uint = 0):String {
+			var indent0:String = StringUtils.repeat(indent);
+			var indent2:String = StringUtils.repeat(indent + 2);
+			var indent4:String = StringUtils.repeat(indent + 4);
+			var s:String = indent0 + "[SWF]\n" +
+				indent2 + "Header:\n" +
+				indent4 + "Version: " + version + "\n" +
+				indent4 + "Compression: ";
 			if(compressed) {
 				if(compressionMethod == COMPRESSION_METHOD_ZLIB) {
 					s += "ZLIB";
@@ -174,11 +181,11 @@
 			} else {
 				s += "None";
 			}
-			return s + "\n    FileLength: " + fileLength + "\n" +
-				"    FileLengthCompressed: " + fileLengthCompressed + "\n" +
-				"    FrameSize: " + frameSize.toStringSize() + "\n" +
-				"    FrameRate: " + frameRate + "\n" +
-				"    FrameCount: " + frameCount +
+			return s + "\n" + indent4 + "FileLength: " + fileLength + "\n" +
+				indent4 + "FileLengthCompressed: " + fileLengthCompressed + "\n" +
+				indent4 + "FrameSize: " + frameSize.toStringSize() + "\n" +
+				indent4 + "FrameRate: " + frameRate + "\n" +
+				indent4 + "FrameCount: " + frameCount +
 				super.toString(indent);
 		}
 	}

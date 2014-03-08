@@ -39,7 +39,7 @@
 		public function get version():uint { return 5; }
 		public function get level():uint { return 1; }
 	
-		public function toString(indent:uint = 0):String {
+		public function toString(indent:uint = 0, flags:uint = 0):String {
 			var str:String = Tag.toStringCommon(type, name, indent);
 			if (_symbols.length > 0) {
 				str += "\n" + StringUtils.repeat(indent + 2) + "Assets:";

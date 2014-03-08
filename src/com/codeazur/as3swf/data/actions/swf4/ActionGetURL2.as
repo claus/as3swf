@@ -49,6 +49,13 @@
 				"LoadVariablesFlag: " + loadVariablesFlag;
 		}
 		
+		override public function toBytecode(indent:uint, context:ActionExecutionContext):String {
+			return toBytecodeLabel(indent) + 
+				"getUrl2 (method: " + sendVarsMethodToString() + ", target: " +
+				(loadTargetFlag == 0 ? "window" : "sprite") + ", variables: " +
+				(loadVariablesFlag == 0 ? "no" : "yes") + ")";
+		}
+		
 		public function sendVarsMethodToString():String {
 			if (!sendVarsMethod) {
 				return "None";

@@ -40,10 +40,10 @@
 			}
 		}
 		
-		public function toString(indent:uint = 0):String {
+		public function toString(indent:uint = 0, flags:uint = 0):String {
 			var str:String = "ClipActions (" + eventFlags.toString() + "):";
 			for (var i:uint = 0; i < _records.length; i++) {
-				str += "\n" + StringUtils.repeat(indent + 2) + "[" + i + "] " + _records[i].toString(indent + 2);
+				str += "\n" + StringUtils.repeat(indent + 2) + "[" + i + "] " + _records[i].toString(indent + 2, flags);
 			}
 			return str;
 		}

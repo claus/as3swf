@@ -1,8 +1,10 @@
 ﻿package com.codeazur.as3swf.tags
 {
+	import com.codeazur.as3swf.SWF;
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.SWFButtonRecord;
 	import com.codeazur.as3swf.data.actions.Action;
+	import com.codeazur.as3swf.data.actions.ActionExecutionContext;
 	import com.codeazur.as3swf.data.actions.IAction;
 	import com.codeazur.utils.StringUtils;
 	
@@ -23,6 +25,8 @@
 		protected var _actions:Vector.<IAction>;
 		
 		protected var frames:Dictionary;
+		
+		protected var labelCount:uint;
 		
 		public function TagDefineButton() {
 			_characters = new Vector.<SWFButtonRecord>();
@@ -46,7 +50,7 @@
 			while ((action = data.readACTIONRECORD()) != null) {
 				_actions.push(action);
 			}
-			Action.resolveOffsets(_actions);
+			labelCount = Action.resolveOffsets(_actions);
 			processRecords();
 		}
 		
@@ -116,7 +120,7 @@
 			}
 		}
 		
-		public function toString(indent:uint = 0):String {
+		public function toString(indent:uint = 0, flags:uint = 0):String {
 			var str:String = Tag.toStringCommon(type, name, indent) +
 				"ID: " + _characterId;
 			var i:uint;
@@ -128,8 +132,18 @@
 			}
 			if (_actions.length > 0) {
 				str += "\n" + StringUtils.repeat(indent + 2) + "Actions:";
-				for (i = 0; i < _actions.length; i++) {
-					str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + _actions[i].toString(indent + 4);
+				if ((flags & SWF.TOSTRING_FLAG_AVM1_BYTECODE) == 0) {
+					for (i = 0; i < _actions.length; i++) {
+						str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + _actions[i].toString(indent + 4);
+					}
+				} else {
+					var context:ActionExecutionContext = new ActionExecutionContext(_actions, [], labelCount);
+					for (i = 0; i < _actions.length; i++) {
+						str += "\n" + StringUtils.repeat(indent + 4) + _actions[i].toBytecode(indent + 4, context);
+					}
+					if(context.endLabel != null) {
+						str += "\n" + StringUtils.repeat(indent + 6) + context.endLabel + ":";
+					}
 				}
 			}
 			return str;

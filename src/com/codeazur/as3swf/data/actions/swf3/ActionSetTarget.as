@@ -32,5 +32,9 @@
 		override public function toString(indent:uint = 0):String {
 			return "[ActionSetTarget] TargetName: " + targetName;
 		}
+		
+		override public function toBytecode(indent:uint, context:ActionExecutionContext):String {
+			return toBytecodeLabel(indent) + "setTarget \"" + targetName + "\"";
+		}
 	}
 }

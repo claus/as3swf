@@ -53,5 +53,12 @@
 			}
 			return str;
 		}
+		
+		override public function toBytecode(indent:uint, context:ActionExecutionContext):String {
+			return toBytecodeLabel(indent) + "gotoFrame2 (" +
+				(playFlag == 0 ? "gotoAndStop" : "gotoAndPlay") +
+				(sceneBiasFlag == 1 ? ", sceneBias: " + sceneBias : "") +
+				")";
+		}
 	}
 }

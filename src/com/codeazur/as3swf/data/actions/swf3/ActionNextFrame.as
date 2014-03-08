@@ -14,5 +14,9 @@
 		override public function toString(indent:uint = 0):String {
 			return "[ActionNextFrame]";
 		}
+		
+		override public function toBytecode(indent:uint, context:ActionExecutionContext):String {
+			return toBytecodeLabel(indent) + "nextFrame";
+		}
 	}
 }

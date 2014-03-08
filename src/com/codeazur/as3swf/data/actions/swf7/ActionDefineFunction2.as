@@ -3,6 +3,7 @@
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.SWFRegisterParam;
 	import com.codeazur.as3swf.data.actions.Action;
+	import com.codeazur.as3swf.data.actions.ActionExecutionContext;
 	import com.codeazur.as3swf.data.actions.IAction;
 	import com.codeazur.utils.StringUtils;
 	
@@ -25,10 +26,13 @@
 		public var suppressArguments:Boolean;
 		public var suppressThis:Boolean;
 		
+		protected var labelCount:uint;
+		
 		public function ActionDefineFunction2(code:uint, length:uint, pos:uint) {
 			super(code, length, pos);
 			functionParams = new Vector.<SWFRegisterParam>();
 			functionBody = new Vector.<IAction>();
+			labelCount = 0;
 		}
 		
 		override public function parse(data:SWFData):void {
@@ -54,7 +58,7 @@
 			while (data.position < bodyEndPosition) {
 				functionBody.push(data.readACTIONRECORD());
 			}
-			Action.resolveOffsets(functionBody);
+			labelCount = Action.resolveOffsets(functionBody);
 		}
 		
 		override public function publish(data:SWFData):void {
@@ -130,6 +134,40 @@
 			for (var i:uint = 0; i < functionBody.length; i++) {
 				str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + functionBody[i].toString(indent + 4);
 			}
+			return str;
+		}
+		
+		override public function toBytecode(indent:uint, context:ActionExecutionContext):String {
+			var str:String = toBytecodeLabel(indent) + "defineFunction2 " + 
+				((functionName == null || functionName.length == 0) ? "" : functionName) +
+				"(" + functionParams.join(", ") + ") {";
+			var preload:Array = [];
+			var suppress:Array = [];
+			if (preloadParent) { preload.push("parent"); }
+			if (preloadRoot) { preload.push("root"); }
+			if (preloadSuper) { preload.push("super"); }
+			if (preloadArguments) { preload.push("arguments"); }
+			if (preloadThis) { preload.push("this"); }
+			if (preloadGlobal) { preload.push("global"); }
+			if (suppressSuper) { suppress.push("super"); }
+			if (suppressArguments) { suppress.push("arguments"); }
+			if (suppressThis) { suppress.push("this"); }
+			if (preload.length > 0) {
+				str += "\n" + StringUtils.repeat(indent + 4) + "// preload: " + preload.join(", ");
+			}
+			if (suppress.length > 0) {
+				str += "\n" + StringUtils.repeat(indent + 4) + "// suppress: " + suppress.join(", ");
+			}
+			var context:ActionExecutionContext = new ActionExecutionContext(functionBody, context.cpool.concat(), labelCount);
+			for (var i:uint = 0; i < functionBody.length; i++) {
+				if(functionBody[i]) {
+					str += "\n" + StringUtils.repeat(indent + 4) + functionBody[i].toBytecode(indent + 4, context);
+				}
+			}
+			if(context.endLabel != null) {
+				str += "\n" + StringUtils.repeat(indent + 4) + context.endLabel + ":";
+			}
+			str += "\n" + StringUtils.repeat(indent + 2) + "}";
 			return str;
 		}
 	}

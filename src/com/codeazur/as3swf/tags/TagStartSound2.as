@@ -30,7 +30,7 @@
 		public function get version():uint { return 9; }
 		public function get level():uint { return 2; }
 		
-		public function toString(indent:uint = 0):String {
+		public function toString(indent:uint = 0, flags:uint = 0):String {
 			var str:String = Tag.toStringCommon(type, name, indent) +
 				"SoundClassName: " + soundClassName + ", " +
 				"SoundInfo: " + soundInfo;

@@ -32,5 +32,9 @@
 		override public function toString(indent:uint = 0):String {
 			return "[ActionGotoLabel] Label: " + label;
 		}
+		
+		override public function toBytecode(indent:uint, context:ActionExecutionContext):String {
+			return toBytecodeLabel(indent) + "gotoLabel \"" + label + "\"";
+		}
 	}
 }

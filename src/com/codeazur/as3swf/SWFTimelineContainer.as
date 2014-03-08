@@ -496,7 +496,7 @@ package com.codeazur.as3swf
 			}	
 		}
 		
-		public function toString(indent:uint = 0):String {
+		public function toString(indent:uint = 0, flags:uint = 0):String {
 			var i:uint;
 			var str:String = "";
 			if (tags.length > 0) {
@@ -505,23 +505,25 @@ package com.codeazur.as3swf
 					str += "\n" + tags[i].toString(indent + 4);
 				}
 			}
-			if (scenes.length > 0) {
-				str += "\n" + StringUtils.repeat(indent + 2) + "Scenes:";
-				for (i = 0; i < scenes.length; i++) {
-					str += "\n" + scenes[i].toString(indent + 4);
+			if ((flags & SWF.TOSTRING_FLAG_TIMELINE_STRUCTURE) != 0) {
+				if (scenes.length > 0) {
+					str += "\n" + StringUtils.repeat(indent + 2) + "Scenes:";
+					for (i = 0; i < scenes.length; i++) {
+						str += "\n" + scenes[i].toString(indent + 4);
+					}
 				}
-			}
-			if (frames.length > 0) {
-				str += "\n" + StringUtils.repeat(indent + 2) + "Frames:";
-				for (i = 0; i < frames.length; i++) {
-					str += "\n" + frames[i].toString(indent + 4);
+				if (frames.length > 0) {
+					str += "\n" + StringUtils.repeat(indent + 2) + "Frames:";
+					for (i = 0; i < frames.length; i++) {
+						str += "\n" + frames[i].toString(indent + 4);
+					}
 				}
-			}
-			if (layers.length > 0) {
-				str += "\n" + StringUtils.repeat(indent + 2) + "Layers:";
-				for (i = 0; i < layers.length; i++) {
-					str += "\n" + StringUtils.repeat(indent + 4) + 
-						"[" + i + "] " + layers[i].toString(indent + 4);
+				if (layers.length > 0) {
+					str += "\n" + StringUtils.repeat(indent + 2) + "Layers:";
+					for (i = 0; i < layers.length; i++) {
+						str += "\n" + StringUtils.repeat(indent + 4) + 
+							"[" + i + "] " + layers[i].toString(indent + 4);
+					}
 				}
 			}
 			return str;

@@ -46,5 +46,15 @@
 			}
 			return str;
 		}
+		
+		override public function toBytecode(indent:uint, context:ActionExecutionContext):String {
+			var str:String = toBytecodeLabel(indent) + "constantPool";
+			context.cpool.length = 0;
+			for (var i:uint = 0; i < constants.length; i++) {
+				str += "\n" + StringUtils.repeat(indent + 4) + i + ": " + StringUtils.simpleEscape(constants[i]);
+				context.cpool.push(constants[i]);
+			}
+			return str;
+		}
 	}
 }

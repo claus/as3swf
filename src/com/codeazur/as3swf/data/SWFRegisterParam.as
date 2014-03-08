@@ -24,7 +24,7 @@
 		}
 		
 		public function toString():String {
-			return register + ":" + name;
+			return "$" + register + ":" + name;
 		}
 	}
 }

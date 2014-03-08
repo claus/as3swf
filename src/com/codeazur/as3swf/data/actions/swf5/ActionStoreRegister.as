@@ -32,5 +32,9 @@
 		override public function toString(indent:uint = 0):String {
 			return "[ActionStoreRegister] RegisterNumber: " + registerNumber;
 		}
+		
+		override public function toBytecode(indent:uint, context:ActionExecutionContext):String {
+			return toBytecodeLabel(indent) + "store $" + registerNumber;
+		}
 	}
 }

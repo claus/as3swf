@@ -35,7 +35,7 @@
 		public function get version():uint { return 6; }
 		public function get level():uint { return 1; }
 		
-		public function toString(indent:uint = 0):String {
+		public function toString(indent:uint = 0, flags:uint = 0):String {
 			var str:String = Tag.toStringCommon(type, name, indent) + "UUID: ";
 			if (_uuid.length == 16) {
 				str += StringUtils.printf("%02x%02x%02x%02x-", _uuid[0], _uuid[1], _uuid[2], _uuid[3]);

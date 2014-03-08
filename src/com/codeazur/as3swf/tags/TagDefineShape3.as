@@ -13,7 +13,7 @@
 		override public function get version():uint { return 3; }
 		override public function get level():uint { return 3; }
 		
-		override public function toString(indent:uint = 0):String {
+		override public function toString(indent:uint = 0, flags:uint = 0):String {
 			var str:String = Tag.toStringCommon(type, name, indent) +
 				"ID: " + characterId + ", " +
 				"Bounds: " + shapeBounds;

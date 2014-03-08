@@ -95,7 +95,7 @@
 		override public function get version():uint { return 8; }
 		override public function get level():uint { return 2; }
 		
-		override public function toString(indent:uint = 0):String {
+		override public function toString(indent:uint = 0, flags:uint = 0):String {
 			var i:uint;
 			var indent2:String = StringUtils.repeat(indent + 2);
 			var indent4:String = StringUtils.repeat(indent + 4);

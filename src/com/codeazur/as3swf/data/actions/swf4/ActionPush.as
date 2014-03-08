@@ -42,5 +42,16 @@
 		override public function toString(indent:uint = 0):String {
 			return "[ActionPush] " + values.join(", ");
 		}
+		
+		override public function toBytecode(indent:uint, context:ActionExecutionContext):String {
+			var str:String = toBytecodeLabel(indent);
+			for (var i:uint = 0; i < values.length; i++) {
+				if (i > 0) {
+					str += "\n" + StringUtils.repeat(indent + 2);
+				}
+				str += "push " + values[i].toBytecodeString(context.cpool);
+			}
+			return str;
+		}
 	}
 }

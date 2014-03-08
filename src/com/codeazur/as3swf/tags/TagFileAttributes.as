@@ -43,7 +43,7 @@
 		public function get version():uint { return 8; }
 		public function get level():uint { return 1; }
 
-		public function toString(indent:uint = 0):String {
+		public function toString(indent:uint = 0, flags:uint = 0):String {
 			return Tag.toStringCommon(type, name, indent) +
 				"AS3: " + actionscript3 + ", " +
 				"HasMetadata: " + hasMetadata + ", " +

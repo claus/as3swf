@@ -32,5 +32,9 @@
 		override public function toString(indent:uint = 0):String {
 			return "[ActionWaitForFrame2] SkipCount: " + skipCount;
 		}
+		
+		override public function toBytecode(indent:uint, context:ActionExecutionContext):String {
+			return toBytecodeLabel(indent) + "waitForFrame2 (" + skipCount + ")";
+		}
 	}
 }

@@ -2,6 +2,7 @@
 {
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.actions.Action;
+	import com.codeazur.as3swf.data.actions.ActionExecutionContext;
 	import com.codeazur.as3swf.data.actions.IAction;
 	import com.codeazur.utils.StringUtils;
 	
@@ -13,10 +14,13 @@
 		public var functionParams:Vector.<String>;
 		public var functionBody:Vector.<IAction>;
 		
+		protected var labelCount:uint;
+		
 		public function ActionDefineFunction(code:uint, length:uint, pos:uint) {
 			super(code, length, pos);
 			functionParams = new Vector.<String>();
 			functionBody = new Vector.<IAction>();
+			labelCount = 0;
 		}
 		
 		override public function parse(data:SWFData):void {
@@ -30,7 +34,7 @@
 			while (data.position < bodyEndPosition) {
 				functionBody.push(data.readACTIONRECORD());
 			}
-			Action.resolveOffsets(functionBody);
+			labelCount = Action.resolveOffsets(functionBody);
 		}
 		
 		override public function publish(data:SWFData):void {
@@ -72,6 +76,23 @@
 					str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + functionBody[i].toString(indent + 4);
 				}
 			}
+			return str;
+		}
+		
+		override public function toBytecode(indent:uint, context:ActionExecutionContext):String {
+			var str:String = toBytecodeLabel(indent) + "defineFunction " + 
+				((functionName == null || functionName.length == 0) ? "" : functionName) +
+				"(" + functionParams.join(", ") + ") {";
+			var context:ActionExecutionContext = new ActionExecutionContext(functionBody, context.cpool.concat(), labelCount);
+			for (var i:uint = 0; i < functionBody.length; i++) {
+				if(functionBody[i]) {
+					str += "\n" + StringUtils.repeat(indent + 4) + functionBody[i].toBytecode(indent + 4, context);
+				}
+			}
+			if(context.endLabel != null) {
+				str += "\n" + StringUtils.repeat(indent + 4) + context.endLabel + ":";
+			}
+			str += "\n" + StringUtils.repeat(indent + 2) + "}";
 			return str;
 		}
 	}

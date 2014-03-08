@@ -62,7 +62,7 @@
 		public function get version():uint { return 6; }
 		public function get level():uint { return 1; }
 	
-		public function toString(indent:uint = 0):String {
+		public function toString(indent:uint = 0, flags:uint = 0):String {
 			return Tag.toStringCommon(type, name, indent) +
 				"ID: " + characterId + ", " +
 				"Frames: " + numFrames + ", " +

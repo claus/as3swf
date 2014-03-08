@@ -1,7 +1,5 @@
 ﻿package com.codeazur.as3swf.tags
 {
-	import com.codeazur.as3swf.SWFData;
-	import com.codeazur.as3swf.data.SWFTextRecord;
 	import com.codeazur.utils.StringUtils;
 	
 	public class TagDefineText2 extends TagDefineText implements IDefinitionTag
@@ -15,7 +13,7 @@
 		override public function get version():uint { return 3; }
 		override public function get level():uint { return 2; }
 		
-		override public function toString(indent:uint = 0):String {
+		override public function toString(indent:uint = 0, flags:uint = 0):String {
 			var str:String = Tag.toStringCommon(type, name, indent) +
 				"ID: " + characterId + ", " +
 				"Bounds: " + textBounds + ", " +

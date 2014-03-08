@@ -126,7 +126,7 @@
 			}
 		}
 		
-		public function toString(indent:uint = 0):String {
+		public function toString(indent:uint = 0, flags:uint = 0):String {
 			var str:String = Tag.toStringCommon(type, name, indent) +
 				"ID: " + characterId + ", TrackAsMenu: " + trackAsMenu;
 			var i:uint;
@@ -139,7 +139,7 @@
 			if (_condActions.length > 0) {
 				str += "\n" + StringUtils.repeat(indent + 2) + "CondActions:";
 				for (i = 0; i < _condActions.length; i++) {
-					str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + _condActions[i].toString(indent + 4);
+					str += "\n" + StringUtils.repeat(indent + 4) + "[" + i + "] " + _condActions[i].toString(indent + 4, flags);
 				}
 			}
 			return str;

@@ -13,5 +13,9 @@
 		override public function toString(indent:uint = 0):String {
 			return "[ActionCall]";
 		}
+		
+		override public function toBytecode(indent:uint, context:ActionExecutionContext):String {
+			return toBytecodeLabel(indent) + "call";
+		}
 	}
 }

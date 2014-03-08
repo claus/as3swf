@@ -1,7 +1,9 @@
 ﻿package com.codeazur.as3swf.tags
 {
+	import com.codeazur.as3swf.SWF;
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.data.actions.Action;
+	import com.codeazur.as3swf.data.actions.ActionExecutionContext;
 	import com.codeazur.as3swf.data.actions.IAction;
 	import com.codeazur.utils.StringUtils;
 	
@@ -19,7 +21,7 @@
 			while ((action = data.readACTIONRECORD()) != null) {
 				_actions.push(action);
 			}
-			Action.resolveOffsets(_actions);
+			labelCount = Action.resolveOffsets(_actions);
 		}
 
 		override public function publish(data:SWFData, version:uint):void {
@@ -38,12 +40,23 @@
 		override public function get version():uint { return 6; }
 		override public function get level():uint { return 1; }
 
-		override public function toString(indent:uint = 0):String {
+		override public function toString(indent:uint = 0, flags:uint = 0):String {
 			var str:String = Tag.toStringCommon(type, name, indent) +
-				"SpriteID: " +spriteId + ", ";
+				"SpriteID: " + spriteId + ", " +
 				"Records: " + _actions.length;
-			for (var i:uint = 0; i < _actions.length; i++) {
-				str += "\n" + StringUtils.repeat(indent + 2) + "[" + i + "] " + _actions[i].toString(indent + 2);
+			var i:uint;
+			if ((flags & SWF.TOSTRING_FLAG_AVM1_BYTECODE) == 0) {
+				for (i = 0; i < _actions.length; i++) {
+					str += "\n" + StringUtils.repeat(indent + 2) + "[" + i + "] " + _actions[i].toString(indent + 2);
+				}
+			} else {
+				var context:ActionExecutionContext = new ActionExecutionContext(_actions, [], labelCount);
+				for (i = 0; i < _actions.length; i++) {
+					str += "\n" + StringUtils.repeat(indent + 2) + _actions[i].toBytecode(indent + 2, context);
+				}
+				if(context.endLabel != null) {
+					str += "\n" + StringUtils.repeat(indent + 4) + context.endLabel + ":";
+				}
 			}
 			return str;
 		}

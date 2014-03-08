@@ -1,14 +1,7 @@
 ﻿package com.codeazur.as3swf.tags
 {
-	import com.codeazur.as3swf.SWF;
 	import com.codeazur.as3swf.SWFData;
 	import com.codeazur.as3swf.SWFTimelineContainer;
-	import com.codeazur.as3swf.tags.IDefinitionTag;
-	import com.codeazur.as3swf.timeline.Frame;
-	import com.codeazur.as3swf.timeline.Layer;
-	import com.codeazur.as3swf.timeline.Scene;
-	
-	import flash.utils.Dictionary;
 	
 	public class TagDefineSprite extends SWFTimelineContainer implements IDefinitionTag
 	{
@@ -56,7 +49,7 @@
 		public function get version():uint { return 3; }
 		public function get level():uint { return 1; }
 	
-		override public function toString(indent:uint = 0):String {
+		override public function toString(indent:uint = 0, flags:uint = 0):String {
 			return Tag.toStringCommon(type, name, indent) + 
 				"ID: " + characterId + ", " +
 				"FrameCount: " + frameCount +

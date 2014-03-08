@@ -132,5 +132,32 @@
 			}
 			return str;
 		}
+		
+		public function toBytecodeString(cpool:Array):String {
+			var str:String = "";
+			switch (type) {
+				case ActionValueType.STRING: str = "\"" + StringUtils.simpleEscape(string) + "\""; break;
+				case ActionValueType.FLOAT:
+				case ActionValueType.DOUBLE:
+					str = number.toString();
+					if (str.indexOf(".") == -1) {
+						str += ".0";
+					}
+					break;
+				case ActionValueType.NULL: str = "null";  break;
+				case ActionValueType.UNDEFINED: str = "undefined";  break;
+				case ActionValueType.REGISTER: str = "$" + register; break;
+				case ActionValueType.BOOLEAN: str = boolean.toString(); break;
+				case ActionValueType.INTEGER: str = integer.toString(); break;
+				case ActionValueType.CONSTANT_8:
+				case ActionValueType.CONSTANT_16:
+					str = "\"" + StringUtils.simpleEscape(cpool[constant]) + "\"";
+					break;
+				default:
+					str = "UNKNOWN";
+					break;
+			}
+			return str;
+		}
 	}
 }

@@ -37,7 +37,7 @@
 		public function get version():uint { return 3; }
 		public function get level():uint { return 1; }
 
-		public function toString(indent:uint = 0):String {
+		public function toString(indent:uint = 0, flags:uint = 0):String {
 			var str:String = "Name: " + frameName;
 			if (namedAnchorFlag) {
 				str += ", NamedAnchor = true";

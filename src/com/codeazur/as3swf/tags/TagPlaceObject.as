@@ -18,8 +18,8 @@
 		public var hasMatrix:Boolean;
 		public var hasCharacter:Boolean;
 		public var hasMove:Boolean;
-		public var hasBitmapBackgroundColor:Boolean; // Undocumented feature (SWF11)
-		public var hasVisibility:Boolean; // Undocumented feature (SWF11)
+		public var hasOpaqueBackground:Boolean;
+		public var hasVisible:Boolean;
 		public var hasImage:Boolean;
 		public var hasClassName:Boolean;
 		public var hasCacheAsBitmap:Boolean;
@@ -41,8 +41,8 @@
 		public var className:String;
 		public var blendMode:uint;
 		public var bitmapCache:uint;
-		public var bitmapBackgroundColor:uint; // Undocumented feature (SWF11)
-		public var visibility:uint; // Undocumented feature (SWF11)
+		public var bitmapBackgroundColor:uint;
+		public var visible:uint;
 
 		// Forward declarations for TagPlaceObject4
 		public var metaData:Object;

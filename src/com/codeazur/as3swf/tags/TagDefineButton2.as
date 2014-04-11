@@ -67,7 +67,7 @@
 				for(i = 0; i < condActions.length; i++) {
 					var condActionBytes:SWFData = new SWFData();
 					condActionBytes.writeBUTTONCONDACTION(condActions[i]);
-					body.writeUI16((i < condActions.length - 1) ? condActionBytes.length : 0);
+					body.writeUI16((i < condActions.length - 1) ? condActionBytes.length + 2 : 0);
 					body.writeBytes(condActionBytes);
 				}
 			}

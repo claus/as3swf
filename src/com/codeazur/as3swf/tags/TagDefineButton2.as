@@ -61,7 +61,7 @@
 				buttonRecordsBytes.writeBUTTONRECORD(characters[i], 2);
 			}
 			buttonRecordsBytes.writeUI8(0);
-			body.writeUI16(hasCondActions ? buttonRecordsBytes.length : 0);
+			body.writeUI16(hasCondActions ? buttonRecordsBytes.length + 2 : 0);
 			body.writeBytes(buttonRecordsBytes);
 			if(hasCondActions) {
 				for(i = 0; i < condActions.length; i++) {

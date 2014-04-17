@@ -61,6 +61,7 @@
 				for (i = 0; i < lineStylesLen; i++) {
 					lineStyles.push(level <= 3 ? data.readLINESTYLE(level) : data.readLINESTYLE2(level));
 				}
+				data.resetBitsPending();
 				numFillBits = data.readUB(4);
 				numLineBits = data.readUB(4);
 			}
@@ -91,6 +92,7 @@
 				}
 				numFillBits = data.calculateMaxBits(false, [fillStylesLen]);
 				numLineBits = data.calculateMaxBits(false, [lineStylesLen]);
+				data.resetBitsPending();
 				data.writeUB(4, numFillBits);
 				data.writeUB(4, numLineBits);
 			}

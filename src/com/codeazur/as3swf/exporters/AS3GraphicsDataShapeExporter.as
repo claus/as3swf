@@ -4,6 +4,7 @@ package com.codeazur.as3swf.exporters
 	import com.codeazur.as3swf.exporters.core.DefaultShapeExporter;
 	
 	import flash.display.CapsStyle;
+	import flash.display.GraphicsBitmapFill;
 	import flash.display.GraphicsEndFill;
 	import flash.display.GraphicsGradientFill;
 	import flash.display.GraphicsPath;
@@ -22,9 +23,11 @@ package com.codeazur.as3swf.exporters
 		
 		protected var tmpGraphicsPath:GraphicsPath;
 		protected var tmpStroke:GraphicsStroke;
+		private var imageDecoderAsync:ImageDecoderAsync;
 		
-		public function AS3GraphicsDataShapeExporter(swf:SWF) {
+		public function AS3GraphicsDataShapeExporter(swf:SWF, imageDecoderAsync:ImageDecoderAsync = null) {
 			super(swf);
+			this.imageDecoderAsync = imageDecoderAsync;
 		}
 		
 		public function get graphicsData():Vector.<IGraphicsData> { return _graphicsData; }
@@ -58,6 +61,9 @@ package com.codeazur.as3swf.exporters
 
 		override public function beginBitmapFill(bitmapId:uint, matrix:Matrix = null, repeat:Boolean = true, smooth:Boolean = false):void {
 			cleanUpGraphicsPath();
+			if (imageDecoderAsync !== null) {
+				_graphicsData.push(new GraphicsBitmapFill(imageDecoderAsync.getBitmapDataFromCharacterId(bitmapId), matrix, repeat, smooth));
+			}
 			// TODO
 		}
 		

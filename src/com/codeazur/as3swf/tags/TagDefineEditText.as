@@ -73,7 +73,7 @@
 			if (hasFontClass) {
 				fontClass = data.readString();
 			}
-			if (hasFont) {
+			if (hasFont || hasFontClass) {
 				fontHeight = data.readUI16();
 			}
 			if (hasTextColor) {

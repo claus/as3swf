@@ -50,7 +50,10 @@ package com.codeazur.as3swf
 		public static var TIMEOUT:int = 50;
 		public static var AUTOBUILD_LAYERS:Boolean = false;
 		public static var EXTRACT_SOUND_STREAM:Boolean = true;
-		
+
+		public static const ASYNC_PROCESS_PARSING:int = 0;
+		public static const ASYNC_PROCESS_PUBLISHING:int = 1;
+
 		protected var _tags:Vector.<ITag>;
 		protected var _tagsRaw:Vector.<SWFRawTag>;
 		protected var _dictionary:Dictionary;
@@ -72,6 +75,9 @@ package com.codeazur.as3swf
 
 		protected var _tagFactory:ISWFTagFactory;
 
+		protected var _currentAsyncProcess:int;
+		protected var abortAsyncProcessFlag:Boolean;
+
 		internal var rootTimelineContainer:SWFTimelineContainer;
 		
 		public var backgroundColor:uint = 0xffffff;
@@ -79,18 +85,21 @@ package com.codeazur.as3swf
 
 		public function SWFTimelineContainer()
 		{
+			initializeCollections();
+			_tagFactory = new SWFTagFactory();
+			
+			rootTimelineContainer = this;
+			
+			enterFrameProvider = new Sprite();
+		}
+
+		private function initializeCollections():void {
 			_tags = new Vector.<ITag>();
 			_tagsRaw = new Vector.<SWFRawTag>();
 			_dictionary = new Dictionary();
 			_scenes = new Vector.<Scene>();
 			_frames = new Vector.<Frame>();
 			_layers = new Vector.<Layer>();
-		
-			_tagFactory = new SWFTagFactory();
-			
-			rootTimelineContainer = this;
-			
-			enterFrameProvider = new Sprite();
 		}
 		
 		public function get tags():Vector.<ITag> { return _tags; }
@@ -119,8 +128,17 @@ package com.codeazur.as3swf
 			while ((tag = parseTag(data)) && tag.type != TagEnd.TYPE) {};
 			parseTagsFinalize();
 		}
-		
+
+		public function abortAsyncProcess():void {
+			if (_currentAsyncProcess == ASYNC_PROCESS_PARSING)
+				initializeCollections();
+
+			abortAsyncProcessFlag = true;
+		}
+
 		public function parseTagsAsync(data:SWFData, version:uint):void {
+			abortAsyncProcessFlag = false;
+			_currentAsyncProcess = ASYNC_PROCESS_PARSING;
 			parseTagsInit(data, version);
 			enterFrameProvider.addEventListener(Event.ENTER_FRAME, parseTagsAsyncHandler);
 		}
@@ -135,12 +153,14 @@ package com.codeazur.as3swf
 		protected function parseTagsAsyncInternal():void {
 			var tag:ITag;
 			var time:int = getTimer();
-			while ((tag = parseTag(_tmpData, true)) && tag.type != TagEnd.TYPE) {
+			while ((tag = parseTag(_tmpData, true)) && tag.type != TagEnd.TYPE && !abortAsyncProcessFlag) {
 				if((getTimer() - time) > TIMEOUT) {
 					enterFrameProvider.addEventListener(Event.ENTER_FRAME, parseTagsAsyncHandler);
 					return;
 				}
 			}
+			if (abortAsyncProcessFlag)
+				return;
 			parseTagsFinalize();
 			if(eof) {
 				dispatchEvent(new SWFErrorEvent(SWFErrorEvent.ERROR, SWFErrorEvent.REASON_EOF));
@@ -249,6 +269,8 @@ package com.codeazur.as3swf
 		}
 
 		public function publishTagsAsync(data:SWFData, version:uint):void {
+			abortAsyncProcessFlag = false;
+			_currentAsyncProcess = ASYNC_PROCESS_PUBLISHING;
 			_tmpData = data;
 			_tmpVersion = version;
 			_tmpTagIterator = 0;
@@ -276,9 +298,12 @@ package com.codeazur.as3swf
 					return;
 				}
 			}
-			while (tag.type != TagEnd.TYPE);
-			dispatchEvent(new SWFProgressEvent(SWFProgressEvent.PROGRESS, _tmpTagIterator, tags.length));
-			dispatchEvent(new SWFProgressEvent(SWFProgressEvent.COMPLETE, _tmpTagIterator, tags.length));
+			while (tag.type != TagEnd.TYPE && !abortAsyncProcessFlag);
+
+			if (!abortAsyncProcessFlag) {
+				dispatchEvent(new SWFProgressEvent(SWFProgressEvent.PROGRESS, _tmpTagIterator, tags.length));
+				dispatchEvent(new SWFProgressEvent(SWFProgressEvent.COMPLETE, _tmpTagIterator, tags.length));
+			}
 		}
 
 		public function publishTag(data:SWFData, tag:ITag, rawTag:SWFRawTag, version:uint):void {
@@ -527,6 +552,10 @@ package com.codeazur.as3swf
 				}
 			}
 			return str;
+		}
+
+		public function get currentAsyncProcess():int {
+			return _currentAsyncProcess;
 		}
 	}
 }

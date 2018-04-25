@@ -41,7 +41,7 @@ package com.codeazur.as3swf.tags
 		override public function get level():uint { return 4; }
 		
 		override public function toString(indent:uint = 0, flags:uint = 0):String {
-			var str:String = super.toString(indent);
+			var str:String = super.toString(indent, flags);
 			if (metaData != null) {
 				str += "\n" + StringUtils.repeat(indent + 2) + "MetaData: yes";
 			}
